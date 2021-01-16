@@ -6,7 +6,7 @@
 		"page": "background.html"
 	},
 	"browser_action": {
-        "default_title": "Turn your Chrome into a Spotify player",
+        "default_title": "Spotify on Chrome",
         "default_popup": "player.html"
 	},
 	"options_ui": {
@@ -14,9 +14,33 @@
 		"open_in_tab": true
 	},
 	"icons": {
-		"48": "images/48.png",
+		"32": "images/32.png",
 		"64": "images/64.png",
 		"128": "images/128.png",
 		"256": "images/256.png"
+	},
+	"web_accessible_resources": ["authorized.html"],
+	"commands": {
+		"toggle-feature-previous": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+7"
+			},
+			"description": "Play previous track",
+			"global": true
+		},
+		"toggle-feature-play": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+8"
+			},
+			"description": "Play or pause",
+			"global": true
+		},
+		"toggle-feature-next": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+9"
+			},
+			"description": "Play next track",
+			"global": true
+		}
 	}
 }

@@ -233,6 +233,22 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     let spotifyRefreshToken = localStorage.getItem("spotify_refresh_token");
     let spotifyClientId = localStorage.getItem("spotify_client_id");
     
-    if(spotifyRefreshToken && spotifyClientId)
+    if(spotifyRefreshToken && spotifyClientId) 
         init();
+
+    chrome.commands.onCommand.addListener(function(command) {
+        switch (command) {
+            case "toggle-feature-previous":
+                player && player.previousTrack();
+                break;
+        
+            case "toggle-feature-play":
+                player && player.togglePlay();
+                break;
+            
+            case "toggle-feature-next": 
+                player && player.nextTrack();
+                break
+        }
+    });
   };

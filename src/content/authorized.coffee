@@ -3,7 +3,7 @@ import utils from "utils"
 
 
 scope = ["streaming", "user-read-email", "user-read-private"].join(" ")
-redirectUri = window.location.origin + '/player.html?spotifyCallback'
+redirectUri = window.location.origin + '/authorized.html?spotifyCallback'
 spotifyClientId = '71996e28dc6f40cc89f05bd0b030708e'
 
 pkce = new PKCE({
@@ -14,6 +14,9 @@ pkce = new PKCE({
     requested_scopes: scope,
 })
 
+authorize = () ->
+    localStorage.setItem("authorizing", 'code')
+    window.location.replace(pkce.authorizeUrl())
 
 onAuthorized = () ->
     {error, query, state, code} = await pkce.parseAuthResponseUrl window.location.href 
@@ -43,4 +46,6 @@ getAccessToken = () ->
             }
 
         localStorage.removeItem("authorizing")
+    else 
+        authorize()
 )()

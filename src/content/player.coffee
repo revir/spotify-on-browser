@@ -31,39 +31,6 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.canPause = false 
     $scope.albumImage = null
     $scope.artistName = ''
-    pkce = null
-
-    # scope = ["streaming", "user-read-email", "user-read-private", "user-read-recently-played", "user-modify-playback-state"].join(" ")
-    scope = ["streaming", "user-read-email", "user-read-private"].join(" ")
-    redirectUri = window.location.origin + '/authorized.html?spotifyCallback'
-
-    pkce = new PKCE({
-        client_id: spotifyClientId,
-        redirect_uri: redirectUri,
-        authorization_endpoint: 'https://accounts.spotify.com/authorize',
-        token_endpoint: 'https://accounts.spotify.com/api/token',
-        requested_scopes: scope,
-    })
-
-    authorize = () ->
-        localStorage.setItem("authorizing", 'code')
-        window.open pkce.authorizeUrl()
-
-    onAuthorized = () ->
-        {error, query, state, code} = await pkce.parseAuthResponseUrl window.top.location.href 
-        if error
-            localStorage.removeItem("authorizing")
-            alert("Error returned from spotify authorization server: "+error)
-        else 
-            return getAccessToken()
-
-    getAccessToken = () ->
-        localStorage.setItem("authorizing", 'access_token')
-        try
-            {access_token, refresh_token} = await pkce.exchangeForAccessToken(window.top.location.href)
-            return {access_token, refresh_token}
-        catch err 
-            alert("Error from spotify authorization: " + err)
 
     getState = () ->
         res = await utils.send 'spotify current state'
@@ -104,7 +71,8 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
     $scope.toggleAction = (action) -> 
         if not $scope.isSpotifyReady
-            authorize()
+            window.open('/authorized.html', '_blank')
+            
         else if $scope.spotifyState?.current_track
             utils.send 'spotify action', { action }
         else 
@@ -121,17 +89,5 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         url = 'https://revir.github.io/2020/12/02/I-put-a-spotify-player-on-Dictionariez/'
         window.open url, '_blank'
 
-
-    if localStorage.getItem("authorizing") == 'code' and window.location.search.includes('spotifyCallback')
-        res = await onAuthorized()
-        if res?.access_token
-            await utils.send 'spotify authorized', {
-                access_token: res.access_token
-                refresh_token: res.refresh_token,
-                client_id: spotifyClientId
-            }
-
-        localStorage.removeItem("authorizing")
     getState()
 ]
-    
