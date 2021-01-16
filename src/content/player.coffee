@@ -88,6 +88,8 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.openHelpLink = () ->
         url = 'https://revir.github.io/2020/12/02/I-put-a-spotify-player-on-Dictionariez/'
         window.open url, '_blank'
+    $scope.openOptions = () ->
+        utils.send 'open options'
 
     getState()
 ]

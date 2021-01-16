@@ -220,6 +220,9 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         localStorage.setItem("spotify_refresh_token", refresh_token);
 
         localStorage.setItem("spotify_access_token", access_token);
+
+        // open options page.
+        setTimeout(chrome.runtime.openOptionsPage, 5000); 
         return init(access_token);
     });
 
@@ -228,6 +231,15 @@ window.onSpotifyWebPlaybackSDKReady = () => {
             player.tabId = sender.tab && sender.tab.id;
             return getCurrentState();
         }
+    });
+
+    message.on('open options', () => {
+        chrome.runtime.openOptionsPage();
+    });
+    message.on('open options shortcuts', () => {
+        chrome.tabs.create({
+            url: "chrome://extensions/shortcuts"
+        })
     });
 
     let spotifyRefreshToken = localStorage.getItem("spotify_refresh_token");
