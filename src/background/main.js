@@ -222,7 +222,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         localStorage.setItem("spotify_access_token", access_token);
 
         // open options page.
-        setTimeout(chrome.runtime.openOptionsPage, 5000); 
+        setTimeout(chrome.runtime.openOptionsPage, 60000); 
         return init(access_token);
     });
 

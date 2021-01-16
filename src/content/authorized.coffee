@@ -15,20 +15,17 @@ pkce = new PKCE({
 })
 
 authorize = () ->
-    localStorage.setItem("authorizing", 'code')
     window.location.replace(pkce.authorizeUrl())
 
 onAuthorized = () ->
     {error, query, state, code} = await pkce.parseAuthResponseUrl window.location.href 
     if error
-        localStorage.removeItem("authorizing")
         alert("Error returned from spotify authorization server: "+error)
     else 
         return getAccessToken()
 
 
 getAccessToken = () ->
-    localStorage.setItem("authorizing", 'access_token')
     try
         {access_token, refresh_token} = await pkce.exchangeForAccessToken(window.location.href)
         return {access_token, refresh_token}
@@ -44,8 +41,10 @@ getAccessToken = () ->
                 refresh_token: res.refresh_token,
                 client_id: spotifyClientId
             }
+            setTimeout (->
+                window.location.replace("https://open.spotify.com")
+                ), 3000 
 
-        localStorage.removeItem("authorizing")
     else 
         authorize()
 )()
