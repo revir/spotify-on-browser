@@ -1,0 +1,22 @@
+{
+	"manifest_version": 2,
+	"name": "Spotify on Chrome",
+	"background": {
+		"persistent": true,
+		"page": "background.html"
+	},
+	"browser_action": {
+        "default_title": "Turn your Chrome into a Spotify player",
+        "default_popup": "player.html"
+	},
+	"options_ui": {
+		"page": "option.html",
+		"open_in_tab": true
+	},
+	"icons": {
+		"48": "images/48.png",
+		"64": "images/64.png",
+		"128": "images/128.png",
+		"256": "images/256.png"
+	}
+}

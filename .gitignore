@@ -1,0 +1,6 @@
+node_modules
+build
+*.log
+
+dictionaries.zip
+dictionaries-src.zip
