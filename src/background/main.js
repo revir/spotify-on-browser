@@ -2,10 +2,12 @@ import('../vendor/spotify-player')
 import message from "./message.coffee"
 import $ from "jquery"
 import utils from "utils"
+// import debounce from 'lodash/debounce'
 
 
 window.onSpotifyWebPlaybackSDKReady = () => {
     let player;
+    let trackSavedCache = {};
 
     function init (spotifyAccessToken) {
         if (player) return player.connect();
@@ -38,7 +40,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         
             // Playback status updates
             player.addListener('player_state_changed', async state => { 
-                console.log('Spotify player state changed: ', state); 
+                // console.log('Spotify player state changed: ', state); 
                 player.currentState = state || null;
 
                 utils.send('spotify state changed', {
@@ -52,6 +54,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                 player.isReady = true;
                 player.deviceId = device_id;
                 player.currentState = undefined;
+                trackSavedCache = {};
 
                 resolve({ready: true});
             });
@@ -137,6 +140,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                         disallows,
                     }
                 } = res; 
+                console.log(res);
                 return {
                     paused: !is_playing,
                     current_track: item, 
@@ -149,6 +153,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     function getLastPlayed() {
         return request("https://api.spotify.com/v1/me/player/recently-played?limit=1")
         .then(res => {
+            console.log(res);
             if (res && res.items.length) {
                 let { track, context } = res.items[0];
 
@@ -167,6 +172,43 @@ window.onSpotifyWebPlaybackSDKReady = () => {
             context_uri: contextUri,
             // uris
         }, 'PUT');
+    }
+    function checkUserSavedTrack(trackId) {
+        if (trackSavedCache[trackId] !== undefined) {
+            return trackSavedCache[trackId];
+        } 
+
+        // console.log("check saved: ", trackId, trackSavedCache);
+        
+        trackSavedCache[trackId] = request("https://api.spotify.com/v1/me/tracks/contains?ids="+trackId).then(res => {
+            const r = res[0];
+
+            trackSavedCache[trackId] = r;
+
+            // remove after 10 minutes
+            setTimeout(() => {
+                trackSavedCache[trackId] = undefined;
+            }, 10 * 60 * 1000);
+
+            return r;
+        });
+        return trackSavedCache[trackId];
+    }
+    function saveUserTrack(trackId) {
+        return request("https://api.spotify.com/v1/me/tracks?ids="+trackId, null, "PUT").then(res => {
+            if (trackSavedCache[trackId] !== undefined) trackSavedCache[trackId] = true;
+
+            // console.log("saved: ", trackId, trackSavedCache);
+            return res;
+        });
+    }
+    function removeUserSavedTrack(trackId) {
+        return request("https://api.spotify.com/v1/me/tracks?ids="+trackId, null, 'DELETE').then(res => {
+            if (trackSavedCache[trackId] !== undefined) trackSavedCache[trackId] = false;
+
+            // console.log("remove saved: ", trackId, trackSavedCache);
+            return res;
+        });
     }
 
     async function getCurrentState() {
@@ -240,6 +282,15 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         chrome.tabs.create({
             url: "chrome://extensions/shortcuts"
         })
+    });
+    message.on('checkUserSavedTrack', ({ trackId }) => {
+        return checkUserSavedTrack(trackId);
+    });
+    message.on('saveUserTrack', ({ trackId }) => {
+        return saveUserTrack(trackId);
+    });
+    message.on('removeUserSavedTrack', ({ trackId }) => {
+        return removeUserSavedTrack(trackId);
     });
 
     let spotifyRefreshToken = localStorage.getItem("spotify_refresh_token");

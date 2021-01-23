@@ -1,7 +1,6 @@
 import $ from 'jquery'
 import angular from 'angular'
 import utils from "utils"
-import debounce from 'lodash/debounce'
 
 import PKCE from 'js-pkce';
 # import '../needsharebutton.min.js'
@@ -39,11 +38,18 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
             if request.type == 'spotify state changed'
                 updateState(request.state) if request.state 
-        
+
+    checkTrackSaved = () ->
+        if $scope.spotifyState.current_track?.id 
+            $scope.spotifyState.current_track.saved = await utils.send 'checkUserSavedTrack', { trackId: $scope.spotifyState.current_track.id }
+
+            # console.log "check saved: ", $scope.spotifyState.current_track.saved
+            $scope.savingTrack = false
+            $scope.$apply()
 
     updateState = (state) ->
         $scope.spotifyState = state 
-        console.log "Spotify state: ", state 
+        # console.log "Spotify state: ", state 
 
         $scope.isSpotifyReady = state.ready
 
@@ -65,6 +71,8 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
                 state.current_track.album.images[0]
         if state.current_track?.artists?.length 
             $scope.artistName = state.current_track.artists.map((n) -> n.name).join(', ')
+
+        checkTrackSaved(state.current_track)
         
         $scope.playing = !state.paused and state.current_track
         $scope.$apply()
@@ -77,6 +85,19 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             utils.send 'spotify action', { action }
         else 
             window.open('https://open.spotify.com/', '_blank')
+    
+    $scope.toggleSavedTrack = () ->
+        if $scope.spotifyState.current_track and !$scope.savingTrack
+            $scope.savingTrack = true
+
+            if $scope.spotifyState.current_track.saved 
+                res = await utils.send 'removeUserSavedTrack', { trackId: $scope.spotifyState.current_track.id }
+                # console.log "remove saved: ", res
+            else 
+                res = await utils.send 'saveUserTrack', { trackId: $scope.spotifyState.current_track.id }
+                # console.log "save: ", res 
+
+            checkTrackSaved($scope.spotifyState.current_track)
     
     $scope.openTrackLink = () ->
         if $scope.spotifyState?.current_track

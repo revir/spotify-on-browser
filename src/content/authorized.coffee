@@ -2,7 +2,8 @@ import PKCE from 'js-pkce';
 import utils from "utils"
 
 
-scope = ["streaming", "user-read-email", "user-read-private"].join(" ")
+# scope = ["streaming", "user-read-email", "user-read-private", "user-library-read", "user-library-modify", "user-read-recently-played", "user-modify-playback-state"].join(" ")
+scope = ["streaming", "user-read-email", "user-read-private", "user-library-read", "user-library-modify"].join(" ")
 redirectUri = window.location.origin + '/authorized.html?spotifyCallback'
 spotifyClientId = '71996e28dc6f40cc89f05bd0b030708e'
 

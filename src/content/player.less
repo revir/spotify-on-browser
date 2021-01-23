@@ -84,6 +84,24 @@ body
             max-width: 130px;
             margin-bottom: 0;
         }
+
+        .saved-track {
+            font-size: 25px;
+            cursor: pointer;
+            position: relative;
+            top: 5px;
+
+            i.fa-heart {
+                color: orangered;
+            }
+
+            &[disabled] {
+                cursor: default;
+                i {
+                    color: grey;
+                }
+            }
+        }
         
     }
 }
