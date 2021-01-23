@@ -37,15 +37,21 @@ getAccessToken = () ->
     if window.location.search.includes('spotifyCallback')
         res = await onAuthorized()
         if res?.access_token
+            document.getElementById('authorizing-title').hidden = true
+            
             await utils.send 'spotify authorized', {
                 access_token: res.access_token
                 refresh_token: res.refresh_token,
                 client_id: spotifyClientId
             }
+            document.getElementById('authorized-title').hidden = false
+            
+
             setTimeout (->
                 window.location.replace("https://open.spotify.com")
                 ), 3000 
 
     else 
+        document.getElementById('authorized-title').hidden = true
         authorize()
 )()
