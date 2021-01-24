@@ -15,6 +15,9 @@
                 <a class="pull-right" href="" title="Go to settings" ng-click="openOptions()">
                     <i class='fa fa-cog' aria-hidden='true'></i>
                 </a>
+                <a class="pull-right" href="" title="What is this?" ng-click="openHelpLink()">
+                    <i class="fa fa-question-circle" aria-hidden="true"></i>
+                </a>
             </div>
 
             <div class="player-context">
@@ -27,8 +30,16 @@
                         Choose music on Spotify
                     </a>
                     <div ng-if="trackName" class="track-wrapper">
-                        <p class="track-name">{{trackName}}</p>
-                        <p class="artist-name ellipsis">{{artistName}}</p>
+                        <p class="track-name">
+                            <a target="_blank" ng-href="{{trackHref}}">
+                                {{trackName}}
+                            </a>
+                        </p>
+                        <p class="artist-name ellipsis">
+                            <a target="_blank" ng-href="{{artistHref}}">
+                                {{artistName}}
+                            </a>
+                        </p>
 
                         <div class="button saved-track" ng-hide="trackSaved == undefined"
                             ng-disabled="savingTrack"
@@ -40,7 +51,9 @@
             </div>
             <div class="player-content">
                 <div id="album-art">
-                    <img ng-src="{{albumImage.url}}" ng-class="{'active': playing}" ng-if="albumImage">
+                    <a target="_blank" ng-href="{{albumHref}}">
+                        <img ng-src="{{albumImage.url}}" ng-class="{'active': playing}" ng-if="albumImage">
+                    </a>
                 </div>
                 <div id="player-controls">
                     <div class="control">

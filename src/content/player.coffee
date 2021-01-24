@@ -33,6 +33,10 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.trackName = ''
     $scope.trackSaved = false
 
+    $scope.trackHref = ''
+    $scope.artistHref = ''
+    $scope.albumHref = ''
+
     getState = () ->
         res = await utils.send 'spotify current state'
         updateState(res) if res 
@@ -50,6 +54,12 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.savingTrack = false
             $scope.$apply()
 
+    formatOpenURL = (uri) ->
+        try
+            return spotifyUri.formatOpenURL uri
+        catch 
+            return ''
+
     updateState = (state) ->
         $scope.spotifyState = state 
         # console.log "Spotify state: ", state 
@@ -64,6 +74,17 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         $scope.albumImage = null 
         $scope.artistName = ''
         $scope.trackName = state.current_track?.name 
+
+        $scope.trackHref = ''
+        $scope.artistHref = ''
+        $scope.albumHref = ''
+
+        if state.current_track
+            $scope.trackHref = formatOpenURL state.current_track.uri
+        if state.current_track?.album
+            $scope.albumHref = formatOpenURL state.current_track.album.uri
+        if state.current_track?.artists?.length
+            $scope.artistHref = formatOpenURL state.current_track.artists[0].uri
 
         if state.disallows
             $scope.canPause = !state.disallows.pausing
@@ -104,9 +125,8 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             checkTrackSaved($scope.spotifyState.current_track)
     
     $scope.openTrackLink = () ->
-        if $scope.spotifyState?.current_track
-            url = spotifyUri.formatOpenURL $scope.spotifyState.current_track.uri
-            window.open url, '_blank'
+        if $scope.isSpotifyReady
+            window.open('https://open.spotify.com/', '_blank')
         else 
             $scope.openHelpLink()
     
