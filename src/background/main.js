@@ -316,6 +316,16 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                 if (player && player.currentState && player.currentState.track_window) {
                     saveUserTrack(player.currentState.track_window.current_track.id).then(() => {
                         utils.send('track saved');
+
+                        chrome.notifications.create(`notification-${player.currentState.track_window.current_track.id}`, {
+                            message: `Great, "${player.currentState.track_window.current_track.name}" has been saved in your library.`,
+                            // contextMessage: "This track has been saved in your library.",
+                            iconUrl: "images/256.png",
+                            title: 'Spotify on Chrome',
+                            silent: true,
+                            type: 'basic'
+                        })
+
                     });
                 }
                 break

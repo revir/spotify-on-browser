@@ -1,6 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Spotify on Chrome",
+	"permissions": ["notifications"],
 	"background": {
 		"persistent": true,
 		"page": "background.html"
