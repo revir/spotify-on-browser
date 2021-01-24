@@ -30,6 +30,8 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.canPause = false 
     $scope.albumImage = null
     $scope.artistName = ''
+    $scope.trackName = ''
+    $scope.trackSaved = false
 
     getState = () ->
         res = await utils.send 'spotify current state'
@@ -43,9 +45,8 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
     checkTrackSaved = () ->
         if $scope.spotifyState.current_track?.id 
-            $scope.spotifyState.current_track.saved = await utils.send 'checkUserSavedTrack', { trackId: $scope.spotifyState.current_track.id }
+            $scope.trackSaved = await utils.send 'checkUserSavedTrack', { trackId: $scope.spotifyState.current_track.id }
 
-            # console.log "check saved: ", $scope.spotifyState.current_track.saved
             $scope.savingTrack = false
             $scope.$apply()
 
@@ -62,6 +63,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
         $scope.albumImage = null 
         $scope.artistName = ''
+        $scope.trackName = state.current_track?.name 
 
         if state.disallows
             $scope.canPause = !state.disallows.pausing
@@ -74,7 +76,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         if state.current_track?.artists?.length 
             $scope.artistName = state.current_track.artists.map((n) -> n.name).join(', ')
 
-        checkTrackSaved(state.current_track)
+        checkTrackSaved()
         
         $scope.playing = !state.paused and state.current_track
         $scope.$apply()
@@ -92,7 +94,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         if $scope.spotifyState.current_track and !$scope.savingTrack
             $scope.savingTrack = true
 
-            if $scope.spotifyState.current_track.saved 
+            if $scope.trackSaved 
                 res = await utils.send 'removeUserSavedTrack', { trackId: $scope.spotifyState.current_track.id }
                 # console.log "remove saved: ", res
             else 
