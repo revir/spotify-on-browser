@@ -41,6 +41,13 @@
 			},
 			"description": "Play next track",
 			"global": true
+		},
+		"toggle-feature-save": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+0"
+			},
+			"description": "Save the track",
+			"global": true
 		}
 	}
 }

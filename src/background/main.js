@@ -270,7 +270,6 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
     message.on('spotify current state', (request, sender) => {
         if (player && player.isReady) {
-            player.tabId = sender.tab && sender.tab.id;
             return getCurrentState();
         }
     });
@@ -311,6 +310,14 @@ window.onSpotifyWebPlaybackSDKReady = () => {
             
             case "toggle-feature-next": 
                 player && player.nextTrack();
+                break
+            
+            case "toggle-feature-save": 
+                if (player && player.currentState && player.currentState.track_window) {
+                    saveUserTrack(player.currentState.track_window.current_track.id).then(() => {
+                        utils.send('track saved');
+                    });
+                }
                 break
         }
     });

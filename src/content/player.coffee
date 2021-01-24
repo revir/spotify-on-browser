@@ -38,6 +38,8 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
             if request.type == 'spotify state changed'
                 updateState(request.state) if request.state 
+            if request.type == 'track saved'
+                checkTrackSaved()
 
     checkTrackSaved = () ->
         if $scope.spotifyState.current_track?.id 
