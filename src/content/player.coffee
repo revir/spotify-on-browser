@@ -129,8 +129,9 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.openHelpLink()
     
     $scope.openHelpLink = () ->
-        url = 'https://revir.github.io/2021/01/16/Spotify-on-Chrome/'
+        url = 'https://github.com/revir/spotify-on-chrome'
         window.open url, '_blank'
+        
     $scope.openOptions = () ->
         utils.send 'open options'
 

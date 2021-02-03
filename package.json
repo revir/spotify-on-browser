@@ -1,6 +1,6 @@
 {
 	"name": "spotify-on-chrome",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "Turn your Chrome into a Spotify player",
 	"scripts": {
 		"build": "node utils/build.js",
