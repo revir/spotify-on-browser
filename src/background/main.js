@@ -95,14 +95,12 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         };
         if (type != 'GET') {
             headers['Accept'] = 'application/json';
-            headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+            headers['Content-Type'] = 'application/json';
         }
 
         let body;
         if (data) {
-            body = new URLSearchParams(Object.keys(data).map(k => {
-                return [k, data[k]];
-            }));
+            body = JSON.stringify(data);
         }
 
         return fetch(uri, {
@@ -175,7 +173,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         const url = "https://api.spotify.com/v1/me/player";
         return request(url, {
             device_ids: [player.deviceId],
-            // uris
+            play: true 
         }, 'PUT');
     }
 
