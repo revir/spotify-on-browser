@@ -9,13 +9,13 @@
 Spotify has a really cool feature called **Spotify Connect**. Basically it could turn anything into a Spotify player, and control it with your cellphone. I made this app trying to connect Spotify with Chrome. So why use this player instead of Spotify website?
 
    1. Play in background of Chrome, no need to keep Spotify's tab open;
-   2. Global keyboard shortcut to play/stop/next/previous;
-   3. Seamlessly play your steam on Chrome, with the controls of your cellphone.
+   2. Global keyboard shortcut to play/stop/next/previous/save;
+   3. Transfer playback to this player seamlessly with just one click.
 
 After install it from the web store, use it in the following steps:
 
 1. **Authorize** on Spotify;
-2. Choose music on Spotify and play it on **"Spotify on Chrome"**.
+2. Choose music on Spotify and play it on **"Spotify on Chrome"**. If you have a premium account on Spotify, you can seamlessly transfer your playback to this player, with just one click on the play button.
 
 ![screenshot](readme_images/s2.png)
 
