@@ -111,16 +111,14 @@ window.onSpotifyWebPlaybackSDKReady = () => {
             body
         })
         .then(function (response) { 
-            if (response.ok)
-                return response.json()
-                .then(res => {
-                    if (res.error) {
-                        console.error("Spotify api failed: ", res.error, uri);
-                        return; 
-                    }
-                    return res;
-                })
-                .catch(() => {}); 
+            return response.json()
+            .then(res => {
+                if (res.error) {
+                    console.warn("Spotify api failed: ", res.error, uri);
+                }
+                return res;
+            })
+            .catch(() => {}); 
         })
     }
     function getCurrentPlaying() {
@@ -173,6 +171,14 @@ window.onSpotifyWebPlaybackSDKReady = () => {
             // uris
         }, 'PUT');
     }
+    function switchToThisPlayer() {
+        const url = "https://api.spotify.com/v1/me/player";
+        return request(url, {
+            device_ids: [player.deviceId],
+            // uris
+        }, 'PUT');
+    }
+
     function checkUserSavedTrack(trackId) {
         if (trackSavedCache[trackId] !== undefined) {
             return trackSavedCache[trackId];
@@ -249,8 +255,20 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     }
 
     message.on('spotify action', ({ action }) => {
-        if (player) { 
-            return player[action]();
+        if (player && player.deviceId) { 
+            if (action === 'togglePlay') {
+                if (player && player.currentState && player.currentState.track_window) {
+                    return player.togglePlay();
+                } else {
+                    return switchToThisPlayer().then(res => {
+                        if (res.error) {
+                            window.open('https://open.spotify.com/', 'open spotify');
+                        }
+                    });
+                }
+            } else {
+                return player[action]();
+            }
         }
     });
 

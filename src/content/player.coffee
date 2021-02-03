@@ -105,11 +105,9 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.toggleAction = (action) -> 
         if not $scope.isSpotifyReady
             window.open('/authorized.html', '_blank')
-            
-        else if $scope.spotifyState?.current_track
-            utils.send 'spotify action', { action }
         else 
-            window.open('https://open.spotify.com/', '_blank')
+            utils.send 'spotify action', { action }
+            # window.open('https://open.spotify.com/', '_blank')
     
     $scope.toggleSavedTrack = () ->
         if $scope.spotifyState.current_track and !$scope.savingTrack
