@@ -1,5 +1,7 @@
-# v0.0.3 - 2021/02/03 
+# v0.0.4 - 2021/02/10
+- Works on Firefox.
 
+# v0.0.3 - 2021/02/03 
 - Transfer playback to this player seamlessly with one click, works if you are premium on Spotify.
 
 # v0.0.2 - 2021/01/24
