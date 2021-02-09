@@ -2,7 +2,7 @@
 <html lang="en" ng-app="musicPlayer">
 	<head>
 		<meta charset="UTF-8" />
-		<title>Spotify on Firefox</title>
+		<title>Spotify on browser</title>
     </head>
     
     <body>
@@ -24,7 +24,7 @@
                 <div class="text-center preliminary">
                     <img ng-src="{{albumImage.url}}" class="active" ng-if="albumImage">
                     <a href="" ng-if="!isSpotifyReady" ng-click="toggleAction()">
-                        Authorize Spotify on Firefox
+                        Authorize Spotify on Chrome
                     </a>
                     <a href="" ng-if="!trackName && isSpotifyReady" ng-click="toggleAction('togglePlay')">
                         Play Your Music

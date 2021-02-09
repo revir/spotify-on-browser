@@ -48,7 +48,7 @@ getAccessToken = () ->
             
 
             setTimeout (->
-                window.location.replace("option.html?needAutoPlay")
+                window.location.replace("option.html")
                 ), 500 
 
     else 
