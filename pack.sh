@@ -1,5 +1,5 @@
-name="spotify-on-chrome.zip"
-srcname="spotify-on-chrome-src.zip" 
+name="spotify-player.zip"
+srcname="spotify-player-src.zip" 
 
 npm run build
 

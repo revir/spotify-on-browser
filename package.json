@@ -1,7 +1,7 @@
 {
-	"name": "spotify-on-chrome",
-	"version": "0.0.3",
-	"description": "Turn your Chrome into a Spotify player",
+	"name": "spotify-on-browser",
+	"version": "0.0.4",
+	"description": "Turn your browser into a Spotify player",
 	"scripts": {
 		"build": "node utils/build.js",
 		"start": "node utils/webserver.js"
@@ -9,13 +9,14 @@
 	"author": "River Yang",
 	"license": "GPL2",
 	"bugs": {
-		"url": "https://github.com/revir/spotify-on-chrome/issues"
+		"url": "https://github.com/revir/spotify-on-browser/issues"
 	},
-	"homepage": "https://github.com/revir/spotify-on-chrome#readme",
+	"homepage": "https://github.com/revir/spotify-on-browser#readme",
 	"keywords": [
 		"Spotify",
 		"SpotifyConnect",
 		"ChromeExtension",
+		"FirefoxExtension",
 		"WebExtension"
 	],
 	"dependencies": {

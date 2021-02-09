@@ -1,6 +1,6 @@
 {
 	"manifest_version": 2,
-	"name": "Spotify on Firefox",
+	"name": "Spotify on Browser",
 	"permissions": ["notifications"],
 	"background": {
 		"persistent": true,
