@@ -116,7 +116,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                 }
                 return res;
             });
-        })
+        }).catch(() => {});
     }
     function getCurrentPlaying() {
         const uri = "https://api.spotify.com/v1/me/player/currently-playing";
@@ -261,11 +261,6 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                         if (res && res.error) {
                             window.open('https://open.spotify.com/', 'open spotify');
                         }
-                    }).catch(error => {
-                        console.error('Switch to player failed: ', error);
-                        chrome.tabs.create({
-                            url: chrome.extension.getURL('option.html') + '?needAutoPlay'
-                        });
                     });
                 }
             } else {
@@ -342,7 +337,6 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                             // contextMessage: "This track has been saved in your library.",
                             iconUrl: "images/256.png",
                             title: 'Spotify on Firefox',
-                            silent: true,
                             type: 'basic'
                         })
 

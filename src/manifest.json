@@ -24,31 +24,30 @@
 	"commands": {
 		"toggle-feature-previous": {
 			"suggested_key": {
-				"default": "Ctrl+Shift+7"
+				"default": "Ctrl+Shift+7",
+				"mac": "MediaPrevTrack"
 			},
-			"description": "Play previous track",
-			"global": true
+			"description": "Play previous track"
 		},
 		"toggle-feature-play": {
 			"suggested_key": {
-				"default": "Ctrl+Shift+8"
+				"default": "Ctrl+Shift+8",
+				"mac": "MediaPlayPause"
 			},
-			"description": "Play or pause",
-			"global": true
+			"description": "Play or pause"
 		},
 		"toggle-feature-next": {
 			"suggested_key": {
-				"default": "Ctrl+Shift+9"
+				"default": "Ctrl+Shift+9",
+				"mac": "MediaNextTrack"
 			},
-			"description": "Play next track",
-			"global": true
+			"description": "Play next track"
 		},
 		"toggle-feature-save": {
 			"suggested_key": {
 				"default": "Ctrl+Shift+0"
 			},
-			"description": "Save the track",
-			"global": true
+			"description": "Save the track"
 		}
 	}
 }

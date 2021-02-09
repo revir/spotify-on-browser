@@ -48,8 +48,8 @@ getAccessToken = () ->
             
 
             setTimeout (->
-                window.location.replace("https://open.spotify.com")
-                ), 3000 
+                window.location.replace("option.html?needAutoPlay")
+                ), 500 
 
     else 
         document.getElementById('authorized-title').hidden = true
