@@ -13,7 +13,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         if (player) return player.connect();
         
         player = new Spotify.Player({
-            name: 'Spotify on Chrome',
+            name: 'Spotify on Firefox',
             getOAuthToken: cb => { 
                 if(spotifyAccessToken)
                     cb(spotifyAccessToken); 
@@ -111,12 +111,11 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         .then(function (response) { 
             return response.json()
             .then(res => {
-                if (res.error) {
+                if (res && res.error) {
                     console.warn("Spotify api failed: ", res.error, uri);
                 }
                 return res;
-            })
-            .catch(() => {}); 
+            });
         })
     }
     function getCurrentPlaying() {
@@ -259,9 +258,14 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                     return player.togglePlay();
                 } else {
                     return switchToThisPlayer().then(res => {
-                        if (res.error) {
+                        if (res && res.error) {
                             window.open('https://open.spotify.com/', 'open spotify');
                         }
+                    }).catch(error => {
+                        console.error('Switch to player failed: ', error);
+                        chrome.tabs.create({
+                            url: chrome.extension.getURL('option.html') + '?needAutoPlay'
+                        });
                     });
                 }
             } else {
@@ -337,7 +341,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                             message: `Great, "${player.currentState.track_window.current_track.name}" has been saved in your library.`,
                             // contextMessage: "This track has been saved in your library.",
                             iconUrl: "images/256.png",
-                            title: 'Spotify on Chrome',
+                            title: 'Spotify on Firefox',
                             silent: true,
                             type: 'basic'
                         })

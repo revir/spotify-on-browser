@@ -2,7 +2,6 @@ import $ from 'jquery'
 import angular from 'angular'
 import utils from "utils"
 
-import PKCE from 'js-pkce';
 # import '../needsharebutton.min.js'
 # import 'angular-ui-bootstrap'
 
@@ -131,7 +130,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.openHelpLink = () ->
         url = 'https://github.com/revir/spotify-on-chrome'
         window.open url, '_blank'
-        
+
     $scope.openOptions = () ->
         utils.send 'open options'
 

@@ -1,13 +1,13 @@
 {
 	"manifest_version": 2,
-	"name": "Spotify on Chrome",
+	"name": "Spotify on Firefox",
 	"permissions": ["notifications"],
 	"background": {
 		"persistent": true,
 		"page": "background.html"
 	},
 	"browser_action": {
-        "default_title": "Spotify on Chrome",
+        "default_title": "Spotify on Firefox",
         "default_popup": "player.html"
 	},
 	"options_ui": {

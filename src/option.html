@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Options - Spotify on Chrome</title>
+    <title>Options - Spotify on Firefox</title>
     <link rel="stylesheet" href="./vendor/needsharebutton.min.css" />
 
     <style>
@@ -20,25 +20,32 @@
       <div class="row">
         <div>
           <pre class="ascii-title">
-                                                                        
-.-.            .        .-.                         .--..                          
-(   )          _|_   o   |                          :    |                          
-  `-. .,-.  .-.  |    .  -|- .  .      .-. .--.      |    |--. .--. .-. .--.--.  .-. 
-(   )|   )(   ) |    |   |  |  |     (   )|  |      :    |  | |   (   )|  |  | (.-' 
-  `-' |`-'  `-'  `-'-' `- '  `--|      `-' '  `-      `--''  `-'    `-' '  '  `- `--'
-      |                         ;                                                    
-      '                      `-'                                                     
-
-            </pre
-          >
+                                                                     
+ .-.           .       .-.                 .---.           .-.       
+(   )         _|_   o  |                   |    o          |         
+ `-. .,-.  .-. |    . -|-.  .   .-. .--.   |--- .  .--..-.-|-.-.-. ,-
+(   )|   )(   )|    |  | |  |  (   )|  |   |    |  |  (.-' |(   ) :  
+ `-' |`-'  `-' `-'-' `-' `--|   `-' '  `-  '  -' `-'   `--'' `-'-' `-
+     |                      ;                                        
+     '                   `-'                                         
+          </pre>
+          <div id="need-auto-play" style="display: none;">
+            <h3><strong style="color: red;">First, enable autoplay!</strong></h3>
+            <p>In order to make it work, you need to grant permission for autoplay on Firefox.</p>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/sHs_ifYBjGs?autoplay=1" frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen></iframe>
+          </div>
+          
+          <h3><strong>Share</strong></h3>
           <p>
-            Thanks for using. If you like it, please share it. It really helps!
+            If you like it, please share it. It really helps! Thank you.
           </p>
 
           <div class="wrapper">
             <div id="i-share" 
                 data-share-url="https://github.com/revir/spotify-on-chrome"
-                data-share-title="Spotify on Chrome - trying to make life easier."
+                data-share-title="A mini Spotify player on Chrome & Firefox makes life easier"
                 class="need-share-panel need-share-button">
             </div>
           </div>

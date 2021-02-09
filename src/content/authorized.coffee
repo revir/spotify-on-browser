@@ -1,4 +1,4 @@
-import PKCE from 'js-pkce';
+import PKCE from '@pnlpal/js-pkce';
 import utils from "utils"
 
 
