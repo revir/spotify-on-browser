@@ -1,3 +1,5 @@
+import './player.less' 
+
 import $ from 'jquery'
 import angular from 'angular'
 import utils from "utils"
@@ -7,7 +9,6 @@ import utils from "utils"
 
 import('bootstrap/dist/css/bootstrap.min.css')
 import('../vendor/font-awesome.css')
-import('./player.less') 
 
 import 'bootoast/dist/bootoast.min.css'
 # import bootoast from 'bootoast/dist/bootoast.min.js'
