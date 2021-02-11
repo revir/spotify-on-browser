@@ -30,22 +30,19 @@
 	"commands": {
 		"toggle-feature-previous": {
 			"suggested_key": {
-				"default": "Ctrl+Shift+7",
-				"mac": "MediaPrevTrack"
+				"default": "Ctrl+Shift+7"
 			},
 			"description": "Play previous track"
 		},
 		"toggle-feature-play": {
 			"suggested_key": {
-				"default": "Ctrl+Shift+8",
-				"mac": "MediaPlayPause"
+				"default": "Ctrl+Shift+8"
 			},
 			"description": "Play or pause"
 		},
 		"toggle-feature-next": {
 			"suggested_key": {
-				"default": "Ctrl+Shift+9",
-				"mac": "MediaNextTrack"
+				"default": "Ctrl+Shift+9"
 			},
 			"description": "Play next track"
 		},
