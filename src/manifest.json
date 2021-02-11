@@ -20,6 +20,12 @@
 		"128": "images/128.png",
 		"256": "images/256.png"
 	},
+	"content_scripts": [
+		{
+			"js": ["authorized.bundle.js"],
+			"matches": ["https://pnlpal.dev/spotify-on-browser*"]
+		}
+	],
 	"web_accessible_resources": ["authorized.html"],
 	"commands": {
 		"toggle-feature-previous": {

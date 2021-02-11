@@ -305,6 +305,9 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     message.on('removeUserSavedTrack', ({ trackId }) => {
         return removeUserSavedTrack(trackId);
     });
+    message.on('get authorized url', () => {
+        return {url: chrome.extension.getURL('authorized.html')}
+    });
 
     let spotifyRefreshToken = localStorage.getItem("spotify_refresh_token");
     let spotifyClientId = localStorage.getItem("spotify_client_id");
