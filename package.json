@@ -1,7 +1,7 @@
 {
 	"name": "spotify-on-browser",
-	"version": "0.0.4",
-	"description": "Turn your browser into a Spotify player",
+	"version": "0.0.5",
+	"description": "A minimalist Spotify player makes life easier",
 	"scripts": {
 		"build": "node utils/build.js",
 		"start": "node utils/webserver.js"
