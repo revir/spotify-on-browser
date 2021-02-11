@@ -1,3 +1,6 @@
+# v0.0.5 - 2021/02/11
+- Fixed authorized redirect uri on Firefox.
+
 # v0.0.4 - 2021/02/10
 - Works on Firefox.
 
