@@ -20,28 +20,31 @@
 		"128": "images/128.png",
 		"256": "images/256.png"
 	},
+	"content_scripts": [
+		{
+			"js": ["authorized.bundle.js"],
+			"matches": ["https://pnlpal.dev/spotify-on-browser*"]
+		}
+	],
 	"web_accessible_resources": ["authorized.html"],
 	"commands": {
 		"toggle-feature-previous": {
 			"suggested_key": {
-				"default": "Ctrl+Shift+7",
-				"mac": "MediaPrevTrack"
+				"default": "Ctrl+Shift+7"
 			},
 			"global": true,
 			"description": "Play previous track"
 		},
 		"toggle-feature-play": {
 			"suggested_key": {
-				"default": "Ctrl+Shift+8",
-				"mac": "MediaPlayPause"
+				"default": "Ctrl+Shift+8"
 			},
 			"global": true,
 			"description": "Play or pause"
 		},
 		"toggle-feature-next": {
 			"suggested_key": {
-				"default": "Ctrl+Shift+9",
-				"mac": "MediaNextTrack"
+				"default": "Ctrl+Shift+9"
 			},
 			"global": true,
 			"description": "Play next track"

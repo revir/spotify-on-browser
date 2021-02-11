@@ -4,7 +4,7 @@ import utils from "utils"
 
 # scope = ["streaming", "user-read-email", "user-read-private", "user-library-read", "user-library-modify", "user-read-recently-played", "user-modify-playback-state"].join(" ")
 scope = ["streaming", "user-read-email", "user-read-private", "user-library-read", "user-library-modify", "user-modify-playback-state"].join(" ")
-redirectUri = window.location.origin + '/authorized.html?spotifyCallback'
+redirectUri = 'https://pnlpal.dev/spotify-on-browser?spotifyCallback'
 spotifyClientId = '71996e28dc6f40cc89f05bd0b030708e'
 
 pkce = new PKCE({
@@ -34,7 +34,11 @@ getAccessToken = () ->
         alert("Error from spotify authorization: " + err)
 
 (() -> 
-    if window.location.search.includes('spotifyCallback')
+    if window.location.host == "pnlpal.dev"
+        { url } = await utils.send 'get authorized url'
+        window.location.replace url+location.search
+
+    else if window.location.search.includes('spotifyCallback')
         res = await onAuthorized()
         if res?.access_token
             document.getElementById('authorizing-title').hidden = true
@@ -45,7 +49,6 @@ getAccessToken = () ->
                 client_id: spotifyClientId
             }
             document.getElementById('authorized-title').hidden = false
-            
 
             setTimeout (->
                 window.location.replace("option.html")
