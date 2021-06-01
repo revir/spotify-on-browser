@@ -9,15 +9,18 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     let player;
     let trackSavedCache = {};
 
-    function init (spotifyAccessToken) {
+    let spotifyAccessToken, spotifyRefreshToken, spotifyClientId;
+
+    function init () {
         if (player) return player.connect();
         
         player = new Spotify.Player({
             name: 'Spotify on Chrome',
             getOAuthToken: cb => { 
-                if(spotifyAccessToken)
+                if(spotifyAccessToken) {
                     cb(spotifyAccessToken); 
-                else if (spotifyRefreshToken)
+                    spotifyAccessToken = null; // reset the access token after being used.
+                } else if (spotifyRefreshToken)
                     refreshToken().then(cb);
                 else 
                     cb();
@@ -77,6 +80,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
             refresh_token: spotifyRefreshToken,
             client_id: spotifyClientId,
         }).then(({ refresh_token, access_token }) => {
+            // console.log('Spotify refresh token.');
             spotifyRefreshToken = refresh_token;
             localStorage.setItem("spotify_refresh_token", refresh_token);
 
@@ -229,7 +233,8 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         localStorage.setItem("spotify_access_token", access_token);
 
         // open options page.
-        return init(access_token);
+        spotifyAccessToken = access_token;
+        return init();
     });
 
     message.on('spotify current state', (request, sender) => {
@@ -259,9 +264,9 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         return {url: chrome.extension.getURL('authorized.html')}
     });
 
-    let spotifyRefreshToken = localStorage.getItem("spotify_refresh_token");
-    let spotifyClientId = localStorage.getItem("spotify_client_id");
-    
+    spotifyRefreshToken = localStorage.getItem("spotify_refresh_token");
+    spotifyClientId = localStorage.getItem("spotify_client_id");
+
     if(spotifyRefreshToken && spotifyClientId) 
         init();
 
