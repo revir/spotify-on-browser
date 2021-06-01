@@ -118,56 +118,6 @@ window.onSpotifyWebPlaybackSDKReady = () => {
             });
         }).catch(() => {});
     }
-    function getCurrentPlaying() {
-        const uri = "https://api.spotify.com/v1/me/player/currently-playing";
-        return request(uri)
-        .then(res => {
-            if (res) {
-                if (res.error) {
-                    console.error("Spotify get current playing track failed: ", res.error);
-                    return;
-                }
-                let {
-                    is_playing,
-                    item, 
-                    currently_playing_type,
-                    actions: {
-                        disallows,
-                    }
-                } = res; 
-                console.log(res);
-                return {
-                    paused: !is_playing,
-                    current_track: item, 
-                    currently_playing_type,
-                    disallows
-                }
-            }
-        });
-    }
-    function getLastPlayed() {
-        return request("https://api.spotify.com/v1/me/player/recently-played?limit=1")
-        .then(res => {
-            console.log(res);
-            if (res && res.items.length) {
-                let { track, context } = res.items[0];
-
-                if (!context) context = track.album;
-
-                player.lastPlayed = { track, context };
-                return {track, context}; 
-            } else {
-                player.lastPlayed = null;
-            }
-        })
-    }
-    function playLastPlayed(uris, contextUri) {
-        const url = "https://api.spotify.com/v1/me/player/play?device_id="+player.deviceId;
-        return request(url, {
-            context_uri: contextUri,
-            // uris
-        }, 'PUT');
-    }
     function switchToThisPlayer() {
         const url = "https://api.spotify.com/v1/me/player";
         return request(url, {
