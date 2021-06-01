@@ -1,4 +1,4 @@
-import('../vendor/spotify-player')
+import('script-loader!../vendor/spotify-player')
 import message from "./message.coffee"
 import $ from "jquery"
 import utils from "utils"
