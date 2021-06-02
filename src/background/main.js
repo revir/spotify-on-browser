@@ -295,7 +295,6 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                             // contextMessage: "This track has been saved in your library.",
                             iconUrl: "images/256.png",
                             title: 'Spotify on Browser',
-                            silent: true,
                             type: 'basic'
                         })
 
