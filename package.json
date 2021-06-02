@@ -1,6 +1,6 @@
 {
 	"name": "spotify-on-browser",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"description": "A minimalist Spotify player makes life easier",
 	"scripts": {
 		"build": "node utils/build.js",
@@ -45,6 +45,7 @@
 		"webpack": "4.28.4",
 		"webpack-cli": "^3.2.1",
 		"webpack-dev-server": "3.1.14",
-		"write-file-webpack-plugin": "4.5.0"
+		"write-file-webpack-plugin": "4.5.0",
+		"imports-loader": "^1.2.0"
 	}
 }

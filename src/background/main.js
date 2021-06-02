@@ -1,4 +1,5 @@
-import('script-loader!../vendor/spotify-player')
+require('imports-loader?additionalCode=var%20define%20=%20false;!../vendor/spotify-player');
+
 import message from "./message.coffee"
 import $ from "jquery"
 import utils from "utils"
