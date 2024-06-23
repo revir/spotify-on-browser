@@ -1,4 +1,4 @@
-import PKCE from '@pnlpal/js-pkce';
+import PKCE from 'js-pkce/dist/browser.min.js';
 import utils from "utils"
 
 

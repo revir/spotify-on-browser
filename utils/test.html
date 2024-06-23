@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mocha Tests</title>
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script src="../node_modules/mocha/mocha.js"></script>
+
+    <script type="module">
+      import * as chai from "../node_modules/chai/chai.js";
+      import * as sinon from "../node_modules/sinon/pkg/sinon-esm.js";
+      window.chai = chai;
+      window.expect = chai.expect;
+      window.sinon = sinon;
+    </script>
+
+    <script>
+      mocha.setup("bdd");
+    </script>
+
+    <script type="module" src="../src/content/inject.test.js"></script>
+    <script type="module" src="../src/background/setting.test.js"></script>
+    <script type="module">
+      mocha.run();
+    </script>
+  </body>
+</html>

@@ -13,7 +13,7 @@ import('../vendor/font-awesome.css')
 import 'bootoast/dist/bootoast.min.css'
 # import bootoast from 'bootoast/dist/bootoast.min.js'
 
-import spotifyUri from 'spotify-uri'
+import { formatOpenURL } from 'spotify-uri'
 
 spotifyClientId = '71996e28dc6f40cc89f05bd0b030708e'
 # some ui need bootstrap, like dropdown.
@@ -54,9 +54,9 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.savingTrack = false
             $scope.$apply()
 
-    formatOpenURL = (uri) ->
+    safeFormatOpenURL = (uri) ->
         try
-            return spotifyUri.formatOpenURL uri
+            return formatOpenURL uri
         catch 
             return ''
 
@@ -80,11 +80,11 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         $scope.albumHref = ''
 
         if state.current_track
-            $scope.trackHref = formatOpenURL state.current_track.uri
+            $scope.trackHref = safeFormatOpenURL state.current_track.uri
         if state.current_track?.album
-            $scope.albumHref = formatOpenURL state.current_track.album.uri
+            $scope.albumHref = safeFormatOpenURL state.current_track.album.uri
         if state.current_track?.artists?.length
-            $scope.artistHref = formatOpenURL state.current_track.artists[0].uri
+            $scope.artistHref = safeFormatOpenURL state.current_track.artists[0].uri
 
         if state.disallows
             $scope.canPause = !state.disallows.pausing
