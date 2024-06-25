@@ -36,6 +36,7 @@ var options = {
     player: path.join(__dirname, "src", "content", "player.coffee"),
     authorized: path.join(__dirname, "src", "content", "authorized.coffee"),
     background: path.join(__dirname, "src", "background", "main.js"),
+    offplayer: path.join(__dirname, "src", "background", "offplayer.js"),
   },
   output: {
     path: path.join(__dirname, "build"),
@@ -143,6 +144,12 @@ var options = {
       template: path.join(__dirname, "src", "background.html"),
       filename: "background.html",
       chunks: ["background"],
+      cache: false,
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "src", "offscreen.html"),
+      filename: "offscreen.html",
+      chunks: ["offplayer"],
       cache: false,
     }),
     new HtmlWebpackPlugin({

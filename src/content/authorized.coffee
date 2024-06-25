@@ -35,7 +35,7 @@ getAccessToken = () ->
 
 (() -> 
     if window.location.host == "pnlpal.dev"
-        { url } = await utils.send 'get authorized url'
+        url = chrome.runtime.getURL("authorized.html")
         window.location.replace url+location.search
 
     else if window.location.search.includes('spotifyCallback')

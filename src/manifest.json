@@ -1,60 +1,64 @@
 {
-	"manifest_version": 2,
-	"name": "Spotify on Chrome",
-	"permissions": ["notifications"],
-	"background": {
-		"persistent": true,
-		"page": "background.html"
-	},
-	"browser_action": {
-        "default_title": "Spotify on Chrome",
-        "default_popup": "player.html"
-	},
-	"options_ui": {
-		"page": "option.html",
-		"open_in_tab": true
-	},
-	"icons": {
-		"32": "images/32.png",
-		"64": "images/64.png",
-		"128": "images/128.png",
-		"256": "images/256.png"
-	},
-	"content_scripts": [
-		{
-			"js": ["authorized.bundle.js"],
-			"matches": ["https://pnlpal.dev/spotify-on-browser*"]
-		}
-	],
-	"web_accessible_resources": ["authorized.html"],
-	"commands": {
-		"toggle-feature-previous": {
-			"suggested_key": {
-				"default": "Ctrl+Shift+7"
-			},
-			"global": true,
-			"description": "Play previous track"
-		},
-		"toggle-feature-play": {
-			"suggested_key": {
-				"default": "Ctrl+Shift+8"
-			},
-			"global": true,
-			"description": "Play or pause"
-		},
-		"toggle-feature-next": {
-			"suggested_key": {
-				"default": "Ctrl+Shift+9"
-			},
-			"global": true,
-			"description": "Play next track"
-		},
-		"toggle-feature-save": {
-			"suggested_key": {
-				"default": "Ctrl+Shift+0"
-			},
-			"global": true,
-			"description": "Save the track"
-		}
-	}
+  "manifest_version": 3,
+  "name": "Spotify on Chrome",
+  "permissions": ["notifications", "offscreen"],
+  "background": {
+    "service_worker": "background.bundle.js"
+  },
+  "action": {
+    "default_title": "Spotify on Chrome",
+    "default_popup": "player.html"
+  },
+  "options_ui": {
+    "page": "option.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "32": "images/32.png",
+    "64": "images/64.png",
+    "128": "images/128.png",
+    "256": "images/256.png"
+  },
+  "content_scripts": [
+    {
+      "js": ["authorized.bundle.js"],
+      "matches": ["https://pnlpal.dev/spotify-on-browser*"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["authorized.html"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "commands": {
+    "toggle-feature-previous": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+7"
+      },
+      "global": true,
+      "description": "Play previous track"
+    },
+    "toggle-feature-play": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+8"
+      },
+      "global": true,
+      "description": "Play or pause"
+    },
+    "toggle-feature-next": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+9"
+      },
+      "global": true,
+      "description": "Play next track"
+    },
+    "toggle-feature-save": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+0"
+      },
+      "global": true,
+      "description": "Save the track"
+    }
+  }
 }
