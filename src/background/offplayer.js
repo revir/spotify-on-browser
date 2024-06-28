@@ -8,14 +8,18 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   let player;
   let trackSavedCache = {};
 
+  let spotifyAccessToken, spotifyRefreshToken, spotifyClientId;
+
   function init(spotifyAccessToken) {
     if (player) return player.connect();
 
     player = new Spotify.Player({
-      name: "Spotify on Chrome",
+      name: "Spotify on Browser",
       getOAuthToken: (cb) => {
-        if (spotifyAccessToken) cb(spotifyAccessToken);
-        else if (spotifyRefreshToken) refreshToken().then(cb);
+        if (spotifyAccessToken) {
+          cb(spotifyAccessToken);
+          spotifyAccessToken = null; // reset the access token after being used.
+        } else if (spotifyRefreshToken) refreshToken().then(cb);
         else cb();
       },
     });
@@ -302,6 +306,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       localStorage.setItem("spotify_access_token", access_token);
 
       // open options page.
+      spotifyAccessToken = access_token;
       return init(access_token);
     }
   );
@@ -330,8 +335,45 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     return removeUserSavedTrack(trackId);
   });
 
-  let spotifyRefreshToken = localStorage.getItem("spotify_refresh_token");
-  let spotifyClientId = localStorage.getItem("spotify_client_id");
+  spotifyRefreshToken = localStorage.getItem("spotify_refresh_token");
+  spotifyClientId = localStorage.getItem("spotify_client_id");
 
   if (spotifyRefreshToken && spotifyClientId) init();
+
+  chrome.commands.onCommand.addListener(function (command) {
+    switch (command) {
+      case "toggle-feature-previous":
+        player && player.previousTrack();
+        break;
+
+      case "toggle-feature-play":
+        player && player.togglePlay();
+        break;
+
+      case "toggle-feature-next":
+        player && player.nextTrack();
+        break;
+
+      case "toggle-feature-save":
+        if (player && player.currentState && player.currentState.track_window) {
+          saveUserTrack(player.currentState.track_window.current_track.id).then(
+            () => {
+              utils.send("track saved");
+
+              chrome.notifications.create(
+                `notification-${player.currentState.track_window.current_track.id}`,
+                {
+                  message: `Great, "${player.currentState.track_window.current_track.name}" has been saved in your library.`,
+                  // contextMessage: "This track has been saved in your library.",
+                  iconUrl: "images/256.png",
+                  title: "Spotify on Browser",
+                  type: "basic",
+                }
+              );
+            }
+          );
+        }
+        break;
+    }
+  });
 };

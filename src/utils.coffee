@@ -101,6 +101,8 @@ export default {
 
     isLinux: () -> 
         return window.navigator.platform.includes('Linux')
+    isFirefox: () -> 
+        return navigator.userAgent.toLowerCase().indexOf('firefox') > -1
 
     sanitizeHTML: (s)->
         s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')

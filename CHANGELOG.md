@@ -1,3 +1,8 @@
+# v0.0.6 - 2021/06/02
+- Fixed authorization loop when the access_token is expired.
+- Unified name "Spotify on Browser"
+- Upgrade Spotify SDK
+
 # v0.0.5 - 2021/02/11
 - Fixed authorized redirect uri on Firefox.
 

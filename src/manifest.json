@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "Spotify on Chrome",
+  "name": "Spotify on Browser",
   "permissions": ["notifications", "offscreen"],
   "background": {
     "service_worker": "background.bundle.js"
   },
   "action": {
-    "default_title": "Spotify on Chrome",
+    "default_title": "Spotify on Browser",
     "default_popup": "player.html"
   },
   "options_ui": {

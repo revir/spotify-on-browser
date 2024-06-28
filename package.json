@@ -1,6 +1,6 @@
 {
   "name": "spotify-on-browser",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A minimalist Spotify player makes life easier",
   "scripts": {
     "build": "node utils/build.js",

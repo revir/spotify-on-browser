@@ -3,7 +3,7 @@
 - [Chrome web store](https://chrome.google.com/webstore/detail/kgniaoeehojejhienanbmikafmogfdfh)
 - [Firefox addons](https://addons.mozilla.org/en-US/firefox/addon/spotify-on-browser/)
 
-# Spotify on Chrome & Firefox
+# Spotify on Browser
 
 ![screenshot](readme_images/s1.jpg)
 
@@ -16,7 +16,7 @@ Spotify has a really cool feature called **Spotify Connect**. Basically it could
 After install it from the web store, use it in the following steps:
 
 1. **Authorize** on Spotify;
-2. Choose music on Spotify and play it on **"Spotify on Chrome / Firefox"**. If you have a premium account on Spotify, you can seamlessly transfer your playback to this player, with just one click on the play button.
+2. Choose music on Spotify and play it on **"Spotify on Browser"**. If you have a premium account on Spotify, you can seamlessly transfer your playback to this player, with just one click on the play button.
 
 ![screenshot](readme_images/s2.png)
 

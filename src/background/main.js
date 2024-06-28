@@ -1,5 +1,3 @@
-import message from "./message.coffee";
-
 let creating = null; // A global promise to avoid concurrency issues
 
 const setupOffscreenDocument = async () => {
