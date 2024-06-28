@@ -1,4 +1,5 @@
-let creating = null; // A global promise to avoid concurrency issues
+import utils from "../utils.coffee";
+import message from "./message.coffee";
 
 const setupOffscreenDocument = async () => {
   const path = "offscreen.html";
@@ -8,21 +9,45 @@ const setupOffscreenDocument = async () => {
     documentUrls: [offscreenUrl],
   });
 
+  global.creating = null; // A global promise to avoid concurrency issues
+
   if (existingContexts.length > 0) {
     return;
   }
 
-  if (creating) {
-    await creating;
+  if (global.creating) {
+    await global.creating;
   } else {
-    creating = chrome.offscreen.createDocument({
+    global.creating = chrome.offscreen.createDocument({
       url: path,
       reasons: ["AUDIO_PLAYBACK"],
       justification: "Play audio of spotify tracks",
     });
-    await creating;
-    creating = null;
+    await global.creating;
+    global.creating = null;
   }
 };
 
 setupOffscreenDocument();
+
+chrome.commands.onCommand.addListener(function (command) {
+  utils.send(command);
+});
+
+message.on("open options shortcuts", () => {
+  chrome.tabs.create({
+    url: "chrome://extensions/shortcuts",
+  });
+});
+message.on("open options", () => {
+  chrome.runtime.openOptionsPage();
+});
+
+message.on("track saved", ({ trackId, trackName }) => {
+  chrome.notifications.create(`notification-${trackId}`, {
+    message: `Great, "${trackName}" has been saved in your liked songs.`,
+    iconUrl: "images/256.png",
+    title: "Spotify on Browser",
+    type: "basic",
+  });
+});

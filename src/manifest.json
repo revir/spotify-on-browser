@@ -59,7 +59,7 @@
         "default": "Ctrl+Shift+0"
       },
       "global": true,
-      "description": "Save the track"
+      "description": "Like the track"
     }
   }
 }
