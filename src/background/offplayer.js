@@ -1,6 +1,5 @@
 require("imports-loader?additionalCode=var%20define%20=%20false;!../vendor/spotify-player");
 import message from "./message.coffee";
-import $ from "jquery";
 import utils from "utils";
 // import debounce from 'lodash/debounce'
 
@@ -85,11 +84,18 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
   function refreshToken() {
     const uri = "https://accounts.spotify.com/api/token";
-    return $.post(uri, {
-      grant_type: "refresh_token",
-      refresh_token: spotifyRefreshToken,
-      client_id: spotifyClientId,
+    return fetch(uri, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        grant_type: "refresh_token",
+        refresh_token: spotifyRefreshToken,
+        client_id: spotifyClientId,
+      }),
     })
+      .then((response) => response.json())
       .then(({ refresh_token, access_token }) => {
         spotifyRefreshToken = refresh_token;
         spotifyAccessToken = access_token;
