@@ -374,10 +374,13 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
   init()
     .then(() => {
-      utils.send("spotify sdk player is ready");
+      if (utils.isFirefox()) {
+        global.spotifyWebPlaybackSDKResolver();
+      } else {
+        utils.send("spotify sdk player is ready");
+      }
     })
     .catch((err) => {
       console.error("Spotify sdk init failed: ", err);
-      utils.send("spotify sdk player is ready");
     });
 };

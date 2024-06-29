@@ -125,6 +125,23 @@ var options = {
               version: process.env.npm_package_version,
               ...JSON.parse(content.toString()),
             };
+            if (env.BROWSER === "Firefox") {
+              json.browser_specific_settings = {
+                gecko: {
+                  id: "revir.qing@gmail.com",
+                  strict_min_version: "109.0",
+                },
+              };
+              json.background = {
+                scripts: ["background.bundle.js", "offplayer.bundle.js"],
+              };
+              json.permissions = json.permissions.filter(
+                (x) => x !== "offscreen"
+              );
+              for (x in json.commands) {
+                delete json.commands[x].global;
+              }
+            }
 
             return Buffer.from(JSON.stringify(json));
           },

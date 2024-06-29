@@ -34,6 +34,9 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
     getState = () ->
         res = await utils.send 'spotify current state'
+        if utils.isFirefox() 
+            res = await utils.send "get spotify current state"
+            
         updateState(res) if res 
 
         chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->

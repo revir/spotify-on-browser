@@ -28,8 +28,7 @@
   "web_accessible_resources": [
     {
       "resources": ["authorized.html"],
-      "matches": ["https://pnlpal.dev/*"],
-      "use_dynamic_url": true
+      "matches": ["https://pnlpal.dev/*"]
     }
   ],
   "commands": {

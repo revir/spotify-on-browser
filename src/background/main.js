@@ -3,6 +3,21 @@ import message from "./message.coffee";
 
 let creating = null;
 const setupOffscreenDocument = async () => {
+  if (utils.isFirefox()) {
+    // Firefox does not support offscreen document
+    if (global.spotifyWebPlaybackSDKResolver) {
+      return;
+    }
+    const spotifyWebPlaybackSDKPromise = new Promise((resolve, reject) => {
+      global.spotifyWebPlaybackSDKResolver = resolve;
+      setTimeout(() => {
+        reject(new Error("Spotify web playback sdk is not ready"));
+      }, 3000);
+    });
+    await spotifyWebPlaybackSDKPromise;
+    return;
+  }
+
   const path = "offscreen.html";
   const offscreenUrl = chrome.runtime.getURL(path);
   const existingContexts = await chrome.runtime.getContexts({
@@ -62,9 +77,11 @@ message.on("track saved", ({ trackId, trackName }) => {
 
 message.on("spotify current state", async () => {
   await setupOffscreenDocument();
-  const state = await utils.send("get spotify current state");
-  console.log("Spotify current state: ", state);
-  return state;
+  if (!utils.isFirefox()) {
+    const state = await utils.send("get spotify current state");
+    console.log("Spotify current state: ", state);
+    return state;
+  }
 });
 
 message.on("spotify sdk player is ready", async () => {
