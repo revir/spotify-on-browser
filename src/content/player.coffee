@@ -40,14 +40,18 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             if request.type == 'spotify state changed'
                 updateState(request.state) if request.state 
             if request.type == 'track saved'
-                checkTrackSaved()
+                $scope.trackSaved = true
+                $scope.$apply()
 
-    checkTrackSaved = () ->
-        if $scope.spotifyState.current_track?.id 
-            $scope.trackSaved = await utils.send 'checkUserSavedTrack', { trackId: $scope.spotifyState.current_track.id }
-
+    checkTrackSaved = (trackId) ->
+        if trackId 
+            $scope.trackSaved = await utils.send 'checkUserSavedTrack', { trackId }
             $scope.savingTrack = false
-            $scope.$apply()
+        else 
+            $scope.trackSaved = false
+            $scope.savingTrack = false
+
+        $scope.$apply()
 
     safeFormatOpenURL = (uri) ->
         try
@@ -74,26 +78,29 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         $scope.artistHref = ''
         $scope.albumHref = ''
 
-        if state.current_track
-            $scope.trackHref = safeFormatOpenURL state.current_track.uri
-        if state.current_track?.album
-            $scope.albumHref = safeFormatOpenURL state.current_track.album.uri
-        if state.current_track?.artists?.length
-            $scope.artistHref = safeFormatOpenURL state.current_track.artists[0].uri
+        theTrack = state.current_track or state.currentPlaying?.track
+        disallows = state.disallows or state.currentPlaying?.disallows
 
-        if state.disallows
-            $scope.canPause = !state.disallows.pausing
-            $scope.canSeekNext = !state.disallows.peeking_next
-            $scope.canSeekPrev = !state.disallows.peeking_prev  
+        if theTrack
+            $scope.trackName = theTrack.name
+            $scope.trackHref = safeFormatOpenURL theTrack.uri
+            $scope.artistName = theTrack.artists?.map((n) -> n.name).join(', ')
+            $scope.albumHref = safeFormatOpenURL theTrack.album?.uri
 
-        if state.current_track?.album?.images?.length
-            $scope.albumImage = state.current_track.album.images.find((n) -> n.width > 200) or \
-                state.current_track.album.images[0]
-        if state.current_track?.artists?.length 
-            $scope.artistName = state.current_track.artists.map((n) -> n.name).join(', ')
+            checkTrackSaved(theTrack.id)
 
-        checkTrackSaved()
-        
+            if theTrack.album?.images?.length
+                $scope.albumImage = theTrack.album.images.find((n) -> n.width > 200) or \
+                    theTrack.album.images[0]
+            if theTrack.artists?.length 
+                $scope.artistName = theTrack.artists.map((n) -> n.name).join(', ')
+                $scope.artistHref = safeFormatOpenURL theTrack.artists[0].uri
+
+        if disallows
+            $scope.canPause = !disallows.pausing
+            $scope.canSeekNext = !disallows.peeking_next
+            $scope.canSeekPrev = !disallows.peeking_prev  
+
         $scope.playing = !state.paused and state.current_track
         $scope.$apply()
 
@@ -105,17 +112,18 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             # window.open('https://open.spotify.com/', '_blank')
     
     $scope.toggleSavedTrack = () ->
-        if $scope.spotifyState.current_track and !$scope.savingTrack
+        if $scope.savingTrack 
+            return
+        if $scope.spotifyState.current_track or $scope.spotifyState.currentPlaying?.track
             $scope.savingTrack = true
+            trackId = $scope.spotifyState.current_track?.id or $scope.spotifyState.currentPlaying?.track?.id
 
             if $scope.trackSaved 
-                res = await utils.send 'removeUserSavedTrack', { trackId: $scope.spotifyState.current_track.id }
-                # console.log "remove saved: ", res
+                res = await utils.send 'removeUserSavedTrack', { trackId }
             else 
-                res = await utils.send 'saveUserTrack', { trackId: $scope.spotifyState.current_track.id }
-                # console.log "save: ", res 
+                res = await utils.send 'saveUserTrack', { trackId }
 
-            checkTrackSaved($scope.spotifyState.current_track)
+            checkTrackSaved(trackId)
     
     $scope.openTrackLink = () ->
         if $scope.isSpotifyReady

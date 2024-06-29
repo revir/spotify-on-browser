@@ -11,7 +11,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   let spotifyAccessToken, spotifyRefreshToken, spotifyClientId;
   console.log("Spotify Web Playback SDK is ready");
 
-  function init() {
+  async function init() {
     if (player) return player.connect();
 
     player = new Spotify.Player({
@@ -70,8 +70,13 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         player.isReady = false;
       });
 
-      // Connect to the player!
-      player.connect();
+      if (spotifyClientId && spotifyRefreshToken) {
+        // Connect to the player!
+        player.connect();
+      } else {
+        player.isReady = false;
+        resolve({ ready: false });
+      }
     });
   }
 
@@ -140,6 +145,35 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     );
   }
 
+  function getCurrentPlaying() {
+    const uri = "https://api.spotify.com/v1/me/player/currently-playing";
+    return request(uri).then((res) => {
+      console.log("Got Spotify current playing: ", res);
+      if (res) {
+        if (res.error) {
+          console.error(
+            "Spotify get current playing track failed: ",
+            res.error
+          );
+          return;
+        }
+        let {
+          is_playing,
+          item,
+          currently_playing_type,
+          actions: { disallows },
+        } = res;
+
+        return {
+          paused: !is_playing,
+          track: item,
+          currently_playing_type,
+          disallows,
+        };
+      }
+    });
+  }
+
   function checkUserSavedTrack(trackId) {
     if (trackSavedCache[trackId] !== undefined) {
       return trackSavedCache[trackId];
@@ -194,14 +228,18 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     let state = player.currentState;
     let ready = player.isReady;
 
-    if (player.currentState === undefined) {
+    if (player?.currentState === undefined && player.isReady) {
       state = await player.getCurrentState();
       player.currentState = state || null;
+      console.log("Got Spotify player current state: ", state);
     }
 
     if (!state) {
-      // console.warn("Spotify user current state is empty");
-      return { ready };
+      if (!player.currentPlaying && player.isReady) {
+        player.currentPlaying = await getCurrentPlaying();
+      }
+
+      return { ready, currentPlaying: player.currentPlaying };
     }
 
     let { disallows, paused } = state;
@@ -262,10 +300,8 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     }
   );
 
-  message.on("get spotify current state", (request, sender) => {
-    if (player && player.isReady) {
-      return getCurrentState();
-    }
+  message.on("get spotify current state", () => {
+    return getCurrentState();
   });
 
   message.on("checkUserSavedTrack", ({ trackId }) => {
@@ -303,7 +339,12 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   spotifyClientId = localStorage.getItem("spotify_client_id");
   spotifyAccessToken = localStorage.getItem("spotify_access_token");
 
-  init().then(() => {
-    utils.send("spotify sdk player is ready");
-  });
+  init()
+    .then(() => {
+      utils.send("spotify sdk player is ready");
+    })
+    .catch((err) => {
+      console.error("Spotify sdk init failed: ", err);
+      utils.send("spotify sdk player is ready");
+    });
 };
