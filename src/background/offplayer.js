@@ -247,6 +247,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         return { ready, currentPlaying };
       } else {
         state = JSON.parse(localStorage.getItem("spotify_current_state"));
+        player.currentState = state || null;
         if (state) {
           state.paused = true;
         }
@@ -277,10 +278,13 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     }
   }
 
-  message.on("spotify action", ({ action }) => {
+  message.on("spotify action", async ({ action }) => {
     if (player && player.deviceId) {
       if (action === "togglePlay") {
-        if (player && player.currentState && player.currentState.track_window) {
+        const state = await player.getCurrentState();
+        player.currentState = state || null;
+
+        if (player.currentState?.track_window) {
           return player.togglePlay();
         } else {
           return switchToThisPlayer().then((res) => {
