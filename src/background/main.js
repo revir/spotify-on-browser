@@ -1,6 +1,7 @@
 import utils from "../utils.coffee";
 import message from "./message.coffee";
 
+let creating = null;
 const setupOffscreenDocument = async () => {
   const path = "offscreen.html";
   const offscreenUrl = chrome.runtime.getURL(path);
@@ -9,14 +10,14 @@ const setupOffscreenDocument = async () => {
     documentUrls: [offscreenUrl],
   });
 
-  global.creating = null; // A global promise to avoid concurrency issues
+  creating = null; // A global promise to avoid concurrency issues
 
   if (existingContexts.length > 0) {
     return;
   }
 
-  if (global.creating) {
-    await global.creating;
+  if (creating) {
+    await creating;
   } else {
     const spotifyWebPlaybackSDKPromise = new Promise((resolve, reject) => {
       global.spotifyWebPlaybackSDKResolver = resolve;
@@ -24,15 +25,14 @@ const setupOffscreenDocument = async () => {
         reject(new Error("Spotify web playback sdk is not ready"));
       }, 3000);
     });
-    global.spotifyWebPlaybackSDKPromise = spotifyWebPlaybackSDKPromise;
-    global.creating = chrome.offscreen.createDocument({
+    creating = chrome.offscreen.createDocument({
       url: path,
       reasons: ["AUDIO_PLAYBACK"],
       justification: "Play audio of spotify tracks",
     });
-    await global.creating;
+    await creating;
     await spotifyWebPlaybackSDKPromise;
-    global.creating = null;
+    creating = null;
   }
 };
 
@@ -61,12 +61,20 @@ message.on("track saved", ({ trackId, trackName }) => {
 });
 
 message.on("spotify current state", async () => {
-  await global.spotifyWebPlaybackSDKPromise;
+  await setupOffscreenDocument();
   const state = await utils.send("get spotify current state");
-  //   console.log("Spotify current state: ", state);
+  console.log("Spotify current state: ", state);
   return state;
 });
 
 message.on("spotify sdk player is ready", async () => {
   global.spotifyWebPlaybackSDKResolver();
 });
+
+global.getCurrentPlaying = () => {
+  return utils.send("get spotify current playing").then(console.log);
+};
+
+global.getCurrentState = () => {
+  return utils.send("get spotify current state").then(console.log);
+};

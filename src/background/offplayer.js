@@ -160,6 +160,10 @@ window.onSpotifyWebPlaybackSDKReady = () => {
           );
           return;
         }
+        if (!res.item) {
+          return;
+        }
+
         let {
           is_playing,
           item,
@@ -321,6 +325,10 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
   message.on("get spotify current state", () => {
     return getCurrentState();
+  });
+
+  message.on("get spotify current playing", () => {
+    return getCurrentPlaying();
   });
 
   message.on("checkUserSavedTrack", ({ trackId }) => {
