@@ -27,7 +27,11 @@
                         <i class="fa fa-spinner fa-spin"></i>
                         <p>Connecting to Spotify...</p>
                     </div>
-                    <a href="" ng-if="spotifyState && !isSpotifyReady" ng-click="toggleAction()">
+                    <div ng-if="spotifyState && !isSpotifyReady && errorMessage">
+                        <i class="fa fa-warning"></i>
+                        {{errorMessage}}
+                    </div>
+                    <a href="" ng-if="spotifyState && !isSpotifyReady && !errorMessage" ng-click="toggleAction()">
                         Authorize Spotify on {{browserName}}
                     </a>
                     <a href="" ng-if="!trackName && isSpotifyReady" ng-click="toggleAction('togglePlay')">

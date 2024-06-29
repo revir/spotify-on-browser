@@ -36,7 +36,9 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         reject({ message, type: "authentication_error" });
       });
       player.addListener("account_error", ({ message }) => {
-        console.error(message);
+        player.isReady = false;
+        player.accountError = message;
+        reject({ message, type: "account_error" });
       });
       player.addListener("playback_error", ({ message }) => {
         console.error(message);
@@ -243,7 +245,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   async function getCurrentState() {
     let state = player.currentState;
     let ready = player.isReady;
-    if (!ready) return { ready };
+    if (!ready) return { ready, accountError: player.accountError };
 
     if (player?.currentState === undefined) {
       state = await player.getCurrentState();
@@ -385,5 +387,10 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     })
     .catch((err) => {
       console.error("Spotify sdk init failed: ", err);
+      if (utils.isFirefox()) {
+        global.spotifyWebPlaybackSDKResolver(err);
+      } else {
+        utils.send("spotify sdk player is ready", err);
+      }
     });
 };

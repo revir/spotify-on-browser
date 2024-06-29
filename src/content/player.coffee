@@ -39,7 +39,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             res = await utils.send "get spotify current state"
 
         updateState(res)
-        
+
         chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
             if request.type == 'spotify state changed'
                 updateState(request.state) if request.state 
@@ -68,6 +68,13 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         # console.log "Spotify state: ", state 
 
         $scope.isSpotifyReady = state.ready
+
+        if !state.ready
+            $scope.errorMessage =  if state.accountError?.includes("premium users only") 
+            then "Unfortunately this player is only possible for Spotify premium users. Please upgrade your account." 
+            else state.accountError
+        else 
+            $scope.errorMessage = ''
 
         $scope.canPause = false 
         $scope.canSeekNext = false 

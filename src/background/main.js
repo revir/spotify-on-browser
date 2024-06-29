@@ -8,9 +8,9 @@ const setupOffscreenDocument = async () => {
   if (utils.isFirefox()) {
     // Firefox does not support offscreen document
     if (global.spotifyWebPlaybackSDKResolver) {
-      return;
+      return await spotifyWebPlaybackSDKPromise;
     }
-    const spotifyWebPlaybackSDKPromise = new Promise((resolve, reject) => {
+    spotifyWebPlaybackSDKPromise = new Promise((resolve, reject) => {
       global.spotifyWebPlaybackSDKResolver = resolve;
       setTimeout(() => {
         reject(new Error("Spotify web playback sdk is not ready"));
