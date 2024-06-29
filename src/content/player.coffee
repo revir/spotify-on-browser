@@ -4,26 +4,21 @@ import $ from 'jquery'
 import angular from 'angular'
 import utils from "utils"
 
-# import '../needsharebutton.min.js'
-# import 'angular-ui-bootstrap'
-
 import('bootstrap/dist/css/bootstrap.min.css')
 import('../vendor/font-awesome.css')
 
 import 'bootoast/dist/bootoast.min.css'
-# import bootoast from 'bootoast/dist/bootoast.min.js'
 
 import { formatOpenURL } from 'spotify-uri'
 
 spotifyClientId = '71996e28dc6f40cc89f05bd0b030708e'
+
 # some ui need bootstrap, like dropdown.
 musicPlayer = angular.module('musicPlayer', []).config(($sceProvider)->
     $sceProvider.enabled(false);
 )
 
 musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
-    console.log "[musicPlayerCtrl] init"
-
     $scope.playing = false
     $scope.canSeekNext = false 
     $scope.canSeekPrev = false 

@@ -23,11 +23,15 @@
             <div class="player-context">
                 <div class="text-center preliminary">
                     <img ng-src="{{albumImage.url}}" class="active" ng-if="albumImage">
-                    <a href="" ng-if="!isSpotifyReady" ng-click="toggleAction()">
+                    <div ng-if="!spotifyState" class="loading-state">
+                        <i class="fa fa-spinner fa-spin"></i>
+                        <p>Connecting to Spotify...</p>
+                    </div>
+                    <a href="" ng-if="spotifyState && !isSpotifyReady" ng-click="toggleAction()">
                         Authorize Spotify on Browser
                     </a>
                     <a href="" ng-if="!trackName && isSpotifyReady" ng-click="toggleAction('togglePlay')">
-                        Play Your Music
+                        Start to play
                     </a>
                     <div ng-if="trackName" class="track-wrapper">
                         <p class="track-name">

@@ -87,7 +87,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         spotifyAccessToken = access_token;
         localStorage.setItem("spotify_refresh_token", refresh_token);
         localStorage.setItem("spotify_access_token", access_token);
-
+        console.log("Spotify access token refreshed: ", access_token);
         return access_token;
       })
       .catch((err) => {
@@ -100,7 +100,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   }
   function request(uri, data, type = "GET") {
     const headers = {
-      authorization: `Bearer ${spotifyAccessToken}`,
+      authorization: `Bearer ${localStorage.getItem("spotify_access_token")}`,
     };
     if (type != "GET") {
       headers["Accept"] = "application/json";
@@ -232,6 +232,10 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         } else {
           return switchToThisPlayer().then((res) => {
             if (res && res.error) {
+              console.error(
+                "Spotify switch to this player failed: ",
+                res.error
+              );
               window.open("https://open.spotify.com/", "open spotify");
             }
           });
@@ -258,7 +262,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     }
   );
 
-  message.on("spotify current state", (request, sender) => {
+  message.on("get spotify current state", (request, sender) => {
     if (player && player.isReady) {
       return getCurrentState();
     }
@@ -299,5 +303,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   spotifyClientId = localStorage.getItem("spotify_client_id");
   spotifyAccessToken = localStorage.getItem("spotify_access_token");
 
-  if (spotifyRefreshToken && spotifyClientId) init();
+  init().then(() => {
+    utils.send("spotify sdk player is ready");
+  });
 };

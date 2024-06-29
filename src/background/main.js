@@ -18,17 +18,24 @@ const setupOffscreenDocument = async () => {
   if (global.creating) {
     await global.creating;
   } else {
+    const spotifyWebPlaybackSDKPromise = new Promise((resolve, reject) => {
+      global.spotifyWebPlaybackSDKResolver = resolve;
+      setTimeout(() => {
+        reject(new Error("Spotify web playback sdk is not ready"));
+      }, 3000);
+    });
     global.creating = chrome.offscreen.createDocument({
       url: path,
       reasons: ["AUDIO_PLAYBACK"],
       justification: "Play audio of spotify tracks",
     });
     await global.creating;
+    await spotifyWebPlaybackSDKPromise;
     global.creating = null;
   }
 };
 
-setupOffscreenDocument();
+setupOffscreenDocument().catch(console.error);
 
 chrome.commands.onCommand.addListener(function (command) {
   utils.send(command);
@@ -50,4 +57,15 @@ message.on("track saved", ({ trackId, trackName }) => {
     title: "Spotify on Browser",
     type: "basic",
   });
+});
+
+message.on("spotify current state", async () => {
+  await setupOffscreenDocument();
+  const state = await utils.send("get spotify current state");
+  //   console.log("Spotify current state: ", state);
+  return state;
+});
+
+message.on("spotify sdk player is ready", async () => {
+  global.spotifyWebPlaybackSDKResolver();
 });
