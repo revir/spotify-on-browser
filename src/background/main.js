@@ -24,6 +24,7 @@ const setupOffscreenDocument = async () => {
         reject(new Error("Spotify web playback sdk is not ready"));
       }, 3000);
     });
+    global.spotifyWebPlaybackSDKPromise = spotifyWebPlaybackSDKPromise;
     global.creating = chrome.offscreen.createDocument({
       url: path,
       reasons: ["AUDIO_PLAYBACK"],
@@ -60,7 +61,7 @@ message.on("track saved", ({ trackId, trackName }) => {
 });
 
 message.on("spotify current state", async () => {
-  await setupOffscreenDocument();
+  await global.spotifyWebPlaybackSDKPromise;
   const state = await utils.send("get spotify current state");
   //   console.log("Spotify current state: ", state);
   return state;
