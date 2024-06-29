@@ -127,10 +127,13 @@ var options = {
             };
             json.name = `Spotify on ${env.BROWSER}`;
             if (env.BROWSER === "Firefox") {
+              json.manifest_version = 2; // Firefox has host permission issue with manifest v3
+              json.web_accessible_resources = ["authorized.html"];
+              json.browser_action = json.action;
+              delete json.action;
               json.browser_specific_settings = {
                 gecko: {
                   id: "revir.qing@gmail.com",
-                  strict_min_version: "109.0",
                 },
               };
               json.background = {
