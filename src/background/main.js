@@ -76,7 +76,7 @@ message.on("track saved", ({ trackId, trackName }) => {
 });
 
 message.on("spotify current state", async () => {
-  await setupOffscreenDocument();
+  await setupOffscreenDocument().catch(console.error);
   if (!utils.isFirefox()) {
     const state = await utils.send("get spotify current state");
     console.log("Spotify current state: ", state);
