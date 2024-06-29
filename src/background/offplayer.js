@@ -9,8 +9,9 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   let trackSavedCache = {};
 
   let spotifyAccessToken, spotifyRefreshToken, spotifyClientId;
+  console.log("Spotify Web Playback SDK is ready");
 
-  function init(spotifyAccessToken) {
+  function init() {
     if (player) return player.connect();
 
     player = new Spotify.Player({
@@ -83,8 +84,8 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     })
       .then(({ refresh_token, access_token }) => {
         spotifyRefreshToken = refresh_token;
+        spotifyAccessToken = access_token;
         localStorage.setItem("spotify_refresh_token", refresh_token);
-
         localStorage.setItem("spotify_access_token", access_token);
 
         return access_token;
@@ -92,12 +93,14 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       .catch((err) => {
         console.error("spotify refresh token failed: ", err);
         localStorage.removeItem("spotify_refresh_token");
+        localStorage.removeItem("spotify_access_token");
         spotifyRefreshToken = null;
+        spotifyAccessToken = null;
       });
   }
   function request(uri, data, type = "GET") {
     const headers = {
-      authorization: `Bearer ${localStorage.getItem("spotify_access_token")}`,
+      authorization: `Bearer ${spotifyAccessToken}`,
     };
     if (type != "GET") {
       headers["Accept"] = "application/json";
@@ -124,62 +127,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       })
       .catch(() => {});
   }
-  function getCurrentPlaying() {
-    const uri = "https://api.spotify.com/v1/me/player/currently-playing";
-    return request(uri).then((res) => {
-      if (res) {
-        if (res.error) {
-          console.error(
-            "Spotify get current playing track failed: ",
-            res.error
-          );
-          return;
-        }
-        let {
-          is_playing,
-          item,
-          currently_playing_type,
-          actions: { disallows },
-        } = res;
-        console.log(res);
-        return {
-          paused: !is_playing,
-          current_track: item,
-          currently_playing_type,
-          disallows,
-        };
-      }
-    });
-  }
-  function getLastPlayed() {
-    return request(
-      "https://api.spotify.com/v1/me/player/recently-played?limit=1"
-    ).then((res) => {
-      console.log(res);
-      if (res && res.items.length) {
-        let { track, context } = res.items[0];
 
-        if (!context) context = track.album;
-
-        player.lastPlayed = { track, context };
-        return { track, context };
-      } else {
-        player.lastPlayed = null;
-      }
-    });
-  }
-  function playLastPlayed(uris, contextUri) {
-    const url =
-      "https://api.spotify.com/v1/me/player/play?device_id=" + player.deviceId;
-    return request(
-      url,
-      {
-        context_uri: contextUri,
-        // uris
-      },
-      "PUT"
-    );
-  }
   function switchToThisPlayer() {
     const url = "https://api.spotify.com/v1/me/player";
     return request(
@@ -252,7 +200,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     }
 
     if (!state) {
-      console.warn("Spotify user current state is empty");
+      // console.warn("Spotify user current state is empty");
       return { ready };
     }
 
@@ -303,11 +251,10 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       spotifyRefreshToken = refresh_token;
       localStorage.setItem("spotify_refresh_token", refresh_token);
 
+      spotifyAccessToken = access_token;
       localStorage.setItem("spotify_access_token", access_token);
 
-      // open options page.
-      spotifyAccessToken = access_token;
-      return init(access_token);
+      return init();
     }
   );
 
@@ -350,6 +297,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
   spotifyRefreshToken = localStorage.getItem("spotify_refresh_token");
   spotifyClientId = localStorage.getItem("spotify_client_id");
+  spotifyAccessToken = localStorage.getItem("spotify_access_token");
 
   if (spotifyRefreshToken && spotifyClientId) init();
 };
