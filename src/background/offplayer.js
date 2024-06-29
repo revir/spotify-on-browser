@@ -294,7 +294,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         const state = await player.getCurrentState();
         player.currentState = state || null;
 
-        if (player.currentState?.track_window) {
+        if (player.currentState?.track_window?.current_track) {
           return player.togglePlay();
         } else {
           return switchToThisPlayer().then((res) => {
