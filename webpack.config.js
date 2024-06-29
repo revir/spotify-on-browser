@@ -121,11 +121,11 @@ var options = {
           transform: function (content) {
             // generates the manifest file using the package.json informations
             const json = {
-              name: `Spotify on ${env.BROWSER}`,
               description: process.env.npm_package_description,
               version: process.env.npm_package_version,
               ...JSON.parse(content.toString()),
             };
+            json.name = `Spotify on ${env.BROWSER}`;
             if (env.BROWSER === "Firefox") {
               json.browser_specific_settings = {
                 gecko: {

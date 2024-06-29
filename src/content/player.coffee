@@ -38,8 +38,8 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         if utils.isFirefox() 
             res = await utils.send "get spotify current state"
 
-        updateState(res) if res 
-
+        updateState(res)
+        
         chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
             if request.type == 'spotify state changed'
                 updateState(request.state) if request.state 

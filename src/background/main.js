@@ -2,6 +2,8 @@ import utils from "../utils.coffee";
 import message from "./message.coffee";
 
 let creating = null;
+let spotifyWebPlaybackSDKPromise = null;
+
 const setupOffscreenDocument = async () => {
   if (utils.isFirefox()) {
     // Firefox does not support offscreen document
@@ -25,16 +27,15 @@ const setupOffscreenDocument = async () => {
     documentUrls: [offscreenUrl],
   });
 
-  creating = null; // A global promise to avoid concurrency issues
-
   if (existingContexts.length > 0) {
     return;
   }
 
   if (creating) {
     await creating;
+    await spotifyWebPlaybackSDKPromise;
   } else {
-    const spotifyWebPlaybackSDKPromise = new Promise((resolve, reject) => {
+    spotifyWebPlaybackSDKPromise = new Promise((resolve, reject) => {
       global.spotifyWebPlaybackSDKResolver = resolve;
       setTimeout(() => {
         reject(new Error("Spotify web playback sdk is not ready"));
@@ -48,6 +49,7 @@ const setupOffscreenDocument = async () => {
     await creating;
     await spotifyWebPlaybackSDKPromise;
     creating = null;
+    spotifyWebPlaybackSDKPromise = null;
   }
 };
 
@@ -85,6 +87,7 @@ message.on("spotify current state", async () => {
 });
 
 message.on("spotify sdk player is ready", async () => {
+  console.log("spotify sdk player is ready");
   global.spotifyWebPlaybackSDKResolver();
 });
 
