@@ -45,9 +45,12 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       // Playback status updates
       player.addListener("player_state_changed", async (state) => {
         // console.log('Spotify player state changed: ', state);
-        player.currentState = state || null;
-        if (state) {
+        if (state?.track_window?.current_track) {
+          player.currentState = state;
           localStorage.setItem("spotify_current_state", JSON.stringify(state));
+        } else {
+          player.currentState = null;
+          localStorage.removeItem("spotify_current_state");
         }
 
         utils.send("spotify state changed", {
