@@ -47,6 +47,9 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       player.addListener("player_state_changed", async (state) => {
         // console.log('Spotify player state changed: ', state);
         player.currentState = state || null;
+        if (state) {
+          localStorage.setItem("spotify_current_state", JSON.stringify(state));
+        }
 
         utils.send("spotify state changed", {
           state: await getCurrentState(),
@@ -227,39 +230,51 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   async function getCurrentState() {
     let state = player.currentState;
     let ready = player.isReady;
+    if (!ready) return { ready };
 
-    if (player?.currentState === undefined && player.isReady) {
+    if (player?.currentState === undefined) {
       state = await player.getCurrentState();
       player.currentState = state || null;
       console.log("Got Spotify player current state: ", state);
+      if (state) {
+        localStorage.setItem("spotify_current_state", JSON.stringify(state));
+      }
     }
 
     if (!state) {
-      if (!player.currentPlaying && player.isReady) {
-        player.currentPlaying = await getCurrentPlaying();
+      const currentPlaying = await getCurrentPlaying();
+      if (currentPlaying) {
+        return { ready, currentPlaying };
+      } else {
+        state = JSON.parse(localStorage.getItem("spotify_current_state"));
+        if (state) {
+          state.paused = true;
+        }
       }
-
-      return { ready, currentPlaying: player.currentPlaying };
     }
 
-    let { disallows, paused } = state;
+    if (state) {
+      let { disallows, paused } = state;
 
-    let {
-      current_track,
-      previous_tracks: [previous_track],
-      next_tracks: [next_track],
-    } = state.track_window || {};
+      let {
+        current_track,
+        previous_tracks: [previous_track],
+        next_tracks: [next_track],
+      } = state.track_window || {};
 
-    return {
-      ready,
+      return {
+        ready,
 
-      disallows,
-      paused,
+        disallows,
+        paused,
 
-      current_track,
-      previous_track,
-      next_track,
-    };
+        current_track,
+        previous_track,
+        next_track,
+      };
+    } else {
+      return { ready };
+    }
   }
 
   message.on("spotify action", ({ action }) => {
