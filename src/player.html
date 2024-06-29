@@ -28,7 +28,7 @@
                         <p>Connecting to Spotify...</p>
                     </div>
                     <a href="" ng-if="spotifyState && !isSpotifyReady" ng-click="toggleAction()">
-                        Authorize Spotify on Browser
+                        Authorize Spotify on {{browserName}}
                     </a>
                     <a href="" ng-if="!trackName && isSpotifyReady" ng-click="toggleAction('togglePlay')">
                         Start to play

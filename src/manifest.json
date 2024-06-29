@@ -6,7 +6,7 @@
     "service_worker": "background.bundle.js"
   },
   "action": {
-    "default_title": "Spotify on Browser",
+    "default_title": "Mini Spotify player on your browser",
     "default_popup": "player.html"
   },
   "options_ui": {

@@ -14,7 +14,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     if (player) return player.connect();
 
     player = new Spotify.Player({
-      name: "Spotify on Browser",
+      name: `Spotify on ${utils.getBrowserName()}`,
       getOAuthToken: (cb) => {
         if (spotifyAccessToken) {
           cb(spotifyAccessToken);

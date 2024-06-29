@@ -70,7 +70,7 @@ message.on("track saved", ({ trackId, trackName }) => {
   chrome.notifications.create(`notification-${trackId}`, {
     message: `Great, "${trackName}" has been saved in your liked songs.`,
     iconUrl: "images/256.png",
-    title: "Spotify on Browser",
+    title: `Spotify on ${utils.getBrowserName()}`,
     type: "basic",
   });
 });

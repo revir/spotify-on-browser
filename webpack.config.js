@@ -121,6 +121,7 @@ var options = {
           transform: function (content) {
             // generates the manifest file using the package.json informations
             const json = {
+              name: `Spotify on ${env.BROWSER}`,
               description: process.env.npm_package_description,
               version: process.env.npm_package_version,
               ...JSON.parse(content.toString()),
@@ -156,12 +157,6 @@ var options = {
           force: true,
         },
       ],
-    }),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src", "background.html"),
-      filename: "background.html",
-      chunks: ["background"],
-      cache: false,
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "src", "offscreen.html"),
