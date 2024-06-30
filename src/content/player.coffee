@@ -130,11 +130,13 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         if $scope.spotifyState.current_track or $scope.spotifyState.currentPlaying?.track
             $scope.savingTrack = true
             trackId = $scope.spotifyState.current_track?.id or $scope.spotifyState.currentPlaying?.track?.id
+            trackName = $scope.spotifyState.current_track?.name or $scope.spotifyState.currentPlaying?.track?.name
 
             if $scope.trackSaved 
                 res = await utils.send 'removeUserSavedTrack', { trackId }
             else 
                 res = await utils.send 'saveUserTrack', { trackId }
+                utils.send "track saved", { trackId, trackName }
 
             checkTrackSaved(trackId)
 
