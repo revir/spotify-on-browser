@@ -65,8 +65,6 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
     updateState = (state) ->
         $scope.spotifyState = state 
-        # console.log "Spotify state: ", state 
-
         $scope.isSpotifyReady = state.ready
 
         if !state.ready
@@ -112,7 +110,6 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.canSeekNext = !disallows.peeking_next
             $scope.canSeekPrev = !disallows.peeking_prev  
 
-        console.log('current volume', state.currentVolume)
         $scope.currentVolume = if state.currentVolume? then state.currentVolume * 100 else null
         $scope.playing = !state.paused and state.current_track
         $scope.$apply()

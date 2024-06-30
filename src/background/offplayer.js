@@ -107,7 +107,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         spotifyAccessToken = access_token;
         localStorage.setItem("spotify_refresh_token", refresh_token);
         localStorage.setItem("spotify_access_token", access_token);
-        console.log("Spotify access token refreshed: ", access_token);
+        // console.log("Spotify access token refreshed: ", access_token);
         return access_token;
       })
       .catch((err) => {
@@ -163,7 +163,6 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   function getCurrentPlaying() {
     const uri = "https://api.spotify.com/v1/me/player/currently-playing";
     return request(uri).then((res) => {
-      console.log("Got Spotify current playing: ", res);
       if (res) {
         if (res.error) {
           console.error(
@@ -251,7 +250,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     if (player?.currentState === undefined) {
       state = await player.getCurrentState();
       player.currentState = state || null;
-      console.log("Got Spotify player current state: ", state);
+      // console.log("Got Spotify player current state: ", state);
       if (state) {
         localStorage.setItem("spotify_current_state", JSON.stringify(state));
       }
@@ -261,7 +260,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       const volume = await player.getVolume();
       if (volume != null) player.currentVolume = volume;
     }
-    console.log("Spotify current volume: ", player.currentVolume);
+    // console.log("Spotify current volume: ", player.currentVolume);
 
     if (!state) {
       const currentPlaying = await getCurrentPlaying();
@@ -322,7 +321,6 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                 "spotify_current_volume"
               );
               if (savedVolume) {
-                console.log("restore volume: ", savedVolume);
                 player.currentVolume = savedVolume;
                 player.setVolume(savedVolume);
               }
@@ -331,7 +329,6 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         }
       } else {
         if (action === "setVolume") {
-          console.log("set volume: ", value);
           player.currentVolume = value;
           localStorage.setItem("spotify_current_volume", value);
         }

@@ -81,13 +81,13 @@ message.on("spotify current state", async () => {
   await setupOffscreenDocument().catch(console.error);
   if (!utils.isFirefox()) {
     const state = await utils.send("get spotify current state");
-    console.log("Spotify current state: ", state);
+    // console.log("Spotify current state: ", state);
     return state;
   }
 });
 
 message.on("spotify sdk player is ready", async () => {
-  console.log("spotify sdk player is ready");
+  // console.log("spotify sdk player is ready");
   global.spotifyWebPlaybackSDKResolver();
 });
 
