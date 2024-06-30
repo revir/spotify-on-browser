@@ -127,6 +127,7 @@ var options = {
             };
             json.name = `Spotify on ${env.BROWSER}`;
             if (env.BROWSER === "Firefox") {
+              json.name = "Spotify on Browser";
               json.manifest_version = 2; // Firefox has host permission issue with manifest v3
               json.web_accessible_resources = ["authorized.html"];
               json.browser_action = json.action;
