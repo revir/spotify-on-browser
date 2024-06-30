@@ -1,0 +1,1 @@
+This extension doesn't collect any browser information or user data, but just stores very little of your settings of this player in the browser's local storage. The related Spotify's websites might use cookies or web storages according to their policies, this extension doesn't change the third parties' behavior, just like how you would use their websites.
