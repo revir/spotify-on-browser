@@ -1,6 +1,4 @@
 node_modules
 build
 *.log
-
-spotify-player.zip
-spotify-player-src.zip
+*.zip

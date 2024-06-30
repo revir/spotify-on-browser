@@ -1,7 +1,9 @@
-name="spotify-player.zip"
-srcname="spotify-player-src.zip" 
 
-npm run build
+browser="${BROWSER:-Chrome}"
+name="Spotify-on-${browser}.zip"
+srcname="Spotify-on-${browser}_src.zip" 
+
+BROWSER=${browser} npm run build
 
 rm -f ${name}
 rm -f ${srcname}
@@ -14,4 +16,4 @@ cd ../
 
 echo
 echo "pack to ${srcname}: "
-zip -x '*.DS_Store*' -x '*build/*' -x '*readme_images/*' -x '*.git*' -x 'test/*' -x 'node_modules/*' -x "bower_components/*" -x "build.*" -x "${name}" -r ${srcname} .
+zip -x '*.DS_Store*' -x '*build/*' -x '*readme_images/*' -x '*.git*' -x '*.zip' -x 'test/*' -x 'node_modules/*' -x "bower_components/*" -x "build.*" -x "${name}" -r ${srcname} .
