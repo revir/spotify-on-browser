@@ -1,10 +1,14 @@
 {
   "name": "spotify-on-browser",
-  "version": "0.0.6",
+  "version": "2.0.0",
   "description": "A minimalist Spotify player makes life easier",
   "scripts": {
+    "start": "node utils/webserver.js",
+    "firefox-dev": "BROWSER=firefox npm run start",
+    "edge-dev": "BROWSER=edge npm run start",
     "build": "node utils/build.js",
-    "start": "node utils/webserver.js"
+    "firefox-build": "BROWSER=firefox npm run build",
+    "edge-build": "BROWSER=edge npm run build"
   },
   "author": "River Yang",
   "license": "GPL2",
@@ -15,9 +19,12 @@
   "keywords": [
     "Spotify",
     "SpotifyConnect",
+    "SpotifyWebPlayer",
     "ChromeExtension",
     "FirefoxExtension",
-    "WebExtension"
+    "EdgeExtension",
+    "WebExtension",
+    "FirefoxAddOn"
   ],
   "dependencies": {
     "angular": "~1.8.0",
