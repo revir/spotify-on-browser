@@ -1,3 +1,11 @@
+# v2.0.0 - 2024/06/30
+- Add volume control.
+- Shows current playing track on other devices.
+- Upgrade Sptify SDK.
+- Shows account error if the account is not premium.
+- Support Manifest V3 on Chrome and no persistent background on Firefox.
+- Larger and better look.
+
 # v0.0.6 - 2021/06/02
 - Fixed authorization loop when the access_token is expired.
 - Unified name "Spotify on Browser"
