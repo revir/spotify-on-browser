@@ -14,9 +14,9 @@ import { formatOpenURL } from 'spotify-uri'
 spotifyClientId = '71996e28dc6f40cc89f05bd0b030708e'
 
 # some ui need bootstrap, like dropdown.
-musicPlayer = angular.module('musicPlayer', []).config(($sceProvider)->
+musicPlayer = angular.module('musicPlayer', []).config(['$sceProvider',  ($sceProvider)->
     $sceProvider.enabled(false);
-)
+])
 
 musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.playing = false
