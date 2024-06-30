@@ -1,96 +1,151 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="musicPlayer">
-	<head>
-		<meta charset="UTF-8" />
-		<title>Spotify on Browser</title>
-    </head>
-    
-    <body>
-        <div ng-controller="musicPlayerCtrl">
-            <div class="toolbar navbar-fixed-top">
-                <a href="" title="Open Spotify" ng-click="openTrackLink()">
-                    <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/favicon-32x32.png" alt="Spotify"></img>
-                </a>
-                
-                <a class="pull-right" href="" title="Go to settings" ng-click="openOptions()">
-                    <i class='fa fa-cog' aria-hidden='true'></i>
-                </a>
-                <a class="pull-right" href="" title="What is this?" ng-click="openHelpLink()">
-                    <i class="fa fa-question-circle" aria-hidden="true"></i>
-                </a>
-            </div>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Spotify on Browser</title>
+  </head>
 
-            <div class="player-context">
-                <div class="text-center preliminary">
-                    <img ng-src="{{albumImage.url}}" class="active" ng-if="albumImage">
-                    <div ng-if="!spotifyState" class="loading-state">
-                        <i class="fa fa-spinner fa-spin"></i>
-                        <p>Connecting to Spotify...</p>
-                    </div>
-                    <div ng-if="spotifyState && !isSpotifyReady && errorMessage">
-                        <i class="fa fa-warning"></i>
-                        {{errorMessage}}
-                    </div>
-                    <a href="" ng-if="spotifyState && !isSpotifyReady && !errorMessage" ng-click="toggleAction()">
-                        Authorize Spotify on {{browserName}}
-                    </a>
-                    <a href="" ng-if="!trackName && isSpotifyReady" ng-click="toggleAction('togglePlay')">
-                        Start to play
-                    </a>
-                    <div ng-if="trackName" class="track-wrapper">
-                        <p class="track-name">
-                            <a target="_blank" ng-href="{{trackHref}}">
-                                {{trackName}}
-                            </a>
-                        </p>
-                        <p class="artist-name ellipsis">
-                            <a target="_blank" ng-href="{{artistHref}}">
-                                {{artistName}}
-                            </a>
-                        </p>
+  <body>
+    <div ng-controller="musicPlayerCtrl">
+      <div class="toolbar navbar-fixed-top">
+        <a href="" title="Open Spotify" ng-click="openTrackLink()">
+          <img
+            src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/favicon-32x32.png"
+            alt="Spotify"
+          />
+        </a>
 
-                        <div class="button saved-track" ng-hide="trackSaved == undefined"
-                            ng-disabled="savingTrack"
-                            ng-click="toggleSavedTrack()">
-                            <i class="fa" ng-class="{'fa-heart': trackSaved, 'fa-heart-o': !trackSaved}"></i>
-                        </div>
-                    </div>
-                </div>
+        <a
+          class="pull-right"
+          href=""
+          title="Go to settings"
+          ng-click="openOptions()"
+        >
+          <i class="fa fa-cog" aria-hidden="true"></i>
+        </a>
+        <a
+          class="pull-right"
+          href=""
+          title="What is this?"
+          ng-click="openHelpLink()"
+        >
+          <i class="fa fa-question-circle" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <div class="player-context">
+        <div class="text-center preliminary">
+          <img ng-src="{{albumImage.url}}" class="active" ng-if="albumImage" />
+          <div ng-if="!spotifyState" class="loading-state">
+            <i class="fa fa-spinner fa-spin"></i>
+            <p>Connecting to Spotify...</p>
+          </div>
+          <div ng-if="spotifyState && !isSpotifyReady && errorMessage">
+            <i class="fa fa-warning"></i>
+            {{errorMessage}}
+          </div>
+          <a
+            href=""
+            ng-if="spotifyState && !isSpotifyReady && !errorMessage"
+            ng-click="toggleAction()"
+          >
+            Authorize Spotify on {{browserName}}
+          </a>
+          <a
+            href=""
+            ng-if="!trackName && isSpotifyReady"
+            ng-click="toggleAction('togglePlay')"
+          >
+            Start to play
+          </a>
+          <div ng-if="trackName" class="track-wrapper">
+            <p class="track-name">
+              <a target="_blank" ng-href="{{trackHref}}"> {{trackName}} </a>
+            </p>
+            <p class="artist-name ellipsis">
+              <a target="_blank" ng-href="{{artistHref}}"> {{artistName}} </a>
+            </p>
+
+            <div
+              class="button saved-track"
+              ng-hide="trackSaved == undefined"
+              ng-disabled="savingTrack"
+              ng-click="toggleSavedTrack()"
+            >
+              <i
+                class="fa"
+                ng-class="{'fa-heart': trackSaved, 'fa-heart-o': !trackSaved}"
+              ></i>
             </div>
-            <div class="player-content">
-                <div id="album-art">
-                    <a target="_blank" ng-href="{{albumHref}}">
-                        <img ng-src="{{albumImage.url}}" ng-class="{'active': playing}" ng-if="albumImage">
-                    </a>
-                </div>
-                <div id="player-controls">
-                    <div class="control">
-                        <div class="button" ng-disabled="!canSeekPrev"
-                            ng-click="toggleAction('previousTrack')">
-                            <i class="fa fa-step-backward"></i>
-                        </div>
-                    </div>
-                    <div class="control">
-                        <div class="button" 
-                            ng-disabled="!canPause"
-                            ng-if="playing"
-                            ng-click="toggleAction('togglePlay')">
-                            <i class="fa fa-pause"></i>
-                        </div>
-                        <div class="button" 
-                            ng-if="!playing"
-                            ng-click="toggleAction('togglePlay')">
-                            <i class="fa fa-play"></i>
-                        </div>
-                    </div>
-                    <div class="control">
-                        <div class="button" ng-disabled="!canSeekNext"
-                            ng-click="toggleAction('nextTrack')">
-                            <i class="fa fa-step-forward"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-    </body>
+      </div>
+      <div class="player-content">
+        <div id="album-art">
+          <a target="_blank" ng-href="{{albumHref}}">
+            <img
+              ng-src="{{albumImage.url}}"
+              ng-class="{'active': playing}"
+              ng-if="albumImage"
+            />
+          </a>
+        </div>
+        <div id="player-controls">
+          <div class="control">
+            <div
+              class="button"
+              ng-disabled="!canSeekPrev"
+              ng-click="toggleAction('previousTrack')"
+            >
+              <i class="fa fa-step-backward"></i>
+            </div>
+          </div>
+          <div class="control">
+            <div
+              class="button"
+              ng-disabled="!canPause"
+              ng-if="playing"
+              ng-click="toggleAction('togglePlay')"
+            >
+              <i class="fa fa-pause"></i>
+            </div>
+            <div
+              class="button"
+              ng-if="!playing"
+              ng-click="toggleAction('togglePlay')"
+            >
+              <i class="fa fa-play"></i>
+            </div>
+          </div>
+          <div class="control">
+            <div
+              class="button"
+              ng-disabled="!canSeekNext"
+              ng-click="toggleAction('nextTrack')"
+            >
+              <i class="fa fa-step-forward"></i>
+            </div>
+          </div>
+
+          <div
+            class="control volume-wrapper"
+            ng-disabled="currentVolume == null || !trackName"
+            ng-class="{'disabled': currentVolume == null || !trackName}"
+          >
+            <i class="fa fa-volume-up" aria-hidden="true"></i>
+            <input
+              type="range"
+              id="volume-slider"
+              min="0"
+              max="100"
+              ng-model="currentVolume"
+              orient="vertical"
+              class="volume-slider"
+              ng-change="onVolumeChange()"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

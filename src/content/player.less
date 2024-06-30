@@ -215,6 +215,80 @@ body {
           transition: 0.2s ease all;
         }
       }
+
+      &.volume-wrapper {
+        position: relative;
+        display: inline-block; /* Allows the wrapper to fit the size of the content */
+
+        .volume-slider {
+          position: absolute;
+          bottom: 100%; /* Position the slider above the icon */
+          left: 50%;
+          transform: translateX(-50%);
+          transform-origin: bottom left;
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.2s, visibility 0.2s;
+          // Add width and height to define the slider size
+          width: 8px; // Adjust the width of the slider
+          height: 100px; // Adjust the height to your preference
+          -webkit-appearance: none; /* Remove default styling */
+          background: linear-gradient(
+            to bottom,
+            #bdbdbd 0%,
+            #f5f5f5 100%
+          ); /* Material gradient */
+          cursor: pointer;
+          border-radius: 4px; /* Rounded corners for material design */
+
+          &::-webkit-slider-runnable-track {
+            background: #ddd; /* Flat color for the track */
+            border: none;
+            width: 100%;
+            height: 100%;
+          }
+
+          &::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            border: none;
+            height: 20px; /* Height of the thumb */
+            width: 20px; /* Width of the thumb */
+            border-radius: 50%;
+            background: #4caf50; /* Green color for the thumb */
+            margin-top: -8px; /* Adjusts the position of the thumb to be centered on the track */
+            cursor: pointer;
+          }
+
+          &:hover {
+            &::-webkit-slider-runnable-track {
+              background: #ccc; /* Slightly darker track on hover for better visibility */
+            }
+            &::-webkit-slider-thumb {
+              background: #66bb6a; /* Lighter green thumb on hover for interactivity */
+            }
+          }
+
+          &:focus {
+            outline: none; /* Removes the outline to keep the flat feel */
+            &::-webkit-slider-thumb {
+              background: #66bb6a; /* Lighter green thumb for focus state */
+            }
+          }
+        }
+
+        &:hover .volume-slider {
+          opacity: 1;
+          visibility: visible;
+        }
+        &.disabled {
+          opacity: 0.5;
+          pointer-events: none;
+          .fa,
+          .volume-slider {
+            cursor: not-allowed;
+          }
+        }
+      }
     }
   }
 }

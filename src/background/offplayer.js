@@ -66,6 +66,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         player.isReady = true;
         player.deviceId = device_id;
         player.currentState = undefined;
+        player.currentVolume = undefined;
         trackSavedCache = {};
 
         resolve({ ready: true });
@@ -256,6 +257,12 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       }
     }
 
+    if (!player.currentVolume) {
+      const volume = await player.getVolume();
+      if (volume != null) player.currentVolume = volume;
+    }
+    console.log("Spotify current volume: ", player.currentVolume);
+
     if (!state) {
       const currentPlaying = await getCurrentPlaying();
       if (currentPlaying) {
@@ -287,13 +294,14 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         current_track,
         previous_track,
         next_track,
+        currentVolume: player.currentVolume,
       };
     } else {
       return { ready };
     }
   }
 
-  message.on("spotify action", async ({ action }) => {
+  message.on("spotify action", async ({ action, value }) => {
     if (player && player.deviceId) {
       if (action === "togglePlay") {
         const state = await player.getCurrentState();
@@ -313,7 +321,11 @@ window.onSpotifyWebPlaybackSDKReady = () => {
           });
         }
       } else {
-        return player[action]();
+        if (action === "setVolume") {
+          console.log("set volume: ", value);
+          player.currentVolume = value;
+        }
+        return player[action](value);
       }
     }
   });

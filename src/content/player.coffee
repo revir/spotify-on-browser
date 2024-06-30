@@ -112,6 +112,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.canSeekNext = !disallows.peeking_next
             $scope.canSeekPrev = !disallows.peeking_prev  
 
+        $scope.currentVolume = if state.currentVolume? then state.currentVolume * 100 else null
         $scope.playing = !state.paused and state.current_track
         $scope.$apply()
 
@@ -135,7 +136,11 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
                 res = await utils.send 'saveUserTrack', { trackId }
 
             checkTrackSaved(trackId)
-    
+
+    $scope.onVolumeChange = (volume) ->
+        if $scope.currentVolume?
+            utils.send 'spotify action', { action: 'setVolume', value: ($scope.currentVolume / 100) }
+
     $scope.openTrackLink = () ->
         if $scope.isSpotifyReady
             window.open('https://open.spotify.com/', '_blank')
