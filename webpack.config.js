@@ -125,9 +125,9 @@ var options = {
               version: process.env.npm_package_version,
               ...JSON.parse(content.toString()),
             };
-            json.name = `Spotify on ${env.BROWSER}`;
+            json.name = `Spotify on ${env.BROWSER}: A mini Spotify player`;
             if (env.BROWSER === "Firefox") {
-              json.name = "Spotify on Browser";
+              json.name = "Spotify on Browser: A mini Spotify player";
               json.manifest_version = 2; // Firefox has host permission issue with manifest v3
               json.web_accessible_resources = ["authorized.html"];
               json.browser_action = json.action;

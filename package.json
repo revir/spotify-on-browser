@@ -1,7 +1,7 @@
 {
   "name": "spotify-on-browser",
   "version": "2.0.0",
-  "description": "A minimalist Spotify player makes life easier",
+  "description": "A mini Spotify player makes life easier",
   "scripts": {
     "start": "node utils/webserver.js",
     "firefox-dev": "BROWSER=firefox npm run start",
