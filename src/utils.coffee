@@ -110,7 +110,7 @@ export default {
     getBrowserName: () ->
         if navigator.userAgent.toLowerCase().indexOf('firefox') > -1
             return 'Firefox'
-        if navigator.userAgent.toLowerCase().indexOf('edge') > -1
+        if navigator.userAgent.toLowerCase().indexOf('edg') > -1
             return 'Edge'
         if navigator.userAgent.toLowerCase().indexOf('chromium') > -1
             return 'Chromium'
