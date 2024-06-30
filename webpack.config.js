@@ -131,11 +131,6 @@ var options = {
               json.web_accessible_resources = ["authorized.html"];
               json.browser_action = json.action;
               delete json.action;
-              json.browser_specific_settings = {
-                gecko: {
-                  id: "revir.qing@gmail.com",
-                },
-              };
               json.background = {
                 scripts: ["background.bundle.js", "offplayer.bundle.js"],
               };
