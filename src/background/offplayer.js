@@ -317,6 +317,15 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                 res.error
               );
               window.open("https://open.spotify.com/", "open spotify");
+            } else {
+              const savedVolume = localStorage.getItem(
+                "spotify_current_volume"
+              );
+              if (savedVolume) {
+                console.log("restore volume: ", savedVolume);
+                player.currentVolume = savedVolume;
+                player.setVolume(savedVolume);
+              }
             }
           });
         }
@@ -324,6 +333,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         if (action === "setVolume") {
           console.log("set volume: ", value);
           player.currentVolume = value;
+          localStorage.setItem("spotify_current_volume", value);
         }
         return player[action](value);
       }
