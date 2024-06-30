@@ -130,16 +130,19 @@
           <div
             class="control volume-wrapper"
             ng-disabled="currentVolume == null || !trackName"
-            ng-class="{'disabled': currentVolume == null || !trackName}"
           >
-            <i class="fa fa-volume-up" aria-hidden="true"></i>
+            <div
+              class="button"
+              ng-disabled="currentVolume == null || !trackName"
+            >
+              <i class="fa fa-volume-up" aria-hidden="true"></i>
+            </div>
             <input
               type="range"
               id="volume-slider"
               min="0"
               max="100"
               ng-model="currentVolume"
-              orient="vertical"
               class="volume-slider"
               ng-change="onVolumeChange()"
             />

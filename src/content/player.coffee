@@ -138,6 +138,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             checkTrackSaved(trackId)
 
     $scope.onVolumeChange = (volume) ->
+        console.log 'volume change', $scope.currentVolume
         if $scope.currentVolume?
             utils.send 'spotify action', { action: 'setVolume', value: ($scope.currentVolume / 100) }
 
