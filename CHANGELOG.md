@@ -1,3 +1,8 @@
+# v2.0.1 - 2024/07/29
+- Use artist photo on the spinning album icon.
+- Fix keeping the volume setting.
+- Hide the scrollbar on Firefox.
+
 # v2.0.0 - 2024/06/30
 - Add volume control.
 - Shows current playing track on other devices.
