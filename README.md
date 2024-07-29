@@ -2,7 +2,7 @@
 
 - [Chrome web store](https://chrome.google.com/webstore/detail/kgniaoeehojejhienanbmikafmogfdfh)
 - [Firefox addons](https://addons.mozilla.org/en-US/firefox/addon/spotify-on-browser/)
-- Edge is in Review, will be listed here soon.
+- [Edge addons](https://microsoftedge.microsoft.com/addons/detail/spotify-on-edge-a-mini-s/dcbjemicbipojgmpaadmckknbkgiohge)
 
 # Spotify on Browser
 
