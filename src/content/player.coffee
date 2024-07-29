@@ -115,7 +115,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.canSeekNext = !disallows.peeking_next
             $scope.canSeekPrev = !disallows.peeking_prev  
 
-        $scope.currentVolume = if state.currentVolume? then state.currentVolume * 100 else 50
+        $scope.currentVolume = if state.currentVolume? then state.currentVolume * 100 else $scope.currentVolume
         $scope.playing = !state.paused and state.current_track
         $scope.$apply()
 

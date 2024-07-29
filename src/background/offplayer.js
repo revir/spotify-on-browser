@@ -294,7 +294,8 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     }
 
     if (!player.currentVolume) {
-      const volume = await player.getVolume();
+      const savedVolume = localStorage.getItem("spotify_current_volume");
+      const volume = savedVolume || (await player.getVolume());
       if (volume != null) player.currentVolume = volume;
     }
     // console.log("Spotify current volume: ", player.currentVolume);
