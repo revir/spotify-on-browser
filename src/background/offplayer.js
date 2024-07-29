@@ -1,7 +1,7 @@
 require("imports-loader?additionalCode=var%20define%20=%20false;!../vendor/spotify-player");
 import message from "./message.coffee";
 import utils from "utils";
-// import debounce from 'lodash/debounce'
+import debounce from "lodash/debounce";
 
 window.onSpotifyWebPlaybackSDKReady = () => {
   let player;
@@ -45,20 +45,31 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       });
 
       // Playback status updates
-      player.addListener("player_state_changed", async (state) => {
-        // console.log('Spotify player state changed: ', state);
-        if (state?.track_window?.current_track) {
-          player.currentState = state;
-          localStorage.setItem("spotify_current_state", JSON.stringify(state));
-        } else {
-          player.currentState = null;
-          localStorage.removeItem("spotify_current_state");
-        }
+      player.addListener(
+        "player_state_changed",
+        debounce(
+          async (state) => {
+            // console.log("Spotify player state changed: ", state);
+            if (state?.track_window?.current_track) {
+              player.currentState = state;
+              await populateArtistInfo(state.track_window.current_track);
+              localStorage.setItem(
+                "spotify_current_state",
+                JSON.stringify(state)
+              );
+            } else {
+              player.currentState = null;
+              localStorage.removeItem("spotify_current_state");
+            }
 
-        utils.send("spotify state changed", {
-          state: await getCurrentState(),
-        });
-      });
+            utils.send("spotify state changed", {
+              state: await getCurrentState(),
+            });
+          },
+          500,
+          { leading: true }
+        )
+      );
 
       // Ready
       player.addListener("ready", ({ device_id }) => {
@@ -191,6 +202,31 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       }
     });
   }
+  function populateArtistInfo(track) {
+    if (!track?.artists[0]?.uri || track.artistInfo) {
+      return;
+    }
+    const artistId = track.artists[0].uri.split(":").pop();
+    const cached = localStorage.getItem("spotify_artist_info");
+    if (cached && JSON.parse(cached).id === artistId) {
+      track.artistInfo = JSON.parse(cached);
+      return track.artistInfo;
+    }
+
+    const uri = `https://api.spotify.com/v1/artists/${artistId}`;
+    return request(uri).then((res) => {
+      if (res) {
+        if (res.error) {
+          console.error("Spotify get artist info failed: ", res.error);
+          return;
+        }
+        localStorage.setItem("spotify_artist_info", JSON.stringify(res));
+        track.artistInfo = res;
+        // console.log("Got Spotify artist info: ", res, artistId);
+        return res;
+      }
+    });
+  }
 
   function checkUserSavedTrack(trackId) {
     if (trackSavedCache[trackId] !== undefined) {
@@ -250,8 +286,9 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     if (player?.currentState === undefined) {
       state = await player.getCurrentState();
       player.currentState = state || null;
-      // console.log("Got Spotify player current state: ", state);
       if (state) {
+        // console.log("Got Spotify current state from the player:", state);
+        await populateArtistInfo(state.track_window?.current_track);
         localStorage.setItem("spotify_current_state", JSON.stringify(state));
       }
     }

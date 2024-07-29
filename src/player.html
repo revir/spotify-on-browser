@@ -84,9 +84,9 @@
         <div id="album-art">
           <a target="_blank" ng-href="{{albumHref}}">
             <img
-              ng-src="{{albumImage.url}}"
+              ng-src="{{artistImage.url || albumImage.url}}"
               ng-class="{'active': playing}"
-              ng-if="albumImage"
+              ng-if="artistImage || albumImage"
             />
           </a>
         </div>

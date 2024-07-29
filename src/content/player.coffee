@@ -104,6 +104,11 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             if theTrack.artists?.length 
                 $scope.artistName = theTrack.artists.map((n) -> n.name).join(', ')
                 $scope.artistHref = safeFormatOpenURL theTrack.artists[0].uri
+            if theTrack.artistInfo?.images?.length
+                $scope.artistImage = theTrack.artistInfo.images[0]
+                # console.log "artist image", $scope.artistImage
+            else 
+                $scope.artistImage = null
 
         if disallows
             $scope.canPause = !disallows.pausing
