@@ -151,6 +151,10 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       body,
     })
       .then(function (response) {
+        if (response.status === 204) {
+          console.log("Spotify api request success with no content", uri);
+          return;
+        }
         return response
           .json()
           .then((res) => {
@@ -161,7 +165,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
           })
           .catch((err) => {
             console.error("Spotify api response failed: ", err, uri);
-            return { error: err };
+            return { error: err, status: response.status };
           });
       })
       .catch((err) => {
