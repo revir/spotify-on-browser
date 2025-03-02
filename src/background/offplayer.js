@@ -19,7 +19,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         if (spotifyAccessToken) {
           cb(spotifyAccessToken);
           spotifyAccessToken = null; // reset the access token after being used.
-        } else if (spotifyRefreshToken) refreshToken().then(cb);
+        } else if (spotifyRefreshToken) refreshToken().then(cb).catch(cb);
         else cb();
       },
     });
@@ -41,7 +41,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         reject({ message, type: "account_error" });
       });
       player.addListener("playback_error", ({ message }) => {
-        console.error(message);
+        console.error("Failed to perform playback: ", message);
       });
 
       // Playback status updates
@@ -85,8 +85,10 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
       // Not Ready
       player.addListener("not_ready", ({ device_id }) => {
-        console.log("Device ID has gone offline", device_id);
+        console.error("Device ID has gone offline", device_id);
         player.isReady = false;
+        player.deviceId = null;
+        reject({ ready: false });
       });
 
       if (spotifyClientId && spotifyRefreshToken) {
