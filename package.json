@@ -33,7 +33,7 @@
     "jquery": "^3.7.1",
     "js-pkce": "^1.4.0",
     "less": "^4.2.0",
-    "lodash": "latest",
+    "lodash": "^4.17.21",
     "spotify-uri": "^4.1.0"
   },
   "devDependencies": {
