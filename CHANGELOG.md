@@ -1,3 +1,7 @@
+# v2.0.2 - 2025/03/02
+- Fix handling no authentication errors when switching to current player.
+- Fix the error when both the access_token and refresh_token are invalidate.
+
 # v2.0.1 - 2024/07/29
 - Use artist photo on the spinning album icon.
 - Fix keeping the volume setting.
