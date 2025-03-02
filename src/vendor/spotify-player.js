@@ -1,4 +1,5 @@
-/* Spotify JS-SDK - v1.10.0-93887a8 */
+// https://sdk.scdn.co/spotify-player.js
+/* Spotify JS-SDK - v1.10.0-a391294 */
 
 !(function e(t, n, r) {
   function s(a, i) {
