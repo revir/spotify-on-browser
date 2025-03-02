@@ -151,14 +151,23 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       body,
     })
       .then(function (response) {
-        return response.json().then((res) => {
-          if (res && res.error) {
-            console.warn("Spotify api failed: ", res.error, uri);
-          }
-          return res;
-        });
+        return response
+          .json()
+          .then((res) => {
+            if (res && res.error) {
+              console.warn("Spotify api failed: ", res.error, uri);
+            }
+            return res;
+          })
+          .catch((err) => {
+            console.error("Spotify api response failed: ", err, uri);
+            return { error: err };
+          });
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.error("Spotify api request failed: ", err, type, uri, body);
+        return { error: err };
+      });
   }
 
   function switchToThisPlayer() {
@@ -349,13 +358,20 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         if (player.currentState?.track_window?.current_track) {
           return player.togglePlay();
         } else {
-          return switchToThisPlayer().then((res) => {
+          return switchToThisPlayer().then(async (res) => {
             if (res && res.error) {
               console.error(
                 "Spotify switch to this player failed: ",
                 res.error
               );
-              window.open("https://open.spotify.com/", "open spotify");
+              if (res.error.status > 400 && res.error.status < 500) {
+                player.isReady = false;
+                utils.send("spotify state changed", {
+                  state: await getCurrentState(),
+                });
+              } else {
+                window.open("https://open.spotify.com/", "open spotify");
+              }
             } else {
               const savedVolume = localStorage.getItem(
                 "spotify_current_volume"
