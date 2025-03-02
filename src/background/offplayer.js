@@ -164,7 +164,15 @@ window.onSpotifyWebPlaybackSDKReady = () => {
             return res;
           })
           .catch((err) => {
-            console.error("Spotify api response failed: ", err, uri);
+            if (response.ok) {
+              return;
+            }
+            console.error(
+              "Spotify api parse response failed: ",
+              err,
+              uri,
+              response
+            );
             return { error: err, status: response.status };
           });
       })
