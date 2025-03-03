@@ -52,6 +52,11 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       player.addListener("playback_error", ({ message }) => {
         console.error("Failed to perform playback: ", message);
       });
+      player.addListener("autoplay_failed", () => {
+        console.error("Autoplay is not allowed by the browser autoplay rules");
+        player.autoPlayError =
+          "Autoplay is not allowed by your browser. Enable AutoPlay First!";
+      });
 
       // Playback status updates
       player.addListener(
@@ -364,9 +369,11 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         previous_track,
         next_track,
         currentVolume: player.currentVolume,
+
+        autoPlayError: player.autoPlayError,
       };
     } else {
-      return { ready };
+      return { ready, autoPlayError: player.autoPlayError };
     }
   }
 
@@ -375,6 +382,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       if (action === "togglePlay") {
         const state = await player.getCurrentState();
         player.currentState = state || null;
+        player.autoPlayError = null;
 
         if (player.currentState?.track_window?.current_track) {
           return player.togglePlay();

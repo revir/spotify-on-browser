@@ -71,7 +71,11 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.errorMessage =  if state.accountError?.includes("premium users only") 
             then "Unfortunately this player is only possible for Spotify premium users. Please upgrade your account." 
             else state.accountError
+        else if state.autoPlayError
+            $scope.errorMessage = state.autoPlayError
+            console.log "auto play error", state.autoPlayError
         else 
+            # console.log "no error, state is ready."
             $scope.errorMessage = ''
 
         $scope.canPause = false 

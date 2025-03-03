@@ -35,12 +35,16 @@
 
       <div class="player-context">
         <div class="text-center preliminary">
-          <img ng-src="{{albumImage.url}}" class="active" ng-if="albumImage" />
+          <img
+            ng-src="{{albumImage.url}}"
+            class="active"
+            ng-if="albumImage && !errorMessage"
+          />
           <div ng-if="!spotifyState" class="loading-state">
             <i class="fa fa-spinner fa-spin"></i>
             <p>Connecting to Spotify...</p>
           </div>
-          <div ng-if="spotifyState && !isSpotifyReady && errorMessage">
+          <div ng-if="spotifyState && errorMessage" class="error-message">
             <i class="fa fa-warning"></i>
             {{errorMessage}}
           </div>
@@ -58,7 +62,7 @@
           >
             Start to play
           </a>
-          <div ng-if="trackName" class="track-wrapper">
+          <div ng-if="trackName && !errorMessage" class="track-wrapper">
             <p class="track-name">
               <a target="_blank" ng-href="{{trackHref}}"> {{trackName}} </a>
             </p>
