@@ -1,3 +1,7 @@
+# v2.0.3 - 2025/03/03
+- Warn about autoplay is not enabled on browser.
+- Fix the player state after reconnecting to Spotify.
+
 # v2.0.2 - 2025/03/02
 - Fix handling no authentication errors when switching to current player.
 - Fix the error when both the access_token and refresh_token are invalidate.
