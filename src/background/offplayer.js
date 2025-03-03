@@ -18,9 +18,8 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         } else {
           player.isReady = false;
         }
-        utils.send("spotify state changed", {
-          state: await getCurrentState(),
-        });
+        console.log("Spotify player is reconnected: ", success);
+        return success;
       });
 
     player = new Spotify.Player({
@@ -427,7 +426,11 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       spotifyAccessToken = access_token;
       localStorage.setItem("spotify_access_token", access_token);
 
-      return init();
+      return init().finally(async () => {
+        utils.send("spotify state changed", {
+          state: await getCurrentState(),
+        });
+      });
     }
   );
 
