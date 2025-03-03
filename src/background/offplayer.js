@@ -11,7 +11,17 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   console.log("Spotify Web Playback SDK is ready");
 
   async function init() {
-    if (player) return player.connect();
+    if (player)
+      return player.connect().then(async (success) => {
+        if (success) {
+          player.isReady = true;
+        } else {
+          player.isReady = false;
+        }
+        utils.send("spotify state changed", {
+          state: await getCurrentState(),
+        });
+      });
 
     player = new Spotify.Player({
       name: `Spotify on ${utils.getBrowserName()}`,
