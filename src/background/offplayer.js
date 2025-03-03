@@ -86,13 +86,17 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       );
 
       // Ready
-      player.addListener("ready", ({ device_id }) => {
+      player.addListener("ready", async ({ device_id }) => {
         console.log("Ready with Device ID", device_id);
         player.isReady = true;
         player.deviceId = device_id;
         player.currentState = undefined;
         player.currentVolume = undefined;
         trackSavedCache = {};
+
+        utils.send("spotify state changed", {
+          state: await getCurrentState(),
+        });
 
         resolve({ ready: true });
       });
