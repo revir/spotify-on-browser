@@ -1,6 +1,6 @@
 {
   "name": "spotify-on-browser",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "A mini Spotify player makes life easier",
   "scripts": {
     "start": "node utils/webserver.js",

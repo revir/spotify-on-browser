@@ -1,3 +1,6 @@
+# v2.0.4 - 2025/03/05
+- Fix issue where the player `device_id` becomes invalid after a long period of inactivity.
+
 # v2.0.3 - 2025/03/03
 - Warn about autoplay is not enabled on browser.
 - Fix the player state after reconnecting to Spotify.
