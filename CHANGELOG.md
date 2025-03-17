@@ -1,5 +1,8 @@
+# v2.0.5 - 2025/03/17
+- Fixed issue where the player's `access_token` expired after prolonged inactivity.
+
 # v2.0.4 - 2025/03/05
-- Fix issue where the player `device_id` becomes invalid after a long period of inactivity.
+- Fixed issue where the player `device_id` became invalid after prolonged inactivity.
 
 # v2.0.3 - 2025/03/03
 - Warn about autoplay is not enabled on browser.
