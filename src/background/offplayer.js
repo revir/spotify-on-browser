@@ -61,7 +61,6 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       getOAuthToken: (cb) => {
         if (spotifyAccessToken) {
           cb(spotifyAccessToken);
-          spotifyAccessToken = null; // reset the access token after being used.
         } else if (spotifyRefreshToken) refreshToken().then(cb).catch(cb);
         else cb();
       },
@@ -72,16 +71,21 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     return new Promise((resolve, reject) => {
       // Error handling
       player.addListener("initialization_error", ({ message }) => {
+        player.isReady = false;
+        console.error("Failed to initialize", message);
         reject({ message, type: "initialization_error" });
       });
       player.addListener("authentication_error", ({ message }) => {
         player.isReady = false;
+        spotifyAccessToken = null;
+        console.error("Failed to authenticate: ", message);
         reconnectPromise?.reject();
         reject({ message, type: "authentication_error" });
       });
       player.addListener("account_error", ({ message }) => {
         player.isReady = false;
         player.accountError = message;
+        console.error("Failed to validate Spotify account: ", message);
         reconnectPromise?.reject();
         reject({ message, type: "account_error" });
       });
@@ -440,11 +444,16 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                   if (res.error.status === 404 && retry < 1) {
                     await reconnectPlayer();
                     return tryToPlay(retry + 1);
+                  } else if (res.error.status === 401 && retry < 1) {
+                    spotifyAccessToken = null;
+                    await reconnectPlayer();
+                    return tryToPlay(retry + 1);
+                  } else {
+                    player.isReady = false;
+                    utils.send("spotify state changed", {
+                      state: await getCurrentState(),
+                    });
                   }
-                  player.isReady = false;
-                  utils.send("spotify state changed", {
-                    state: await getCurrentState(),
-                  });
                 } else {
                   window.open("https://open.spotify.com/", "open spotify");
                 }
