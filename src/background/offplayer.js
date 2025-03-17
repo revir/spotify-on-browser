@@ -4,7 +4,7 @@ import utils from "utils";
 import debounce from "lodash/debounce";
 
 window.onSpotifyWebPlaybackSDKReady = () => {
-  let player, reconnectPromise;
+  let player, reconnectPromiseResolve, reconnectPromiseReject;
   let trackSavedCache = {};
 
   let spotifyAccessToken, spotifyRefreshToken, spotifyClientId;
@@ -16,7 +16,9 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     player.isReady = false;
 
     let _timer;
-    reconnectPromise = new Promise((resolve) => {
+    const reconnectPromise_ = new Promise((resolve, reject) => {
+      reconnectPromiseResolve = resolve;
+      reconnectPromiseReject = reject;
       _timer = setTimeout(() => {
         console.warn("Reconnect timeout...");
         resolve();
@@ -29,10 +31,10 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       player.isReady = true;
       console.log("Waiting for the player to be ready...");
     } else {
-      reconnectPromise.reject({ success: false });
+      reconnectPromiseReject({ success: false });
     }
 
-    return reconnectPromise
+    return reconnectPromise_
       .then(() => clearTimeout(_timer))
       .catch(async (err) => {
         clearTimeout(_timer);
@@ -79,14 +81,14 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         player.isReady = false;
         spotifyAccessToken = null;
         console.error("Failed to authenticate: ", message);
-        reconnectPromise?.reject();
+        reconnectPromiseReject && reconnectPromiseReject(message);
         reject({ message, type: "authentication_error" });
       });
       player.addListener("account_error", ({ message }) => {
         player.isReady = false;
         player.accountError = message;
         console.error("Failed to validate Spotify account: ", message);
-        reconnectPromise?.reject();
+        reconnectPromiseReject && reconnectPromiseReject(message);
         reject({ message, type: "account_error" });
       });
       player.addListener("playback_error", ({ message }) => {
@@ -138,7 +140,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
           state: await getCurrentState(),
         });
 
-        reconnectPromise?.resolve();
+        reconnectPromiseResolve && reconnectPromiseResolve();
         resolve({ ready: true });
       });
 
@@ -147,7 +149,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         console.error("Device ID has gone offline", device_id);
         player.isReady = false;
         player.deviceId = null;
-        reconnectPromise?.reject();
+        reconnectPromiseReject && reconnectPromiseReject("not_ready");
         reject({ ready: false });
       });
 
