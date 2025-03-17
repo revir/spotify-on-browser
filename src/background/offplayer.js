@@ -4,11 +4,45 @@ import utils from "utils";
 import debounce from "lodash/debounce";
 
 window.onSpotifyWebPlaybackSDKReady = () => {
-  let player;
+  let player, reconnectPromise;
   let trackSavedCache = {};
 
   let spotifyAccessToken, spotifyRefreshToken, spotifyClientId;
   console.log("Spotify Web Playback SDK is ready");
+
+  async function reconnectPlayer() {
+    console.log("Try to reconnect the player");
+    await player.disconnect();
+    player.isReady = false;
+
+    let _timer;
+    reconnectPromise = new Promise((resolve) => {
+      _timer = setTimeout(() => {
+        console.warn("Reconnect timeout...");
+        resolve();
+      }, 2000);
+    });
+
+    const success = await player.connect();
+    console.log("Spotify player is reconnected: ", success);
+    if (success) {
+      player.isReady = true;
+      console.log("Waiting for the player to be ready...");
+    } else {
+      reconnectPromise.reject({ success: false });
+    }
+
+    return reconnectPromise
+      .then(() => clearTimeout(_timer))
+      .catch(async (err) => {
+        clearTimeout(_timer);
+        console.error("Spotify player is not reconnected: ", err);
+        utils.send("spotify state changed", {
+          state: await getCurrentState(),
+        });
+        throw err;
+      });
+  }
 
   async function init() {
     if (player)
@@ -42,11 +76,13 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       });
       player.addListener("authentication_error", ({ message }) => {
         player.isReady = false;
+        reconnectPromise?.reject();
         reject({ message, type: "authentication_error" });
       });
       player.addListener("account_error", ({ message }) => {
         player.isReady = false;
         player.accountError = message;
+        reconnectPromise?.reject();
         reject({ message, type: "account_error" });
       });
       player.addListener("playback_error", ({ message }) => {
@@ -98,6 +134,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
           state: await getCurrentState(),
         });
 
+        reconnectPromise?.resolve();
         resolve({ ready: true });
       });
 
@@ -106,6 +143,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         console.error("Device ID has gone offline", device_id);
         player.isReady = false;
         player.deviceId = null;
+        reconnectPromise?.reject();
         reject({ ready: false });
       });
 
@@ -400,18 +438,8 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                 );
                 if (res.error.status > 400 && res.error.status < 500) {
                   if (res.error.status === 404 && retry < 1) {
-                    // device not found
-                    console.log("Try to reconnect the player");
-                    await player.disconnect();
-                    player.isReady = false;
-                    const success = await player.connect();
-                    console.log("Spotify player is reconnected: ", success);
-                    if (success) {
-                      player.isReady = true;
-                      console.log("Waiting for the player to be ready...");
-                      await utils.promisifiedTimeout(500);
-                      return tryToPlay(retry + 1);
-                    }
+                    await reconnectPlayer();
+                    return tryToPlay(retry + 1);
                   }
                   player.isReady = false;
                   utils.send("spotify state changed", {
