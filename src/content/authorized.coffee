@@ -4,7 +4,7 @@ import utils from "utils"
 
 # scope = ["streaming", "user-read-email", "user-read-private", "user-library-read", "user-library-modify", "user-read-recently-played", "user-modify-playback-state"].join(" ")
 scope = ["streaming", "user-read-email", "user-read-private", "user-library-read", "user-library-modify", "user-modify-playback-state", "user-read-currently-playing"].join(" ")
-redirectUri = 'https://pnlpal.dev/spotify-on-browser?spotifyCallback'
+redirectUri = 'https://pnl.dev/spotify-on-browser?spotifyCallback'
 spotifyClientId = '71996e28dc6f40cc89f05bd0b030708e'
 
 pkce = new PKCE({
@@ -34,7 +34,7 @@ getAccessToken = () ->
         alert("Error from spotify authorization: " + err)
 
 (() -> 
-    if window.location.host == "pnlpal.dev"
+    if window.location.host == "pnlpal.dev" or window.location.host == "pnl.dev"
         url = chrome.runtime.getURL("authorized.html")
         window.location.replace url+location.search
 

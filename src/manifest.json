@@ -22,13 +22,16 @@
   "content_scripts": [
     {
       "js": ["authorized.bundle.js"],
-      "matches": ["https://pnlpal.dev/spotify-on-browser*"]
+      "matches": [
+        "https://pnlpal.dev/spotify-on-browser*",
+        "https://pnl.dev/spotify-on-browser*"
+      ]
     }
   ],
   "web_accessible_resources": [
     {
       "resources": ["authorized.html"],
-      "matches": ["https://pnlpal.dev/*"]
+      "matches": ["https://pnlpal.dev/*", "https://pnl.dev/*"]
     }
   ],
   "commands": {
