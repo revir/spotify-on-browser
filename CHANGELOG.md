@@ -1,3 +1,6 @@
+# v2.0.6 - 2025/03/29
+- Reload the extension when some unhandled errors happens.
+
 # v2.0.5 - 2025/03/17
 - Fixed issue where the player's `access_token` expired after prolonged inactivity.
 
