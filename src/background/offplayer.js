@@ -302,7 +302,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     return request(uri).then((res) => {
       if (res) {
         if (res.error) {
-          console.error("Spotify get artist info failed: ", res.error);
+          console.warn("Spotify get artist info failed: ", res.error);
           return;
         }
         localStorage.setItem("spotify_artist_info", JSON.stringify(res));
@@ -450,15 +450,10 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                     spotifyAccessToken = null;
                     await reconnectPlayer();
                     return tryToPlay(retry + 1);
-                  } else {
-                    player.isReady = false;
-                    utils.send("spotify state changed", {
-                      state: await getCurrentState(),
-                    });
                   }
-                } else {
-                  window.open("https://open.spotify.com/", "open spotify");
                 }
+                console.warn("Reloading the extension...");
+                chrome.runtime.reload();
               } else {
                 const savedVolume = localStorage.getItem(
                   "spotify_current_volume"
