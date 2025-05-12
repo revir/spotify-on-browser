@@ -1,3 +1,6 @@
+# v2.0.7 - 2025/05/12
+- Change pnlpal.dev to pnl.dev
+
 # v2.0.6 - 2025/03/29
 - Reload the extension when some unhandled errors happens.
 
