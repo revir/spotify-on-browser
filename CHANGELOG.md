@@ -1,5 +1,5 @@
 # v2.0.8 - 2025/10/11
-- Fix refreshing token after access_token expired.
+- Improved token refresh logic: the extension now seamlessly refreshes the access token after expiration, requiring only a single login for extended use.
 
 # v2.0.7 - 2025/05/12
 - Change pnlpal.dev to pnl.dev
