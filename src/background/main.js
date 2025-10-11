@@ -38,6 +38,8 @@ const setupOffscreenDocument = async () => {
     spotifyWebPlaybackSDKPromise = new Promise((resolve, reject) => {
       global.spotifyWebPlaybackSDKResolver = resolve;
       setTimeout(() => {
+        creating = null;
+        spotifyWebPlaybackSDKPromise = null;
         reject(new Error("Spotify web playback sdk is not ready"));
       }, 3000);
     });
