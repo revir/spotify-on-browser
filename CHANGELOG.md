@@ -1,3 +1,6 @@
+# v2.0.9 - 2025/10/11
+- Improved authentication flow: now checks token validity before authenticating, reducing wait times caused by delayed `authenticate_error` responses.
+
 # v2.0.8 - 2025/10/11
 - Improved token refresh logic: the extension now seamlessly refreshes the access token after expiration, requiring only a single login for extended use.
 
