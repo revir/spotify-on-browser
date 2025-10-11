@@ -34,7 +34,7 @@ var options = {
   entry: {
     option: path.join(__dirname, "src", "option", "option.coffee"),
     player: path.join(__dirname, "src", "content", "player.coffee"),
-    authorized: path.join(__dirname, "src", "content", "authorized.coffee"),
+    authorized: path.join(__dirname, "src", "content", "authorized.js"),
     background: path.join(__dirname, "src", "background", "main.js"),
     offplayer: path.join(__dirname, "src", "background", "offplayer.js"),
   },

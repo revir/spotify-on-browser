@@ -72,36 +72,36 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
     return new Promise((resolve, reject) => {
       // Error handling
-      player.addListener("initialization_error", ({ message }) => {
+      player.on("initialization_error", ({ message }) => {
         player.isReady = false;
         console.error("Failed to initialize", message);
         reject({ message, type: "initialization_error" });
       });
-      player.addListener("authentication_error", ({ message }) => {
+      player.on("authentication_error", ({ message }) => {
         player.isReady = false;
         spotifyAccessToken = null;
         console.error("Failed to authenticate: ", message);
         reconnectPromiseReject && reconnectPromiseReject(message);
         reject({ message, type: "authentication_error" });
       });
-      player.addListener("account_error", ({ message }) => {
+      player.on("account_error", ({ message }) => {
         player.isReady = false;
         player.accountError = message;
         console.error("Failed to validate Spotify account: ", message);
         reconnectPromiseReject && reconnectPromiseReject(message);
         reject({ message, type: "account_error" });
       });
-      player.addListener("playback_error", ({ message }) => {
+      player.on("playback_error", ({ message }) => {
         console.error("Failed to perform playback: ", message);
       });
-      player.addListener("autoplay_failed", () => {
+      player.on("autoplay_failed", () => {
         console.error("Autoplay is not allowed by the browser autoplay rules");
         player.autoPlayError =
           "Autoplay is not allowed by your browser. Enable AutoPlay First!";
       });
 
       // Playback status updates
-      player.addListener(
+      player.on(
         "player_state_changed",
         debounce(
           async (state) => {
@@ -128,7 +128,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       );
 
       // Ready
-      player.addListener("ready", async ({ device_id }) => {
+      player.on("ready", async ({ device_id }) => {
         console.log("Ready with Device ID", device_id);
         player.isReady = true;
         player.deviceId = device_id;
@@ -145,7 +145,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       });
 
       // Not Ready
-      player.addListener("not_ready", ({ device_id }) => {
+      player.on("not_ready", ({ device_id }) => {
         console.error("Device ID has gone offline", device_id);
         player.isReady = false;
         player.deviceId = null;
@@ -488,6 +488,8 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
       spotifyAccessToken = access_token;
       localStorage.setItem("spotify_access_token", access_token);
+
+      localStorage.setItem("spotify_authorized_time", new Date().toISOString());
 
       return init().finally(async () => {
         utils.send("spotify state changed", {
