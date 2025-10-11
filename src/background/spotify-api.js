@@ -73,6 +73,10 @@ export default (player) => {
         .then(({ refresh_token, access_token }) => {
           localStorage.setItem("spotify_refresh_token", refresh_token);
           localStorage.setItem("spotify_access_token", access_token);
+          localStorage.setItem(
+            "spotify_access_token_start_at",
+            new Date().toISOString()
+          );
           console.log("Spotify access token refreshed: ", access_token);
           return access_token;
         })

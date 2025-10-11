@@ -121,7 +121,16 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       player = new Spotify.Player({
         name: `Spotify on ${utils.getBrowserName()}`,
         getOAuthToken: (cb) => {
-          if (localStorage.getItem("spotify_access_token")) {
+          const isTokenWithinOneHour =
+            localStorage.getItem("spotify_access_token") &&
+            localStorage.getItem("spotify_access_token_start_at") &&
+            new Date().getTime() -
+              new Date(
+                localStorage.getItem("spotify_access_token_start_at")
+              ).getTime() <
+              3600 * 1000; // 1 hour
+
+          if (isTokenWithinOneHour) {
             cb(localStorage.getItem("spotify_access_token"));
           } else if (localStorage.getItem("spotify_refresh_token")) {
             player.refreshToken().then(cb).catch(cb);

@@ -8,7 +8,10 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
       localStorage.setItem("spotify_client_id", client_id);
       localStorage.setItem("spotify_refresh_token", refresh_token);
       localStorage.setItem("spotify_access_token", access_token);
-      localStorage.setItem("spotify_authorized_time", new Date().toISOString());
+      localStorage.setItem(
+        "spotify_access_token_start_at",
+        new Date().toISOString()
+      );
 
       return initPlayer().finally(async () => {
         utils.send("spotify state changed", {
