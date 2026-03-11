@@ -10,7 +10,7 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
       localStorage.setItem("spotify_access_token", access_token);
       localStorage.setItem(
         "spotify_access_token_start_at",
-        new Date().toISOString()
+        new Date().toISOString(),
       );
 
       return initPlayer().finally(async () => {
@@ -18,7 +18,7 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
           state: await getCurrentState(),
         });
       });
-    }
+    },
   );
 
   message.on("spotify action", async ({ action, value }) => {
@@ -36,7 +36,7 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
               if (res && res.error) {
                 console.error(
                   "Spotify switch to this player failed: ",
-                  res.error
+                  res.error,
                 );
                 if (res.error.status > 400 && res.error.status < 500) {
                   if (res.error.status === 404 && retry < 1) {
@@ -52,7 +52,7 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
                 chrome.runtime.reload();
               } else {
                 const savedVolume = localStorage.getItem(
-                  "spotify_current_volume"
+                  "spotify_current_volume",
                 );
                 if (savedVolume) {
                   player.currentVolume = savedVolume;
@@ -67,6 +67,9 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
         if (action === "setVolume") {
           player.currentVolume = value;
           localStorage.setItem("spotify_current_volume", value);
+        }
+        if (action === "seek") {
+          return player.seek(value);
         }
         return player[action](value);
       }

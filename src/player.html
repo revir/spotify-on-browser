@@ -100,6 +100,22 @@
             </div>
           </div>
         </div>
+
+        <!-- Seekbar -->
+        <div class="seekbar-container" ng-show="trackName && !errorMessage">
+          <span class="time-current">{{currentTimeFormatted || '0:00'}}</span>
+          <div class="seekbar-track" ng-click="seekTo($event)">
+            <div
+              class="seekbar-progress"
+              ng-style="{'width': progressPercent + '%'}"
+            ></div>
+            <div
+              class="seekbar-thumb"
+              ng-style="{'left': progressPercent + '%'}"
+            ></div>
+          </div>
+          <span class="time-duration">{{durationFormatted || '0:00'}}</span>
+        </div>
       </div>
       <div class="player-content" ng-show="activeTab === 'playing'">
         <div id="album-art">

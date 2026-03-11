@@ -33,6 +33,52 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.albumHref = ''
     $scope.browserName = utils.getBrowserName()
 
+    # Seekbar
+    $scope.progressPercent = 0
+    $scope.currentTimeFormatted = '0:00'
+    $scope.durationFormatted = '0:00'
+    $scope.currentPosition = 0
+    $scope.duration = 0
+    currentTrackId = null
+
+    formatTime = (ms) ->
+        return '0:00' if !ms
+        totalSeconds = Math.floor(ms / 1000)
+        minutes = Math.floor(totalSeconds / 60)
+        seconds = totalSeconds % 60
+        "#{minutes}:#{if seconds < 10 then '0' else ''}#{seconds}"
+
+    updateProgress = () ->
+        if $scope.duration > 0
+            $scope.progressPercent = Math.min(100, ($scope.currentPosition / $scope.duration) * 100)
+            $scope.currentTimeFormatted = formatTime($scope.currentPosition)
+            $scope.durationFormatted = formatTime($scope.duration)
+
+    # Progress timer for smooth updates during playback
+    progressInterval = null
+    startProgressTimer = () ->
+        stopProgressTimer()
+        progressInterval = setInterval () ->
+            if $scope.playing and $scope.currentPosition < $scope.duration
+                $scope.currentPosition += 1000
+                updateProgress()
+                $scope.$apply() if !$scope.$$phase
+        , 1000
+
+    stopProgressTimer = () ->
+        clearInterval(progressInterval) if progressInterval
+
+    $scope.seekTo = ($event) ->
+        return unless $scope.duration > 0
+        track = $event.currentTarget
+        rect = track.getBoundingClientRect()
+        percent = ($event.clientX - rect.left) / rect.width
+        percent = Math.max(0, Math.min(1, percent))
+        seekPosition = Math.floor(percent * $scope.duration)
+        $scope.currentPosition = seekPosition
+        updateProgress()
+        utils.send 'spotify action', { action: 'seek', value: seekPosition }
+
     # Tab navigation
     $scope.activeTab = 'playing'
     $scope.playlists = []
@@ -150,6 +196,26 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
         $scope.currentVolume = if state.currentVolume? then state.currentVolume * 100 else $scope.currentVolume
         $scope.playing = !state.paused and state.current_track
+
+        # Update seekbar progress
+        # Reset seekbar when track changes
+        if theTrack?.id and theTrack.id != currentTrackId
+            currentTrackId = theTrack.id
+            $scope.currentPosition = state.position or 0
+            $scope.duration = theTrack.duration_ms or 0
+        else
+            if state.position?
+                $scope.currentPosition = state.position
+            if theTrack?.duration_ms
+                $scope.duration = theTrack.duration_ms
+        updateProgress()
+
+        # Start/stop progress timer based on playback state
+        if $scope.playing
+            startProgressTimer()
+        else
+            stopProgressTimer()
+
         $scope.$apply()
 
     $scope.toggleAction = (action) -> 
