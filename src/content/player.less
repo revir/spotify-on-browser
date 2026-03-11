@@ -7,8 +7,8 @@ body {
   margin: 0;
   overflow: auto;
 
-  height: 290px;
-  width: 270px;
+  height: 320px;
+  width: 400px;
   overflow: hidden;
 }
 
@@ -42,20 +42,111 @@ body {
 }
 
 .navbar-fixed-top {
-  top: 4px !important;
-  a {
-    margin: 0 8px;
-    z-index: 9999;
-    color: gray;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, transparent 100%);
+  z-index: 100;
+
+  // Left section - Spotify logo
+  .toolbar-left {
+    display: flex;
+    align-items: center;
+    width: 50px;
   }
+
+  // Center section - Tab switcher
+  .tab-switcher {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  // Right section - Options buttons
+  .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 50px;
+    justify-content: flex-end;
+  }
+
+  a {
+    z-index: 9999;
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+
   img {
-    width: 15px;
-    height: 15px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// Modern Pill Tab Switcher
+.tab-switcher {
+  position: relative;
+  display: flex;
+  background: #1a1a1a;
+  border-radius: 20px;
+  padding: 4px;
+  gap: 0;
+
+  .tab-pill {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    height: calc(100% - 8px);
+    background: #1db954;
+    border-radius: 16px;
+    transition: transform 0.25s ease-out;
+    z-index: 0;
+  }
+
+  .tab-btn {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 16px;
+
+    i {
+      font-size: 10px;
+    }
+
+    &:hover {
+      color: #fff;
+    }
+
+    &.active {
+      color: #fff;
+    }
   }
 }
 
 .player-context {
-  height: 188px;
+  height: 220px;
+  margin-top: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,18 +222,15 @@ body {
   display: flex;
 
   #album-art {
-    // top: 15px;
-    width: 70px;
-    height: 70px;
-    // margin-left: 40px;
+    width: 80px;
+    height: 80px;
     -webkit-transform: rotateZ(0);
     transform: rotateZ(0);
     -webkit-transition: 0.3s ease all;
     transition: 0.3s ease all;
-    // box-shadow: 0 0 0 10px #fff;
     border-radius: 50%;
     overflow: hidden;
-    margin: auto 15px;
+    margin: auto 20px;
     background-color: #555;
 
     &:before {
@@ -177,24 +265,21 @@ body {
   }
 
   #player-controls {
-    width: 170px;
+    flex: 1;
     height: 100%;
-    // margin: 0 5px 0 141px;
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 8px;
 
     .control {
-      width: 40px;
-      float: left;
+      width: 48px;
       padding: 12px 0;
 
       .button {
-        // width: 16px;
-        // height: 16px;
-        padding: 12px;
+        padding: 14px;
         background-color: #fff;
-        border-radius: 6px;
+        border-radius: 8px;
         &[disabled] {
           cursor: not-allowed;
           pointer-events: none;
@@ -211,10 +296,10 @@ body {
         i {
           display: block;
           color: #d6dee7;
-          font-size: 16px;
+          font-size: 18px;
           text-align: center;
           line-height: 1;
-          width: 16px;
+          width: 18px;
 
           -webkit-transition: 0.2s ease all;
           transition: 0.2s ease all;
@@ -247,7 +332,9 @@ body {
 
           opacity: 0;
           visibility: hidden;
-          transition: opacity 0.2s, visibility 0.2s;
+          transition:
+            opacity 0.2s,
+            visibility 0.2s;
           // Add width and height to define the slider size
           width: 8px; // Adjust the width of the slider
           height: 100px; // Adjust the height to your preference
@@ -258,6 +345,117 @@ body {
           opacity: 1;
           visibility: visible;
         }
+      }
+    }
+  }
+}
+
+// Library View
+.library-view {
+  height: calc(100% - 40px);
+  margin-top: 40px;
+  padding: 12px 16px;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #1a1a1a 0%, #121212 100%);
+
+  .library-section {
+    margin-bottom: 20px;
+
+    .section-title {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 12px 0;
+    }
+  }
+
+  .playlist-grid {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 2px;
+    }
+  }
+
+  .playlist-card {
+    flex-shrink: 0;
+    width: 80px;
+    cursor: pointer;
+    scroll-snap-align: start;
+    transition: transform 0.15s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    .playlist-cover {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #282828;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      i {
+        font-size: 28px;
+        color: #666;
+      }
+
+      &.liked-songs-cover {
+        background: linear-gradient(135deg, #450af5, #c4efd9);
+
+        i {
+          font-size: 32px;
+          color: #fff;
+        }
+      }
+    }
+
+    .playlist-name {
+      color: #fff;
+      font-size: 11px;
+      margin: 8px 0 0 0;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      line-height: 1.2;
+    }
+
+    &.empty-state {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      p {
+        color: #666;
+        font-size: 12px;
+        margin: 0;
       }
     }
   }

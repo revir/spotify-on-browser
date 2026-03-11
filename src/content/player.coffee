@@ -33,6 +33,35 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.albumHref = ''
     $scope.browserName = utils.getBrowserName()
 
+    # Tab navigation
+    $scope.activeTab = 'playing'
+    $scope.playlists = []
+    $scope.savedEpisodes = []
+
+    $scope.switchToLibrary = () ->
+        $scope.activeTab = 'library'
+        if $scope.playlists.length == 0
+            loadPlaylists()
+        $scope.$apply() if !$scope.$$phase
+
+    loadPlaylists = () ->
+        playlists = await utils.send 'getPlaylists'
+        if playlists?.items
+            $scope.playlists = playlists.items
+            $scope.$apply() if !$scope.$$phase
+
+    $scope.playLikedSongs = () ->
+        utils.send 'spotify action', { action: 'playContext', value: 'spotify:user:me:collection' }
+        $scope.activeTab = 'playing'
+
+    $scope.playPlaylist = (playlist) ->
+        utils.send 'spotify action', { action: 'playContext', value: playlist.uri }
+        $scope.activeTab = 'playing'
+
+    $scope.playEpisode = (episode) ->
+        utils.send 'spotify action', { action: 'playUri', value: episode.uri }
+        $scope.activeTab = 'playing'
+
     getState = () ->
         res = await utils.send 'spotify current state'
         if utils.isFirefox() 

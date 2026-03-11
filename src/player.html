@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" ng-app="musicPlayer">
   <head>
     <meta charset="UTF-8" />
@@ -8,32 +8,49 @@
   <body>
     <div ng-controller="musicPlayerCtrl">
       <div class="toolbar navbar-fixed-top">
-        <a href="" title="Open Spotify" ng-click="openTrackLink()">
-          <img
-            src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/favicon-32x32.png"
-            alt="Spotify"
-          />
-        </a>
+        <div class="toolbar-left">
+          <a href="" title="Open Spotify" ng-click="openTrackLink()">
+            <img
+              src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/favicon-32x32.png"
+              alt="Spotify"
+            />
+          </a>
+        </div>
 
-        <a
-          class="pull-right"
-          href=""
-          title="Go to settings"
-          ng-click="openOptions()"
-        >
-          <i class="fa fa-cog" aria-hidden="true"></i>
-        </a>
-        <a
-          class="pull-right"
-          href=""
-          title="What is this?"
-          ng-click="openHelpLink()"
-        >
-          <i class="fa fa-question-circle" aria-hidden="true"></i>
-        </a>
+        <!-- Modern Pill Tab Switcher -->
+        <div class="tab-switcher">
+          <div
+            class="tab-pill"
+            ng-style="{'transform': 'translateX(' + (activeTab === 'library' ? '100%' : '0') + ')'}"
+          ></div>
+          <button
+            class="tab-btn"
+            ng-class="{'active': activeTab === 'playing'}"
+            ng-click="activeTab = 'playing'"
+          >
+            <i class="fa fa-play"></i> Playing
+          </button>
+          <button
+            class="tab-btn"
+            ng-class="{'active': activeTab === 'library'}"
+            ng-click="switchToLibrary()"
+          >
+            <i class="fa fa-bookmark"></i> Library
+          </button>
+        </div>
+
+        <div class="toolbar-right">
+          <a href="" title="Go to settings" ng-click="openOptions()">
+            <i class="fa fa-cog" aria-hidden="true"></i>
+          </a>
+          <a href="" title="What is this?" ng-click="openHelpLink()">
+            <i class="fa fa-question-circle" aria-hidden="true"></i>
+          </a>
+        </div>
       </div>
 
-      <div class="player-context">
+      <!-- Playing View -->
+      <div class="player-context" ng-show="activeTab === 'playing'">
         <div class="text-center preliminary">
           <img
             ng-src="{{albumImage.url}}"
@@ -84,7 +101,7 @@
           </div>
         </div>
       </div>
-      <div class="player-content">
+      <div class="player-content" ng-show="activeTab === 'playing'">
         <div id="album-art">
           <a target="_blank" ng-href="{{albumHref}}">
             <img
@@ -149,6 +166,63 @@
               ng-model="currentVolume"
               class="volume-slider"
             />
+          </div>
+        </div>
+      </div>
+
+      <!-- Library View -->
+      <div class="library-view" ng-show="activeTab === 'library'">
+        <div class="library-section">
+          <h3 class="section-title">Playlists</h3>
+          <div class="playlist-grid">
+            <!-- Liked Songs (always first) -->
+            <div class="playlist-card" ng-click="playLikedSongs()">
+              <div class="playlist-cover liked-songs-cover">
+                <i class="fa fa-heart"></i>
+              </div>
+              <p class="playlist-name">Liked Songs</p>
+            </div>
+            <!-- User Playlists -->
+            <div
+              class="playlist-card"
+              ng-repeat="playlist in playlists"
+              ng-click="playPlaylist(playlist)"
+            >
+              <div class="playlist-cover">
+                <img
+                  ng-src="{{playlist.images[0].url}}"
+                  ng-if="playlist.images.length"
+                />
+                <i class="fa fa-music" ng-if="!playlist.images.length"></i>
+              </div>
+              <p class="playlist-name">{{playlist.name}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="library-section">
+          <h3 class="section-title">Podcasts</h3>
+          <div class="playlist-grid">
+            <div
+              class="playlist-card"
+              ng-repeat="episode in savedEpisodes"
+              ng-click="playEpisode(episode)"
+            >
+              <div class="playlist-cover">
+                <img
+                  ng-src="{{episode.images[0].url}}"
+                  ng-if="episode.images.length"
+                />
+                <i class="fa fa-podcast" ng-if="!episode.images.length"></i>
+              </div>
+              <p class="playlist-name">{{episode.name}}</p>
+            </div>
+            <div
+              class="playlist-card empty-state"
+              ng-if="!savedEpisodes.length"
+            >
+              <p>No saved podcasts</p>
+            </div>
           </div>
         </div>
       </div>
