@@ -7,7 +7,7 @@ body {
   margin: 0;
   overflow: auto;
 
-  height: 320px;
+  // height determined by content
   width: 400px;
   overflow: hidden;
 }
@@ -146,7 +146,7 @@ body {
 }
 
 .player-context {
-  height: 225px;
+  height: 180px;
   margin-top: 40px;
   display: flex;
   flex-direction: column;
@@ -298,11 +298,9 @@ body {
 }
 
 .player-content {
-  position: absolute;
-  bottom: 0;
-  // top: 50%;
+  // position: absolute;
+  // bottom: 0;
   background-color: #fff;
-  // box-shadow: 0 30px 80px #656565;
   border-radius: 15px 15px 0 0;
   z-index: 2;
   width: 100%;
@@ -445,28 +443,33 @@ body {
 
 // Library View
 .library-view {
-  height: calc(100% - 40px);
+  box-sizing: border-box;
+  height: 280px;
   margin-top: 40px;
-  padding: 12px 16px;
+  padding: 10px 12px;
   overflow-y: auto;
   background: linear-gradient(180deg, #1a1a1a 0%, #121212 100%);
 
   .library-section {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
 
     .section-title {
       color: #fff;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
-      margin: 0 0 12px 0;
+      margin: 0 0 8px 0;
     }
   }
 
   .playlist-grid {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     overflow-x: auto;
-    padding-bottom: 8px;
+    padding-bottom: 6px;
     scroll-snap-type: x mandatory;
 
     &::-webkit-scrollbar {
@@ -483,7 +486,7 @@ body {
 
   .playlist-card {
     flex-shrink: 0;
-    width: 80px;
+    width: 70px;
     cursor: pointer;
     scroll-snap-align: start;
     transition: transform 0.15s ease;
@@ -497,9 +500,9 @@ body {
     }
 
     .playlist-cover {
-      width: 80px;
-      height: 80px;
-      border-radius: 8px;
+      width: 70px;
+      height: 70px;
+      border-radius: 6px;
       overflow: hidden;
       background: #282828;
       display: flex;
@@ -514,7 +517,7 @@ body {
       }
 
       i {
-        font-size: 28px;
+        font-size: 24px;
         color: #666;
       }
 
@@ -522,7 +525,7 @@ body {
         background: linear-gradient(135deg, #450af5, #c4efd9);
 
         i {
-          font-size: 32px;
+          font-size: 28px;
           color: #fff;
         }
       }
@@ -551,8 +554,8 @@ body {
 
     .playlist-name {
       color: #fff;
-      font-size: 11px;
-      margin: 8px 0 0 0;
+      font-size: 10px;
+      margin: 6px 0 0 0;
       text-align: center;
       overflow: hidden;
       text-overflow: ellipsis;
