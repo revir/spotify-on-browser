@@ -71,6 +71,12 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
         if (action === "seek") {
           return player.seek(value);
         }
+        if (action === "playContext") {
+          return player.playContext(value);
+        }
+        if (action === "playUri") {
+          return player.playUri(value);
+        }
         return player[action](value);
       }
     }
@@ -92,6 +98,21 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
   });
   message.on("removeUserSavedTrack", ({ trackId }) => {
     return player?.removeUserSavedTrack(trackId);
+  });
+  message.on("getPlaylists", () => {
+    return player?.getPlaylists();
+  });
+  message.on("getSavedShows", () => {
+    return player?.getSavedShows();
+  });
+  message.on("getSavedAlbums", () => {
+    return player?.getSavedAlbums();
+  });
+  message.on("getSavedAudiobooks", () => {
+    return player?.getSavedAudiobooks();
+  });
+  message.on("getFeaturedPlaylists", () => {
+    return player?.getFeaturedPlaylists();
   });
   message.on("toggle-feature-previous", () => {
     player && player.previousTrack();

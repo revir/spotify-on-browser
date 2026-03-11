@@ -82,18 +82,56 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     # Tab navigation
     $scope.activeTab = 'playing'
     $scope.playlists = []
-    $scope.savedEpisodes = []
+    $scope.savedShows = []
+    $scope.savedAlbums = []
+    $scope.savedAudiobooks = []
+    $scope.featuredPlaylists = []
 
     $scope.switchToLibrary = () ->
         $scope.activeTab = 'library'
+        loadLibrary()
+        $scope.$apply() if !$scope.$$phase
+
+    loadLibrary = () ->
         if $scope.playlists.length == 0
             loadPlaylists()
-        $scope.$apply() if !$scope.$$phase
+        if $scope.savedShows.length == 0
+            loadSavedShows()
+        if $scope.savedAlbums.length == 0
+            loadSavedAlbums()
+        if $scope.savedAudiobooks.length == 0
+            loadSavedAudiobooks()
+        if $scope.featuredPlaylists.length == 0
+            loadFeaturedPlaylists()
 
     loadPlaylists = () ->
         playlists = await utils.send 'getPlaylists'
         if playlists?.items
             $scope.playlists = playlists.items
+            $scope.$apply() if !$scope.$$phase
+
+    loadSavedShows = () ->
+        shows = await utils.send 'getSavedShows'
+        if shows?.items
+            $scope.savedShows = shows.items.map((item) -> item.show)
+            $scope.$apply() if !$scope.$$phase
+
+    loadSavedAlbums = () ->
+        albums = await utils.send 'getSavedAlbums'
+        if albums?.items
+            $scope.savedAlbums = albums.items.map((item) -> item.album)
+            $scope.$apply() if !$scope.$$phase
+
+    loadSavedAudiobooks = () ->
+        audiobooks = await utils.send 'getSavedAudiobooks'
+        if audiobooks?.items
+            $scope.savedAudiobooks = audiobooks.items
+            $scope.$apply() if !$scope.$$phase
+
+    loadFeaturedPlaylists = () ->
+        featured = await utils.send 'getFeaturedPlaylists'
+        if featured?.playlists?.items
+            $scope.featuredPlaylists = featured.playlists.items
             $scope.$apply() if !$scope.$$phase
 
     $scope.playLikedSongs = () ->
@@ -104,8 +142,16 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         utils.send 'spotify action', { action: 'playContext', value: playlist.uri }
         $scope.activeTab = 'playing'
 
-    $scope.playEpisode = (episode) ->
-        utils.send 'spotify action', { action: 'playUri', value: episode.uri }
+    $scope.playAlbum = (album) ->
+        utils.send 'spotify action', { action: 'playContext', value: album.uri }
+        $scope.activeTab = 'playing'
+
+    $scope.playShow = (show) ->
+        utils.send 'spotify action', { action: 'playContext', value: show.uri }
+        $scope.activeTab = 'playing'
+
+    $scope.playAudiobook = (audiobook) ->
+        utils.send 'spotify action', { action: 'playContext', value: audiobook.uri }
         $scope.activeTab = 'playing'
 
     getState = () ->

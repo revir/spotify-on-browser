@@ -189,14 +189,44 @@
       <!-- Library View -->
       <div class="library-view" ng-show="activeTab === 'library'">
         <div class="library-section">
-          <h3 class="section-title">Playlists</h3>
+          <h3 class="section-title">Music</h3>
           <div class="playlist-grid">
-            <!-- Liked Songs (always first) -->
+            <!-- Liked Songs -->
             <div class="playlist-card" ng-click="playLikedSongs()">
               <div class="playlist-cover liked-songs-cover">
                 <i class="fa fa-heart"></i>
               </div>
               <p class="playlist-name">Liked Songs</p>
+            </div>
+            <!-- Saved Albums -->
+            <div
+              class="playlist-card"
+              ng-repeat="album in savedAlbums"
+              ng-click="playAlbum(album)"
+            >
+              <div class="playlist-cover album-cover">
+                <img
+                  ng-src="{{album.images[0].url}}"
+                  ng-if="album.images.length"
+                />
+                <i class="fa fa-compact-disc" ng-if="!album.images.length"></i>
+              </div>
+              <p class="playlist-name">{{album.name}}</p>
+            </div>
+            <!-- Saved Audiobooks -->
+            <div
+              class="playlist-card"
+              ng-repeat="audiobook in savedAudiobooks"
+              ng-click="playAudiobook(audiobook)"
+            >
+              <div class="playlist-cover audiobook-cover">
+                <img
+                  ng-src="{{audiobook.images[0].url}}"
+                  ng-if="audiobook.images.length"
+                />
+                <i class="fa fa-book" ng-if="!audiobook.images.length"></i>
+              </div>
+              <p class="playlist-name">{{audiobook.name}}</p>
             </div>
             <!-- User Playlists -->
             <div
@@ -204,12 +234,27 @@
               ng-repeat="playlist in playlists"
               ng-click="playPlaylist(playlist)"
             >
-              <div class="playlist-cover">
+              <div class="playlist-cover playlist-user-cover">
                 <img
                   ng-src="{{playlist.images[0].url}}"
                   ng-if="playlist.images.length"
                 />
                 <i class="fa fa-music" ng-if="!playlist.images.length"></i>
+              </div>
+              <p class="playlist-name">{{playlist.name}}</p>
+            </div>
+            <!-- Featured Playlists -->
+            <div
+              class="playlist-card"
+              ng-repeat="playlist in featuredPlaylists"
+              ng-click="playPlaylist(playlist)"
+            >
+              <div class="playlist-cover featured-cover">
+                <img
+                  ng-src="{{playlist.images[0].url}}"
+                  ng-if="playlist.images.length"
+                />
+                <i class="fa fa-fire" ng-if="!playlist.images.length"></i>
               </div>
               <p class="playlist-name">{{playlist.name}}</p>
             </div>
@@ -221,23 +266,20 @@
           <div class="playlist-grid">
             <div
               class="playlist-card"
-              ng-repeat="episode in savedEpisodes"
-              ng-click="playEpisode(episode)"
+              ng-repeat="show in savedShows"
+              ng-click="playShow(show)"
             >
-              <div class="playlist-cover">
+              <div class="playlist-cover podcast-cover">
                 <img
-                  ng-src="{{episode.images[0].url}}"
-                  ng-if="episode.images.length"
+                  ng-src="{{show.images[0].url}}"
+                  ng-if="show.images.length"
                 />
-                <i class="fa fa-podcast" ng-if="!episode.images.length"></i>
+                <i class="fa fa-podcast" ng-if="!show.images.length"></i>
               </div>
-              <p class="playlist-name">{{episode.name}}</p>
+              <p class="playlist-name">{{show.name}}</p>
             </div>
-            <div
-              class="playlist-card empty-state"
-              ng-if="!savedEpisodes.length"
-            >
-              <p>No saved podcasts</p>
+            <div class="playlist-card empty-state" ng-if="!savedShows.length">
+              <p>No podcasts</p>
             </div>
           </div>
         </div>

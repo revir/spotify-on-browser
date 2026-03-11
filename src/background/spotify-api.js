@@ -44,7 +44,7 @@ export default (player) => {
               "Spotify api parse response failed: ",
               err,
               uri,
-              response
+              response,
             );
             return { error: err, status: response.status };
           });
@@ -75,7 +75,7 @@ export default (player) => {
           localStorage.setItem("spotify_access_token", access_token);
           localStorage.setItem(
             "spotify_access_token_start_at",
-            new Date().toISOString()
+            new Date().toISOString(),
           );
           console.log("Spotify access token refreshed: ", access_token);
           return access_token;
@@ -95,7 +95,7 @@ export default (player) => {
           device_ids: [player.deviceId],
           play: true,
         },
-        "PUT"
+        "PUT",
       );
     },
 
@@ -106,7 +106,7 @@ export default (player) => {
           if (res.error) {
             console.error(
               "Spotify get current playing track failed: ",
-              res.error
+              res.error,
             );
             return;
           }
@@ -164,16 +164,19 @@ export default (player) => {
       // console.log("check saved: ", trackId, trackSavedCache);
 
       trackSavedCache[trackId] = request(
-        "https://api.spotify.com/v1/me/tracks/contains?ids=" + trackId
+        "https://api.spotify.com/v1/me/tracks/contains?ids=" + trackId,
       ).then((res) => {
         const r = res[0];
 
         trackSavedCache[trackId] = r;
 
         // remove after 10 minutes
-        setTimeout(() => {
-          trackSavedCache[trackId] = undefined;
-        }, 10 * 60 * 1000);
+        setTimeout(
+          () => {
+            trackSavedCache[trackId] = undefined;
+          },
+          10 * 60 * 1000,
+        );
 
         return r;
       });
@@ -183,7 +186,7 @@ export default (player) => {
       return request(
         "https://api.spotify.com/v1/me/tracks?ids=" + trackId,
         null,
-        "PUT"
+        "PUT",
       ).then((res) => {
         if (trackSavedCache[trackId] !== undefined)
           trackSavedCache[trackId] = true;
@@ -196,7 +199,7 @@ export default (player) => {
       return request(
         "https://api.spotify.com/v1/me/tracks?ids=" + trackId,
         null,
-        "DELETE"
+        "DELETE",
       ).then((res) => {
         if (trackSavedCache[trackId] !== undefined)
           trackSavedCache[trackId] = false;
@@ -204,6 +207,85 @@ export default (player) => {
         // console.log("remove saved: ", trackId, trackSavedCache);
         return res;
       });
+    },
+
+    getPlaylists(limit = 20) {
+      const uri = `https://api.spotify.com/v1/me/playlists?limit=${limit}`;
+      return request(uri).then((res) => {
+        if (res?.error) {
+          console.error("Spotify get playlists failed: ", res.error);
+          return { items: [] };
+        }
+        return res;
+      });
+    },
+
+    playContext(contextUri) {
+      const url = "https://api.spotify.com/v1/me/player/play";
+      return request(
+        url,
+        {
+          context_uri: contextUri,
+          device_id: player.deviceId,
+        },
+        "PUT",
+      );
+    },
+
+    getSavedShows(limit = 20) {
+      const uri = `https://api.spotify.com/v1/me/shows?limit=${limit}`;
+      return request(uri).then((res) => {
+        if (res?.error) {
+          console.error("Spotify get saved shows failed: ", res.error);
+          return { items: [] };
+        }
+        return res;
+      });
+    },
+
+    getSavedAlbums(limit = 20) {
+      const uri = `https://api.spotify.com/v1/me/albums?limit=${limit}`;
+      return request(uri).then((res) => {
+        if (res?.error) {
+          console.error("Spotify get saved albums failed: ", res.error);
+          return { items: [] };
+        }
+        return res;
+      });
+    },
+
+    getSavedAudiobooks(limit = 20) {
+      const uri = `https://api.spotify.com/v1/me/audiobooks?limit=${limit}`;
+      return request(uri).then((res) => {
+        if (res?.error) {
+          console.error("Spotify get saved audiobooks failed: ", res.error);
+          return { items: [] };
+        }
+        return res;
+      });
+    },
+
+    getFeaturedPlaylists(limit = 10) {
+      const uri = `https://api.spotify.com/v1/browse/featured-playlists?limit=${limit}`;
+      return request(uri).then((res) => {
+        if (res?.error) {
+          console.error("Spotify get featured playlists failed: ", res.error);
+          return { playlists: { items: [] } };
+        }
+        return res;
+      });
+    },
+
+    playUri(uri) {
+      const url = "https://api.spotify.com/v1/me/player/play";
+      return request(
+        url,
+        {
+          uris: [uri],
+          device_id: player.deviceId,
+        },
+        "PUT",
+      );
     },
   };
 
