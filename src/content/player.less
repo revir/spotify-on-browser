@@ -169,7 +169,6 @@ body {
     width: 100%;
     height: calc(100% + 40px);
     object-fit: cover;
-    filter: grayscale(50%);
 
     position: absolute;
     left: 0;
@@ -177,7 +176,6 @@ body {
   }
 
   .track-wrapper {
-    background: radial-gradient(rgba(0, 0, 0, 0.8), rgba(255, 255, 255, 0));
     padding: 8px 20px 55px;
     position: absolute;
     bottom: 0;
@@ -190,11 +188,18 @@ body {
       font-size: 22px;
       font-family: "Times New Roman";
       margin: 0 0 2px 0;
+      text-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.8),
+        0 2px 8px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(0, 0, 0, 0.4);
     }
     .artist-name {
       font-size: 14px;
       max-width: 280px;
       margin: 0 auto 4px;
+      text-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.8),
+        0 2px 6px rgba(0, 0, 0, 0.5);
     }
 
     .saved-track {
@@ -202,6 +207,7 @@ body {
       cursor: pointer;
       position: relative;
       margin-top: 2px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
 
       i.fa-heart {
         color: orangered;
