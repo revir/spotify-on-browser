@@ -111,7 +111,17 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         $scope.showQueue = false
 
     $scope.playQueueTrack = (track) ->
-        utils.send 'spotify action', { action: 'playTrack', value: track.uri }
+        # Find track position in queue and skip to it
+        index = $scope.queue.indexOf(track)
+        if index >= 0
+            # Skip forward (index + 1) times to reach the track
+            skipCount = index + 1
+            skipNext = () ->
+                if skipCount > 0
+                    skipCount--
+                    utils.send 'spotify action', { action: 'nextTrack' }
+                    setTimeout(skipNext, 300) if skipCount > 0
+            skipNext()
         $scope.showQueue = false
 
     loadQueue = () ->
