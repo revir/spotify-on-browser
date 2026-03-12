@@ -239,23 +239,6 @@
               </div>
               <p class="playlist-name">{{album.name}}</p>
             </div>
-            <!-- Saved Audiobooks -->
-            <div
-              class="playlist-card"
-              ng-repeat="audiobook in savedAudiobooks"
-              ng-click="playAudiobook(audiobook)"
-              data-toggle="tooltip"
-              title="Saved Audiobook: {{audiobook.name}}"
-            >
-              <div class="playlist-cover audiobook-cover">
-                <img
-                  ng-src="{{audiobook.images[0].url}}"
-                  ng-if="audiobook.images.length"
-                />
-                <i class="fa fa-book" ng-if="!audiobook.images.length"></i>
-              </div>
-              <p class="playlist-name">{{audiobook.name}}</p>
-            </div>
             <!-- User Playlists -->
             <div
               class="playlist-card"

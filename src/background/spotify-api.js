@@ -253,17 +253,6 @@ export default (player) => {
       });
     },
 
-    getSavedAudiobooks(limit = 20) {
-      const uri = `https://api.spotify.com/v1/me/audiobooks?limit=${limit}`;
-      return request(uri).then((res) => {
-        if (res?.error) {
-          console.error("Spotify get saved audiobooks failed: ", res.error);
-          return { items: [] };
-        }
-        return res;
-      });
-    },
-
     getFeaturedPlaylists(limit = 10) {
       const uri = `https://api.spotify.com/v1/browse/featured-playlists?limit=${limit}`;
       return request(uri).then((res) => {

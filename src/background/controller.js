@@ -129,9 +129,6 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
   message.on("offscreen getSavedAlbums", () => {
     return player?.getSavedAlbums();
   });
-  message.on("offscreen getSavedAudiobooks", () => {
-    return player?.getSavedAudiobooks();
-  });
   message.on("offscreen getFeaturedPlaylists", () => {
     return player?.getFeaturedPlaylists();
   });

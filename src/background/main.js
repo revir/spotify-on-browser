@@ -125,11 +125,6 @@ message.on("getSavedAlbums", async () => {
   return utils.send("offscreen getSavedAlbums");
 });
 
-message.on("getSavedAudiobooks", async () => {
-  await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen getSavedAudiobooks");
-});
-
 message.on("getFeaturedPlaylists", async () => {
   await setupOffscreenDocument().catch(console.error);
   return utils.send("offscreen getFeaturedPlaylists");

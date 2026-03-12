@@ -96,7 +96,6 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.playlists = []
     $scope.savedShows = []
     $scope.savedAlbums = []
-    $scope.savedAudiobooks = []
     $scope.featuredPlaylists = []
 
     $scope.switchToLibrary = () ->
@@ -111,8 +110,6 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             loadSavedShows()
         if $scope.savedAlbums.length == 0
             loadSavedAlbums()
-        if $scope.savedAudiobooks.length == 0
-            loadSavedAudiobooks()
         if $scope.featuredPlaylists.length == 0
             loadFeaturedPlaylists()
 
@@ -137,13 +134,6 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.$apply() if !$scope.$$phase
             refreshTooltips()
 
-    loadSavedAudiobooks = () ->
-        audiobooks = await utils.send 'getSavedAudiobooks'
-        if audiobooks?.items
-            $scope.savedAudiobooks = audiobooks.items
-            $scope.$apply() if !$scope.$$phase
-            refreshTooltips()
-
     loadFeaturedPlaylists = () ->
         featured = await utils.send 'getFeaturedPlaylists'
         if featured?.playlists?.items
@@ -165,10 +155,6 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
     $scope.playShow = (show) ->
         utils.send 'spotify action', { action: 'playContext', value: show.uri }
-        $scope.activeTab = 'playing'
-
-    $scope.playAudiobook = (audiobook) ->
-        utils.send 'spotify action', { action: 'playContext', value: audiobook.uri }
         $scope.activeTab = 'playing'
 
     getState = () ->
