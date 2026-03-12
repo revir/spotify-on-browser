@@ -1,4 +1,4 @@
-import './player.less' 
+import './player.less'
 
 import $ from 'jquery'
 import angular from 'angular'
@@ -16,6 +16,12 @@ import('../vendor/font-awesome.css')
 import 'bootoast/dist/bootoast.min.css'
 
 import { formatOpenURL } from 'spotify-uri'
+
+# Refresh tooltips for dynamically added elements
+refreshTooltips = () ->
+    setTimeout ->
+        $('[data-toggle="tooltip"]').tooltip()
+    , 100
 
 spotifyClientId = '71996e28dc6f40cc89f05bd0b030708e'
 
@@ -115,30 +121,35 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         if playlists?.items
             $scope.playlists = playlists.items
             $scope.$apply() if !$scope.$$phase
+            refreshTooltips()
 
     loadSavedShows = () ->
         shows = await utils.send 'getSavedShows'
         if shows?.items
             $scope.savedShows = shows.items.map((item) -> item.show)
             $scope.$apply() if !$scope.$$phase
+            refreshTooltips()
 
     loadSavedAlbums = () ->
         albums = await utils.send 'getSavedAlbums'
         if albums?.items
             $scope.savedAlbums = albums.items.map((item) -> item.album)
             $scope.$apply() if !$scope.$$phase
+            refreshTooltips()
 
     loadSavedAudiobooks = () ->
         audiobooks = await utils.send 'getSavedAudiobooks'
         if audiobooks?.items
             $scope.savedAudiobooks = audiobooks.items
             $scope.$apply() if !$scope.$$phase
+            refreshTooltips()
 
     loadFeaturedPlaylists = () ->
         featured = await utils.send 'getFeaturedPlaylists'
         if featured?.playlists?.items
             $scope.featuredPlaylists = featured.playlists.items
             $scope.$apply() if !$scope.$$phase
+            refreshTooltips()
 
     $scope.playLikedSongs = () ->
         utils.send 'spotify action', { action: 'playContext', value: 'spotify:user:me:collection' }

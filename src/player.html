@@ -210,7 +210,12 @@
           <h3 class="section-title">Music</h3>
           <div class="playlist-grid">
             <!-- Liked Songs -->
-            <div class="playlist-card" ng-click="playLikedSongs()">
+            <div
+              class="playlist-card"
+              ng-click="playLikedSongs()"
+              data-toggle="tooltip"
+              title="Liked Songs"
+            >
               <div class="playlist-cover liked-songs-cover">
                 <i class="fa fa-heart"></i>
               </div>
@@ -221,6 +226,8 @@
               class="playlist-card"
               ng-repeat="album in savedAlbums"
               ng-click="playAlbum(album)"
+              data-toggle="tooltip"
+              title="Saved Album: {{album.name}}"
             >
               <div class="playlist-cover album-cover">
                 <img
@@ -236,6 +243,8 @@
               class="playlist-card"
               ng-repeat="audiobook in savedAudiobooks"
               ng-click="playAudiobook(audiobook)"
+              data-toggle="tooltip"
+              title="Saved Audiobook: {{audiobook.name}}"
             >
               <div class="playlist-cover audiobook-cover">
                 <img
@@ -251,6 +260,8 @@
               class="playlist-card"
               ng-repeat="playlist in playlists"
               ng-click="playPlaylist(playlist)"
+              data-toggle="tooltip"
+              title="My Playlist: {{playlist.name}}"
             >
               <div class="playlist-cover playlist-user-cover">
                 <img
@@ -266,6 +277,8 @@
               class="playlist-card"
               ng-repeat="playlist in featuredPlaylists"
               ng-click="playPlaylist(playlist)"
+              data-toggle="tooltip"
+              title="Featured Playlist: {{playlist.name}}"
             >
               <div class="playlist-cover featured-cover">
                 <img
@@ -286,6 +299,8 @@
               class="playlist-card"
               ng-repeat="show in savedShows"
               ng-click="playShow(show)"
+              data-toggle="tooltip"
+              title="My Podcast: {{show.name}}"
             >
               <div class="playlist-cover podcast-cover">
                 <img
