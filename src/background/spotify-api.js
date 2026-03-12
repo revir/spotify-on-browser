@@ -221,12 +221,11 @@ export default (player) => {
     },
 
     playContext(contextUri) {
-      const url = "https://api.spotify.com/v1/me/player/play";
+      const url = `https://api.spotify.com/v1/me/player/play?device_id=${player.deviceId}`;
       return request(
         url,
         {
           context_uri: contextUri,
-          device_id: player.deviceId,
         },
         "PUT",
       );
@@ -274,18 +273,6 @@ export default (player) => {
         }
         return res;
       });
-    },
-
-    playUri(uri) {
-      const url = "https://api.spotify.com/v1/me/player/play";
-      return request(
-        url,
-        {
-          uris: [uri],
-          device_id: player.deviceId,
-        },
-        "PUT",
-      );
     },
   };
 

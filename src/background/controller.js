@@ -74,9 +74,6 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
         if (action === "playContext") {
           return player.playContext(value);
         }
-        if (action === "playUri") {
-          return player.playUri(value);
-        }
         return player[action](value);
       }
     }
