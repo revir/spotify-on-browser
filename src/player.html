@@ -9,7 +9,13 @@
     <div ng-controller="musicPlayerCtrl">
       <div class="toolbar navbar-fixed-top">
         <div class="toolbar-left">
-          <a href="" title="Open Spotify" ng-click="openTrackLink()">
+          <a
+            href=""
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="Open Spotify"
+            ng-click="openTrackLink()"
+          >
             <img
               src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/favicon-32x32.png"
               alt="Spotify"
@@ -40,10 +46,22 @@
         </div>
 
         <div class="toolbar-right">
-          <a href="" title="Go to settings" ng-click="openOptions()">
+          <a
+            href=""
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="Settings"
+            ng-click="openOptions()"
+          >
             <i class="fa fa-cog" aria-hidden="true"></i>
           </a>
-          <a href="" title="What is this?" ng-click="openHelpLink()">
+          <a
+            href=""
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="Help"
+            ng-click="openHelpLink()"
+          >
             <i class="fa fa-question-circle" aria-hidden="true"></i>
           </a>
         </div>

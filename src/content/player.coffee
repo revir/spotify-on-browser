@@ -4,7 +4,13 @@ import $ from 'jquery'
 import angular from 'angular'
 import utils from "utils"
 
+# Make jQuery global for Bootstrap plugins
+window.jQuery = window.$ = $
+
 import('bootstrap/dist/css/bootstrap.min.css')
+import('bootstrap/dist/js/bootstrap.min.js').then -> 
+    $('[data-toggle="tooltip"]').tooltip()
+    
 import('../vendor/font-awesome.css')
 
 import 'bootoast/dist/bootoast.min.css'
