@@ -132,6 +132,9 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
   message.on("offscreen getFeaturedPlaylists", () => {
     return player?.getFeaturedPlaylists();
   });
+  message.on("offscreen getQueue", () => {
+    return player?.getQueue();
+  });
   message.on("offscreen toggle-feature-previous", async () => {
     try {
       await waitForPlayer(player);

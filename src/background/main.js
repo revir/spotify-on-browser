@@ -130,6 +130,11 @@ message.on("getFeaturedPlaylists", async () => {
   return utils.send("offscreen getFeaturedPlaylists");
 });
 
+message.on("getQueue", async () => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen getQueue");
+});
+
 message.on("spotify sdk player is ready", async () => {
   // console.log("spotify sdk player is ready");
   global.spotifyWebPlaybackSDKResolver();

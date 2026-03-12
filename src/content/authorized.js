@@ -10,6 +10,7 @@ const scope = [
   "user-library-modify",
   "user-modify-playback-state",
   "user-read-currently-playing",
+  "user-read-playback-state",
 ].join(" ");
 const redirectUri = "https://pnl.dev/spotify-on-browser?spotifyCallback";
 const spotifyClientId = "71996e28dc6f40cc89f05bd0b030708e";
@@ -28,7 +29,7 @@ function authorize() {
 
 async function onAuthorized() {
   const { error, query, state, code } = await pkce.parseAuthResponseUrl(
-    window.location.href
+    window.location.href,
   );
   if (error) {
     alert("Error returned from spotify authorization server: " + error);
@@ -40,7 +41,7 @@ async function onAuthorized() {
 async function getAccessToken() {
   try {
     const { access_token, refresh_token } = await pkce.exchangeForAccessToken(
-      window.location.href
+      window.location.href,
     );
     return { access_token, refresh_token };
   } catch (err) {

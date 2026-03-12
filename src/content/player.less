@@ -425,6 +425,13 @@ body {
           }
         }
 
+        &.active {
+          background-color: #1db954;
+          i {
+            color: #fff;
+          }
+        }
+
         i {
           display: block;
           color: #d6dee7;
@@ -478,6 +485,107 @@ body {
           opacity: 1;
           visibility: visible;
         }
+      }
+    }
+  }
+
+  // Queue Panel
+  .queue-panel {
+    width: 120px;
+    height: 80px;
+    margin: auto 10px auto 20px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #282828 100%);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    .queue-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 8px;
+      background: rgba(0, 0, 0, 0.3);
+
+      span {
+        color: #fff;
+        font-size: 10px;
+        font-weight: 600;
+      }
+
+      .queue-count {
+        color: #888;
+        font-weight: 400;
+      }
+    }
+
+    .queue-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px;
+
+      &::-webkit-scrollbar {
+        width: 3px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 2px;
+      }
+    }
+
+    .queue-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px;
+      border-radius: 4px;
+      transition: background 0.15s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      img {
+        width: 20px;
+        height: 20px;
+        border-radius: 2px;
+        object-fit: cover;
+      }
+
+      .queue-item-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .queue-track-name {
+        color: #fff;
+        font-size: 9px;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .queue-artist-name {
+        color: #888;
+        font-size: 8px;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .queue-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+
+      p {
+        color: #666;
+        font-size: 10px;
+        margin: 0;
       }
     }
   }

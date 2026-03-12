@@ -98,6 +98,21 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.savedAlbums = []
     $scope.featuredPlaylists = []
 
+    # Queue
+    $scope.showQueue = false
+    $scope.queue = []
+
+    $scope.toggleQueue = () ->
+        $scope.showQueue = !$scope.showQueue
+        if $scope.showQueue
+            loadQueue()
+
+    loadQueue = () ->
+        result = await utils.send 'getQueue'
+        if result?.queue
+            $scope.queue = result.queue
+            $scope.$apply() if !$scope.$$phase
+
     $scope.switchToLibrary = () ->
         $scope.activeTab = 'library'
         loadLibrary()

@@ -137,7 +137,7 @@
         </div>
       </div>
       <div class="player-content" ng-show="activeTab === 'playing'">
-        <div id="album-art">
+        <div id="album-art" ng-hide="showQueue">
           <a target="_blank" ng-href="{{albumHref}}">
             <img
               ng-src="{{artistImage.url || albumImage.url}}"
@@ -146,7 +146,44 @@
             />
           </a>
         </div>
+
+        <!-- Queue Panel -->
+        <div class="queue-panel" ng-show="showQueue">
+          <div class="queue-header">
+            <span>Up Next</span>
+            <span class="queue-count" ng-if="queue.length"
+              >{{queue.length}} tracks</span
+            >
+          </div>
+          <div class="queue-list">
+            <div class="queue-item" ng-repeat="track in queue | limitTo:4">
+              <img
+                ng-src="{{track.album.images[track.album.images.length-1].url}}"
+                ng-if="track.album.images.length"
+              />
+              <div class="queue-item-info">
+                <p class="queue-track-name">{{track.name}}</p>
+                <p class="queue-artist-name">{{track.artists[0].name}}</p>
+              </div>
+            </div>
+            <div class="queue-empty" ng-if="!queue.length">
+              <p>Queue is empty</p>
+            </div>
+          </div>
+        </div>
+
         <div id="player-controls">
+          <div class="control">
+            <div
+              class="button"
+              ng-class="{'active': showQueue}"
+              ng-click="toggleQueue()"
+              data-toggle="tooltip"
+              title="Queue"
+            >
+              <i class="fa fa-list"></i>
+            </div>
+          </div>
           <div class="control">
             <div
               class="button"

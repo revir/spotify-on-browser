@@ -263,6 +263,17 @@ export default (player) => {
         return res;
       });
     },
+
+    getQueue() {
+      const uri = "https://api.spotify.com/v1/me/player/queue";
+      return request(uri).then((res) => {
+        if (res?.error) {
+          console.error("Spotify get queue failed: ", res.error);
+          return { currently_playing: null, queue: [] };
+        }
+        return res;
+      });
+    },
   };
 
   for (const key in webApis) {
