@@ -107,11 +107,21 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         if $scope.showQueue
             loadQueue()
 
+    $scope.closeQueue = () ->
+        $scope.showQueue = false
+
+    $scope.playQueueTrack = (track) ->
+        utils.send 'spotify action', { action: 'playTrack', value: track.uri }
+        $scope.showQueue = false
+
     loadQueue = () ->
         result = await utils.send 'getQueue'
         if result?.queue
             $scope.queue = result.queue
             $scope.$apply() if !$scope.$$phase
+            setTimeout(() ->
+                refreshTooltips()
+            , 50)
 
     $scope.switchToLibrary = () ->
         $scope.activeTab = 'library'

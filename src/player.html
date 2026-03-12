@@ -147,6 +147,13 @@
           </a>
         </div>
 
+        <!-- Queue Backdrop -->
+        <div
+          class="queue-backdrop"
+          ng-show="showQueue"
+          ng-click="closeQueue()"
+        ></div>
+
         <!-- Queue Panel -->
         <div class="queue-panel" ng-show="showQueue">
           <div class="queue-header">
@@ -156,7 +163,14 @@
             >
           </div>
           <div class="queue-list">
-            <div class="queue-item" ng-repeat="track in queue | limitTo:100">
+            <div
+              class="queue-item"
+              ng-repeat="track in queue | limitTo:100"
+              ng-click="playQueueTrack(track)"
+              data-toggle="tooltip"
+              data-container="body"
+              title="{{track.name}} - {{track.artists[0].name}}"
+            >
               <img
                 ng-src="{{track.album.images[track.album.images.length-1].url}}"
                 ng-if="track.album.images.length"

@@ -489,6 +489,16 @@ body {
     }
   }
 
+  // Queue Backdrop (click-outside to close)
+  .queue-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
+  }
+
   // Queue Panel (floating dropdown aligned with queue button)
   .queue-panel {
     position: absolute;
@@ -551,6 +561,7 @@ body {
       padding: 4px;
       border-radius: 4px;
       transition: background 0.15s ease;
+      cursor: pointer;
 
       &:hover {
         background: rgba(255, 255, 255, 0.1);

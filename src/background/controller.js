@@ -99,6 +99,9 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
       if (action === "playContext") {
         return player.playContext(value);
       }
+      if (action === "playTrack") {
+        return player.playTrack(value);
+      }
       return player[action](value);
     }
   });

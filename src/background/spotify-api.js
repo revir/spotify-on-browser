@@ -231,6 +231,17 @@ export default (player) => {
       );
     },
 
+    playTrack(trackUri) {
+      const url = `https://api.spotify.com/v1/me/player/play?device_id=${player.deviceId}`;
+      return request(
+        url,
+        {
+          uris: [trackUri],
+        },
+        "PUT",
+      );
+    },
+
     getSavedShows(limit = 20) {
       const uri = `https://api.spotify.com/v1/me/shows?limit=${limit}`;
       return request(uri).then((res) => {
