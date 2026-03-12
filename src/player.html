@@ -38,8 +38,9 @@
           </button>
           <button
             class="tab-btn"
-            ng-class="{'active': activeTab === 'library'}"
+            ng-class="{'active': activeTab === 'library', 'disabled': !isSpotifyReady || errorMessage}"
             ng-click="switchToLibrary()"
+            ng-disabled="!isSpotifyReady || errorMessage"
           >
             <i class="fa fa-bookmark"></i> Library
           </button>
