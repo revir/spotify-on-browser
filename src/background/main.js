@@ -57,8 +57,9 @@ const setupOffscreenDocument = async () => {
 
 setupOffscreenDocument().catch(console.error);
 
-chrome.commands.onCommand.addListener(function (command) {
-  utils.send(command);
+chrome.commands.onCommand.addListener(async function (command) {
+  await setupOffscreenDocument().catch(console.error);
+  utils.send("offscreen " + command);
 });
 
 message.on("open options shortcuts", () => {
@@ -86,6 +87,52 @@ message.on("spotify current state", async () => {
     // console.log("Spotify current state: ", state);
     return state;
   }
+});
+
+// Ensure offscreen document exists before forwarding player-related messages
+message.on("spotify action", async (data) => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen spotify action", data);
+});
+
+message.on("checkUserSavedTrack", async (data) => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen checkUserSavedTrack", data);
+});
+
+message.on("saveUserTrack", async (data) => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen saveUserTrack", data);
+});
+
+message.on("removeUserSavedTrack", async (data) => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen removeUserSavedTrack", data);
+});
+
+message.on("getPlaylists", async () => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen getPlaylists");
+});
+
+message.on("getSavedShows", async () => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen getSavedShows");
+});
+
+message.on("getSavedAlbums", async () => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen getSavedAlbums");
+});
+
+message.on("getSavedAudiobooks", async () => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen getSavedAudiobooks");
+});
+
+message.on("getFeaturedPlaylists", async () => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen getFeaturedPlaylists");
 });
 
 message.on("spotify sdk player is ready", async () => {
