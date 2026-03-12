@@ -137,7 +137,7 @@
         </div>
       </div>
       <div class="player-content" ng-show="activeTab === 'playing'">
-        <div id="album-art" ng-hide="showQueue">
+        <div id="album-art">
           <a target="_blank" ng-href="{{albumHref}}">
             <img
               ng-src="{{artistImage.url || albumImage.url}}"
@@ -152,11 +152,11 @@
           <div class="queue-header">
             <span>Up Next</span>
             <span class="queue-count" ng-if="queue.length"
-              >{{queue.length}} tracks</span
+              >{{queue.length}}</span
             >
           </div>
           <div class="queue-list">
-            <div class="queue-item" ng-repeat="track in queue | limitTo:4">
+            <div class="queue-item" ng-repeat="track in queue | limitTo:100">
               <img
                 ng-src="{{track.album.images[track.album.images.length-1].url}}"
                 ng-if="track.album.images.length"
