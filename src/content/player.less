@@ -228,11 +228,6 @@ body {
     align-items: center;
     gap: 8px;
     padding: 6px 16px;
-    background: linear-gradient(
-      180deg,
-      transparent 0%,
-      rgba(0, 0, 0, 0.5) 100%
-    );
     width: 100%;
     position: absolute;
     bottom: 18px;
@@ -243,9 +238,12 @@ body {
     .time-current,
     .time-duration {
       font-size: 10px;
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.9);
       min-width: 32px;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      text-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.8),
+        0 2px 6px rgba(0, 0, 0, 0.5);
     }
 
     .time-current {
@@ -264,6 +262,9 @@ body {
       position: relative;
       cursor: pointer;
       transition: height 0.1s ease;
+      box-shadow:
+        0 1px 4px rgba(0, 0, 0, 0.5),
+        0 2px 8px rgba(0, 0, 0, 0.3);
 
       &:hover {
         height: 6px;
