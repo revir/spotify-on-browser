@@ -108,12 +108,18 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
   async function initPlayer() {
     if (player) {
+      // Clear previous account error before reconnecting
+      player.accountError = null;
+      player.isReady = false;
       return player.connect().then(async (success) => {
-        if (success) {
-          player.isReady = true;
-        } else {
-          player.isReady = false;
+        // Wait a bit for potential account_error event
+        await new Promise((r) => setTimeout(r, 500));
+
+        if (player.accountError) {
+          throw { message: player.accountError, type: "account_error" };
         }
+
+        player.isReady = !!success;
         console.log("Spotify player is reconnected: ", success);
         return success;
       });
@@ -126,7 +132,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
             localStorage.getItem("spotify_access_token_start_at") &&
             new Date().getTime() -
               new Date(
-                localStorage.getItem("spotify_access_token_start_at")
+                localStorage.getItem("spotify_access_token_start_at"),
               ).getTime() <
               3600 * 1000; // 1 hour
 
@@ -180,7 +186,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         });
         player.on("autoplay_failed", () => {
           console.error(
-            "Autoplay is not allowed by the browser autoplay rules"
+            "Autoplay is not allowed by the browser autoplay rules",
           );
           player.autoPlayError =
             "Autoplay is not allowed by your browser. Enable AutoPlay First!";
@@ -195,11 +201,11 @@ window.onSpotifyWebPlaybackSDKReady = () => {
               if (state?.track_window?.current_track) {
                 player.currentState = state;
                 await player.populateArtistInfo(
-                  state.track_window.current_track
+                  state.track_window.current_track,
                 );
                 localStorage.setItem(
                   "spotify_current_state",
-                  JSON.stringify(state)
+                  JSON.stringify(state),
                 );
               } else {
                 player.currentState = null;
@@ -211,8 +217,8 @@ window.onSpotifyWebPlaybackSDKReady = () => {
               });
             },
             500,
-            { leading: true }
-          )
+            { leading: true },
+          ),
         );
 
         // Ready
