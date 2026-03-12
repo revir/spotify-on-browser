@@ -160,6 +160,31 @@ body {
 
   .preliminary {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .loading-state,
+  .error-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 20px;
+    text-align: center;
+
+    i {
+      font-size: 24px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
   }
 
   a {
