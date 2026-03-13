@@ -9,38 +9,33 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   console.log("Spotify Web Playback SDK is ready");
 
   async function getCurrentState() {
-    let state = player.currentState;
     let ready = player.isReady;
     if (!ready) return { ready, accountError: player.accountError };
 
-    if (player?.currentState === undefined) {
-      state = await player.getCurrentState();
-      player.currentState = state || null;
-      if (state) {
-        // console.log("Got Spotify current state from the player:", state);
-        await player.populateArtistInfo(state.track_window?.current_track);
-        localStorage.setItem("spotify_current_state", JSON.stringify(state));
-      }
-    }
+    // Always fetch fresh state from SDK
+    let state = await player.getCurrentState();
 
     if (!player.currentVolume) {
       const savedVolume = localStorage.getItem("spotify_current_volume");
       const volume = savedVolume || (await player.getVolume());
       if (volume != null) player.currentVolume = volume;
     }
-    // console.log("Spotify current volume: ", player.currentVolume);
 
     if (!state) {
+      // SDK returned nothing, try Web API
       const currentPlaying = await player.getCurrentPlaying();
       if (currentPlaying) {
         return { ready, currentPlaying };
-      } else {
-        state = JSON.parse(localStorage.getItem("spotify_current_state"));
-        player.currentState = state || null;
-        if (state) {
-          state.paused = true;
-        }
       }
+      // Last resort: use cached state from localStorage (for persistence)
+      state = JSON.parse(localStorage.getItem("spotify_current_state"));
+      if (state) {
+        state.paused = true;
+      }
+    } else {
+      // Cache to localStorage for persistence
+      await player.populateArtistInfo(state.track_window?.current_track);
+      localStorage.setItem("spotify_current_state", JSON.stringify(state));
     }
 
     if (state) {
