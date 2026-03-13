@@ -287,14 +287,22 @@ export default (player) => {
     },
 
     setShuffle(state) {
-      const url = `https://api.spotify.com/v1/me/player/shuffle?state=${state}&device_id=${player.deviceId}`;
+      // Don't include device_id - let it apply to the active context
+      const url = `https://api.spotify.com/v1/me/player/shuffle?state=${state}`;
       return request(url, null, "PUT");
     },
 
     setRepeatMode(state) {
       // state: 'off', 'context', 'track'
-      const url = `https://api.spotify.com/v1/me/player/repeat?state=${state}&device_id=${player.deviceId}`;
-      return request(url, null, "PUT");
+      // Double-tap: Set once, wait for SDK state sync, then set again
+      const url = `https://api.spotify.com/v1/me/player/repeat?state=${state}`;
+      return request(url, null, "PUT").then((res) => {
+        // After SDK resets our setting (state_conflict), re-apply
+        setTimeout(() => {
+          request(url, null, "PUT");
+        }, 1000);
+        return res;
+      });
     },
   };
 
