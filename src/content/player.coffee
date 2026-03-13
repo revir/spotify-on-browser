@@ -314,6 +314,22 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         $scope.currentVolume = if state.currentVolume? then state.currentVolume * 100 else $scope.currentVolume
         $scope.playing = !state.paused and state.current_track
 
+        # Sync playback mode from state
+        # repeat_mode: 0=off, 1=context, 2=track (repeat one)
+        # shuffle: boolean
+        # repeat_mode takes priority over shuffle
+        if state.repeat_mode? or state.shuffle?
+            if state.repeat_mode == 2
+                $scope.playbackMode = 'repeat'
+            else if state.shuffle
+                $scope.playbackMode = 'shuffle'
+            else
+                $scope.playbackMode = 'off'
+            # Update tooltip
+            setTimeout(() ->
+                $('.playback-mode-btn').attr('data-original-title', getPlaybackModeLabel())
+            , 50)
+
         # Get position from state or currentPlaying
         statePosition = state.position ? state.currentPlaying?.position
 

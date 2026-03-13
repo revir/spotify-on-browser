@@ -44,7 +44,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     }
 
     if (state) {
-      let { disallows, paused } = state;
+      let { disallows, paused, repeat_mode, shuffle } = state;
 
       let {
         current_track,
@@ -58,6 +58,8 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         disallows,
         paused,
         position: state.position,
+        repeat_mode, // 0=off, 1=context, 2=track
+        shuffle, // boolean
 
         current_track,
         previous_track,
