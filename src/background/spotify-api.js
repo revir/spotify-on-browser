@@ -285,6 +285,17 @@ export default (player) => {
         return res;
       });
     },
+
+    setShuffle(state) {
+      const url = `https://api.spotify.com/v1/me/player/shuffle?state=${state}&device_id=${player.deviceId}`;
+      return request(url, null, "PUT");
+    },
+
+    setRepeatMode(state) {
+      // state: 'off', 'context', 'track'
+      const url = `https://api.spotify.com/v1/me/player/repeat?state=${state}&device_id=${player.deviceId}`;
+      return request(url, null, "PUT");
+    },
   };
 
   for (const key in webApis) {

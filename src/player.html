@@ -234,6 +234,21 @@
             </div>
           </div>
 
+          <div class="control">
+            <div
+              class="button playback-mode-btn"
+              ng-class="{'active': playbackMode !== 'off'}"
+              ng-click="togglePlaybackMode()"
+              data-toggle="tooltip"
+              title="Normal"
+            >
+              <i
+                class="fa"
+                ng-class="{'fa-random': playbackMode !== 'repeat', 'fa-repeat': playbackMode === 'repeat'}"
+              ></i>
+            </div>
+          </div>
+
           <div
             class="control volume-wrapper"
             ng-disabled="currentVolume == null || !trackName"

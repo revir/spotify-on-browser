@@ -138,6 +138,12 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
   message.on("offscreen getQueue", () => {
     return player?.getQueue();
   });
+  message.on("offscreen setShuffle", ({ state }) => {
+    return player?.setShuffle(state);
+  });
+  message.on("offscreen setRepeatMode", ({ state }) => {
+    return player?.setRepeatMode(state);
+  });
   message.on("offscreen toggle-feature-previous", async () => {
     try {
       await waitForPlayer(player);

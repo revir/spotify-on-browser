@@ -135,6 +135,16 @@ message.on("getQueue", async () => {
   return utils.send("offscreen getQueue");
 });
 
+message.on("setShuffle", async (data) => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen setShuffle", data);
+});
+
+message.on("setRepeatMode", async (data) => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen setRepeatMode", data);
+});
+
 message.on("spotify sdk player is ready", async () => {
   // console.log("spotify sdk player is ready");
   global.spotifyWebPlaybackSDKResolver();

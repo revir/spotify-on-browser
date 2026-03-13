@@ -350,13 +350,15 @@ body {
   #album-art {
     width: 80px;
     height: 80px;
+    min-width: 80px;
+    flex-shrink: 0;
     -webkit-transform: rotateZ(0);
     transform: rotateZ(0);
     -webkit-transition: 0.3s ease all;
     transition: 0.3s ease all;
     border-radius: 50%;
     overflow: hidden;
-    margin: auto 20px;
+    margin: auto 15px;
     background-color: #555;
 
     &:before {
@@ -398,14 +400,14 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
 
     .control {
-      width: 48px;
+      width: 40px;
       padding: 12px 0;
 
       .button {
-        padding: 14px;
+        padding: 11px;
         background-color: #fff;
         border-radius: 8px;
         display: flex;
@@ -435,11 +437,11 @@ body {
         i {
           display: block;
           color: #d6dee7;
-          font-size: 18px;
+          font-size: 16px;
           text-align: center;
           line-height: 1;
-          width: 18px;
-          height: 18px;
+          width: 16px;
+          height: 16px;
 
           -webkit-transition: 0.2s ease all;
           transition: 0.2s ease all;

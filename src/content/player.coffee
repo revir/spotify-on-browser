@@ -133,6 +133,36 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
                 refreshTooltips()
             , 50)
 
+    # Playback Mode: off -> shuffle -> repeat
+    $scope.playbackMode = 'off'
+
+    getPlaybackModeLabel = () ->
+        switch $scope.playbackMode
+            when 'shuffle' then 'Shuffle'
+            when 'repeat' then 'Repeat One'
+            else 'Normal'
+
+    $scope.togglePlaybackMode = () ->
+        if $scope.playbackMode == 'off'
+            # Switch to shuffle mode
+            $scope.playbackMode = 'shuffle'
+            utils.send 'setShuffle', { state: true }
+            utils.send 'setRepeatMode', { state: 'context' }
+        else if $scope.playbackMode == 'shuffle'
+            # Switch to repeat one mode
+            $scope.playbackMode = 'repeat'
+            utils.send 'setShuffle', { state: false }
+            utils.send 'setRepeatMode', { state: 'track' }
+        else
+            # Switch to off
+            $scope.playbackMode = 'off'
+            utils.send 'setShuffle', { state: false }
+            utils.send 'setRepeatMode', { state: 'off' }
+        # Update tooltip's data-original-title directly (Bootstrap 3 reads from this)
+        setTimeout(() ->
+            $('.playback-mode-btn').attr('data-original-title', getPlaybackModeLabel())
+        , 50)
+
     $scope.switchToLibrary = () ->
         $scope.activeTab = 'library'
         loadLibrary()
