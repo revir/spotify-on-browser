@@ -314,15 +314,25 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         $scope.currentVolume = if state.currentVolume? then state.currentVolume * 100 else $scope.currentVolume
         $scope.playing = !state.paused and state.current_track
 
+        # Get position from state or currentPlaying
+        statePosition = state.position ? state.currentPlaying?.position
+
         # Update seekbar progress
         # Reset seekbar when track changes
         if theTrack?.id and theTrack.id != currentTrackId
             currentTrackId = theTrack.id
-            $scope.currentPosition = state.position or 0
+            $scope.currentPosition = statePosition or 0
             $scope.duration = theTrack.duration_ms or 0
         else
-            if state.position?
-                $scope.currentPosition = state.position
+            # Detect track repeat: position jumped backwards significantly (more than 3 seconds)
+            if statePosition? and $scope.currentPosition > 5000 and statePosition < 3000
+                # Track restarted, reset and restart timer
+                stopProgressTimer()
+                $scope.currentPosition = statePosition
+                if $scope.playing
+                    startProgressTimer()
+            else if statePosition?
+                $scope.currentPosition = statePosition
             if theTrack?.duration_ms
                 $scope.duration = theTrack.duration_ms
         updateProgress()

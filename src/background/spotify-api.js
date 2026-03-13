@@ -118,6 +118,7 @@ export default (player) => {
             is_playing,
             item,
             currently_playing_type,
+            progress_ms,
             actions: { disallows },
           } = res;
 
@@ -126,6 +127,7 @@ export default (player) => {
             track: item,
             currently_playing_type,
             disallows,
+            position: progress_ms,
           };
         }
       });

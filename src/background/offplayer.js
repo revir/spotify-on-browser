@@ -57,6 +57,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
         disallows,
         paused,
+        position: state.position,
 
         current_track,
         previous_track,
