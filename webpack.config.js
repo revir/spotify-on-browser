@@ -32,7 +32,7 @@ alias.utils = path.join(__dirname, "src/utils.coffee");
 var options = {
   mode: process.env.NODE_ENV || "development",
   entry: {
-    option: path.join(__dirname, "src", "option", "option.coffee"),
+    option: path.join(__dirname, "src", "option", "option.js"),
     player: path.join(__dirname, "src", "content", "player.coffee"),
     authorized: path.join(__dirname, "src", "content", "authorized.js"),
     background: path.join(__dirname, "src", "background", "main.js"),
@@ -136,7 +136,7 @@ var options = {
                 scripts: ["background.bundle.js", "offplayer.bundle.js"],
               };
               json.permissions = json.permissions.filter(
-                (x) => x !== "offscreen"
+                (x) => x !== "offscreen",
               );
               for (x in json.commands) {
                 delete json.commands[x].global;

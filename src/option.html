@@ -151,17 +151,82 @@
       }
 
       /* Keyboard Shortcuts */
-      .chrome-notice {
-        background: rgba(29, 185, 84, 0.1);
-        border: 1px solid var(--spotify-green);
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 20px;
-        font-size: 14px;
+      .chrome-action-banner {
+        background: linear-gradient(
+          135deg,
+          rgba(29, 185, 84, 0.15),
+          rgba(29, 185, 84, 0.05)
+        );
+        border: 2px solid var(--spotify-green);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 24px;
+        display: none;
+        position: relative;
       }
 
-      .chrome-notice strong {
+      .chrome-action-banner.show {
+        display: block;
+      }
+
+      .chrome-action-banner .dismiss-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(29, 185, 84, 0.2);
+        border: none;
         color: var(--spotify-green);
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .chrome-action-banner .dismiss-btn:hover {
+        background: rgba(29, 185, 84, 0.3);
+      }
+
+      .chrome-action-banner h3 {
+        color: var(--spotify-green);
+        font-size: 16px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .chrome-action-banner p {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 16px;
+        line-height: 1.5;
+      }
+
+      .chrome-action-banner .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--spotify-green);
+        color: white;
+        border: none;
+        border-radius: 24px;
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition:
+          background 0.2s,
+          transform 0.2s;
+      }
+
+      .chrome-action-banner .btn-action:hover {
+        background: var(--spotify-green-hover);
+        transform: translateY(-1px);
       }
 
       .shortcut-list {
@@ -384,7 +449,7 @@
     <div class="container">
       <!-- Firefox Autoplay Banner -->
       <div id="firefox-banner" class="firefox-banner">
-        <button class="dismiss-btn" onclick="dismissBanner()">&times;</button>
+        <button id="firefox-dismiss-btn" class="dismiss-btn">&times;</button>
         <h3>
           <i class="fa fa-exclamation-triangle"></i> Enable Autoplay First!
         </h3>
@@ -418,10 +483,19 @@
           <h2>Keyboard Shortcuts</h2>
         </div>
 
-        <div id="chrome-notice" class="chrome-notice" style="display: none">
-          <strong><i class="fa fa-info-circle"></i> Chrome Users:</strong>
-          Chrome doesn't set global shortcuts by default. These are suggested
-          keys — please set them up manually using the button below.
+        <div id="chrome-action-banner" class="chrome-action-banner">
+          <button id="chrome-dismiss-btn" class="dismiss-btn">&times;</button>
+          <h3><i class="fa fa-exclamation-circle"></i> Action Required</h3>
+          <p>
+            Chrome doesn't enable global keyboard shortcuts by default. To
+            control Spotify from anywhere (even when Chrome is in the
+            background), you need to set up the shortcuts manually. The keys
+            shown below are our suggestions.
+          </p>
+          <a id="setup-shortcuts-btn-banner" class="btn-action" href="#">
+            <i class="fa fa-external-link"></i>
+            Set Up Shortcuts Now
+          </a>
         </div>
 
         <div class="shortcut-list">
@@ -589,47 +663,5 @@
         </p>
       </footer>
     </div>
-
-    <script>
-      // Detect browser
-      const isFirefox = navigator.userAgent.toLowerCase().includes("firefox");
-      const isChrome =
-        navigator.userAgent.toLowerCase().includes("chrome") &&
-        !navigator.userAgent.toLowerCase().includes("edg");
-
-      // Show Firefox banner if needed
-      if (isFirefox) {
-        const banner = document.getElementById("firefox-banner");
-        const dismissed = localStorage.getItem("firefox-banner-dismissed");
-        if (!dismissed) {
-          banner.classList.add("show");
-        }
-      }
-
-      // Show Chrome notice
-      if (isChrome) {
-        document.getElementById("chrome-notice").style.display = "block";
-      }
-
-      // Setup shortcuts button
-      const setupBtn = document.getElementById("setup-shortcuts-btn");
-      if (isFirefox) {
-        setupBtn.href =
-          "https://support.mozilla.org/en-US/kb/manage-extension-shortcuts-firefox";
-        setupBtn.target = "_blank";
-      } else {
-        setupBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          if (chrome && chrome.runtime) {
-            chrome.runtime.sendMessage({ type: "open options shortcuts" });
-          }
-        });
-      }
-
-      function dismissBanner() {
-        document.getElementById("firefox-banner").classList.remove("show");
-        localStorage.setItem("firefox-banner-dismissed", "true");
-      }
-    </script>
   </body>
 </html>
