@@ -1,6 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Spotify on Browser",
+  "description": "Mini Spotify player with global keyboard shortcuts. Stream, browse library, repeat or shuffle, manage queue — all from your browser.",
   "permissions": ["notifications", "offscreen"],
   "background": {
     "service_worker": "background.bundle.js"

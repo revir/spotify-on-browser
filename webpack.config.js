@@ -121,7 +121,6 @@ var options = {
           transform: function (content) {
             // generates the manifest file using the package.json informations
             const json = {
-              description: process.env.npm_package_description,
               version: process.env.npm_package_version,
               ...JSON.parse(content.toString()),
             };
