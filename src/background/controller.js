@@ -73,8 +73,13 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
                   return tryToPlay(retry + 1);
                 }
               }
-              console.warn("Reloading the extension...");
-              chrome.runtime.reload();
+              console.warn(
+                "Failed to switch playback to this player:",
+                res.error,
+              );
+              utils.send("spotify state changed", {
+                state: await getCurrentState(),
+              });
             } else {
               const savedVolume = localStorage.getItem(
                 "spotify_current_volume",
