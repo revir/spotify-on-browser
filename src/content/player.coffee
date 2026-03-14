@@ -18,9 +18,15 @@ import 'bootoast/dist/bootoast.min.css'
 import { formatOpenURL } from 'spotify-uri'
 
 # Refresh tooltips for dynamically added elements
-refreshTooltips = () ->
+refreshTooltips = (selector, label, showImmediately = false) ->
     setTimeout ->
         $('[data-toggle="tooltip"]').tooltip()
+        if selector
+            $(selector).each (index, el) ->
+                updatedLabel = label or $(el).attr('title')
+                if updatedLabel
+                    $(el).attr('data-original-title', updatedLabel).tooltip(if showImmediately then 'show' else 'hide')
+                    $(el).attr('title', '')  # Clear original title to prevent default tooltip
     , 100
 
 spotifyClientId = '71996e28dc6f40cc89f05bd0b030708e'
@@ -34,7 +40,9 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.playing = false
     $scope.canSeekNext = false 
     $scope.canSeekPrev = false 
-    $scope.canPause = false 
+    $scope.canPause = false
+    $scope.canToggleShuffle = true
+    $scope.canToggleRepeat = true
     $scope.albumImage = null
     $scope.artistName = ''
     $scope.trackName = ''
@@ -130,9 +138,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         if result?.queue
             $scope.queue = result.queue
             $scope.$apply() if !$scope.$$phase
-            setTimeout(() ->
-                refreshTooltips()
-            , 50)
+            refreshTooltips()
 
     # Playback Mode: off -> shuffle -> repeat
     $scope.playbackMode = 'off'
@@ -144,6 +150,9 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             else 'Current mode: Normal'
 
     $scope.togglePlaybackMode = () ->
+        # Don't toggle if both shuffle and repeat are disallowed
+        return if !$scope.canToggleShuffle and !$scope.canToggleRepeat
+        
         if $scope.playbackMode == 'off'
             # Switch to shuffle mode
             $scope.playbackMode = 'shuffle'
@@ -159,13 +168,9 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.playbackMode = 'off'
             utils.send 'setShuffle', { state: false }
             utils.send 'setRepeatMode', { state: 'off' }
-        # Update tooltip's data-original-title and visible tooltip text
-        setTimeout(() ->
-            label = getPlaybackModeLabel()
-            $('.playback-mode-btn').attr('data-original-title', label)
-            # Also update currently visible tooltip
-            $('.playback-mode-btn + .tooltip .tooltip-inner').text(label)
-        , 50)
+
+        refreshTooltips('.playback-mode-btn', getPlaybackModeLabel(), true)
+        
 
     $scope.switchToLibrary = () ->
         $scope.activeTab = 'library'
@@ -240,7 +245,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
                 $scope.trackSaved = true
                 $scope.$apply()
 
-    checkSaved = (itemId) ->
+    checkSaved = (itemId, showTooltipImmediately = false) ->
         if itemId 
             if currentItemType == 'episode'
                 $scope.trackSaved = await utils.send 'checkUserSavedEpisode', { episodeId: itemId }
@@ -253,13 +258,9 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
         $scope.$apply()
         
-        refreshTooltips()
-        # Update tooltip after save state changes
-        setTimeout(() ->
-            label = if $scope.trackSaved then 'Unlike' else 'Like'
-            $('.saved-track').attr('data-original-title', label)
-            $('.saved-track + .tooltip .tooltip-inner').text(label)
-        , 50)
+        label = if $scope.trackSaved then 'Unlike' else 'Like'
+        refreshTooltips('.saved-track', label, showTooltipImmediately)
+        
 
     safeFormatOpenURL = (uri) ->
         try
@@ -284,7 +285,9 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
         $scope.canPause = false 
         $scope.canSeekNext = false 
-        $scope.canSeekPrev = false 
+        $scope.canSeekPrev = false
+        $scope.canToggleShuffle = true
+        $scope.canToggleRepeat = true
         $scope.playing = false 
 
         $scope.albumImage = null 
@@ -324,8 +327,11 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
         if disallows
             $scope.canPause = !disallows.pausing
-            $scope.canSeekNext = !disallows.peeking_next
-            $scope.canSeekPrev = !disallows.peeking_prev  
+            $scope.canSeekNext = !disallows.skipping_next and state.next_track?
+            $scope.canSeekPrev = !disallows.skipping_prev
+            $scope.canToggleShuffle = !disallows.toggling_shuffle
+            $scope.canToggleRepeat = !disallows.toggling_repeat_track  
+            refreshTooltips('#player-controls .control')
 
         $scope.currentVolume = if state.currentVolume? then state.currentVolume * 100 else $scope.currentVolume
         $scope.playing = !state.paused and state.current_track
@@ -341,10 +347,6 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
                 $scope.playbackMode = 'shuffle'
             else
                 $scope.playbackMode = 'off'
-            # Update tooltip
-            setTimeout(() ->
-                $('.playback-mode-btn').attr('data-original-title', getPlaybackModeLabel())
-            , 50)
 
         # Get position from state or currentPlaying
         statePosition = state.position ? state.currentPlaying?.position
@@ -380,9 +382,13 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.toggleAction = (action) -> 
         if not $scope.isSpotifyReady
             window.open('/authorized.html', '_blank')
-        else 
-            utils.send 'spotify action', { action }
-            # window.open('https://open.spotify.com/', '_blank')
+            return
+        # Guard disabled actions
+        if action == 'previousTrack' and !$scope.canSeekPrev
+            return
+        if action == 'nextTrack' and !$scope.canSeekNext
+            return
+        utils.send 'spotify action', { action }
     
     $scope.toggleSavedTrack = () ->
         if $scope.savingTrack 
@@ -404,7 +410,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
                     res = await utils.send 'saveUserTrack', { trackId }
                     utils.send "track saved", { trackId, trackName }
 
-            checkSaved(trackId)
+            checkSaved(trackId, true)
 
     $scope.$watch 'currentVolume', (newValue, oldValue) ->
         if newValue != oldValue and $scope.trackName

@@ -199,7 +199,11 @@
               <i class="fa fa-list"></i>
             </div>
           </div>
-          <div class="control">
+          <div
+            class="control"
+            data-toggle="tooltip"
+            title="{{!canSeekPrev ? 'No previous track' : 'Previous'}}"
+          >
             <div
               class="button"
               ng-disabled="!canSeekPrev"
@@ -225,7 +229,11 @@
               <i class="fa fa-play"></i>
             </div>
           </div>
-          <div class="control">
+          <div
+            class="control"
+            data-toggle="tooltip"
+            title="{{!canSeekNext ? 'No next track' : 'Next'}}"
+          >
             <div
               class="button"
               ng-disabled="!canSeekNext"
@@ -235,17 +243,20 @@
             </div>
           </div>
 
-          <div class="control">
+          <div
+            class="control"
+            data-toggle="tooltip"
+            title="{{!canToggleShuffle && !canToggleRepeat ? 'Playback mode change not allowed for this track' : (playbackMode === 'shuffle' ? 'Current mode: Shuffle' : (playbackMode === 'repeat' ? 'Current mode: Repeat One' : 'Current mode: Normal'))}}"
+          >
             <div
               class="button playback-mode-btn"
-              ng-class="{'active': playbackMode !== 'off'}"
+              ng-class="{'active': playbackMode !== 'off', 'disabled': !canToggleShuffle && !canToggleRepeat}"
+              ng-disabled="!canToggleShuffle && !canToggleRepeat"
               ng-click="togglePlaybackMode()"
-              data-toggle="tooltip"
-              title="Normal"
             >
               <i
                 class="fa"
-                ng-class="{'fa-random': playbackMode !== 'repeat', 'fa-repeat': playbackMode === 'repeat'}"
+                ng-class="{'fa-random': playbackMode !== 'repeat', 'fa-repeat': playbackMode === 'repeat', 'fa-ban': !canToggleShuffle && !canToggleRepeat}"
               ></i>
             </div>
           </div>

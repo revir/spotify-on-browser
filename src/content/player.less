@@ -144,10 +144,10 @@ body {
     }
 
     &.disabled,
-    &:disabled {
+    &[disabled] {
       color: #555;
       cursor: not-allowed;
-      pointer-events: none;
+      // No pointer-events: none - allows cursor and tooltips to show
     }
   }
 }
@@ -417,7 +417,6 @@ body {
 
         &[disabled] {
           cursor: not-allowed;
-          pointer-events: none;
         }
 
         &:hover:not([disabled]) {
