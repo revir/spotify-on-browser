@@ -1,7 +1,7 @@
 {
   "name": "spotify-on-browser",
-  "version": "2.0.9",
-  "description": "A mini Spotify player makes life easier",
+  "version": "3.0.0",
+  "description": "A lightweight Spotify Connect player that lives in your browser. Stream music directly, control playback with global keyboard shortcuts, browse your library, manage queues, and like tracks, all from a compact popup. No desktop app needed.",
   "scripts": {
     "start": "node utils/webserver.js",
     "firefox-dev": "BROWSER=firefox npm run start",
