@@ -7,9 +7,37 @@ const isFirefox =
 const isChrome =
   navigator.userAgent.toLowerCase().includes("chrome") &&
   !navigator.userAgent.toLowerCase().includes("edg");
+const isUpdated = location.search.includes("updated");
+// Show update dialog if ?updated param is present
+if (isUpdated) {
+  const dialog = document.createElement("div");
+  dialog.className = "update-dialog-overlay";
+  dialog.innerHTML = `
+    <div class="update-dialog">
+      <h2>Welcome to v3.0!</h2>
+      <p>Thanks for updating! This is a big milestone with lots of new features: larger player, seekbar, smart playback mode, queue panel, library, and full podcast support.</p>
+      <p><a href="https://pnl.dev/topic/1082/spotify-on-browser-v3-0-a-big-bright-new-player" target="_blank" class="btn-blog">
+        🚀 Spotify on Browser v3.0: A Big, Bright New Player!
+        &nbsp;<i class="fa fa-external-link"></i>
+      </a></p>
+      <div class="update-dialog-buttons">
+        <button class="btn-secondary" id="close-update-dialog">Got it!</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(dialog);
+
+  document
+    .getElementById("close-update-dialog")
+    .addEventListener("click", () => {
+      dialog.remove();
+      // Clean up the URL
+      history.replaceState(null, "", location.pathname);
+    });
+}
 
 // Show Firefox banner if needed
-if (isFirefox) {
+if (isFirefox && !isUpdated) {
   const banner = document.getElementById("firefox-banner");
   const dismissed = localStorage.getItem("firefox-banner-dismissed");
   if (!dismissed) {
