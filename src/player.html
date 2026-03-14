@@ -111,6 +111,8 @@
               ng-hide="trackSaved == undefined"
               ng-disabled="savingTrack"
               ng-click="toggleSavedTrack()"
+              data-toggle="tooltip"
+              title="{{trackSaved ? 'Unlike' : 'Like'}}"
             >
               <i
                 class="fa"

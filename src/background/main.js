@@ -110,6 +110,22 @@ message.on("removeUserSavedTrack", async (data) => {
   return utils.send("offscreen removeUserSavedTrack", data);
 });
 
+// Episode (podcast) handlers
+message.on("checkUserSavedEpisode", async (data) => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen checkUserSavedEpisode", data);
+});
+
+message.on("saveUserEpisode", async (data) => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen saveUserEpisode", data);
+});
+
+message.on("removeUserSavedEpisode", async (data) => {
+  await setupOffscreenDocument().catch(console.error);
+  return utils.send("offscreen removeUserSavedEpisode", data);
+});
+
 message.on("getPlaylists", async () => {
   await setupOffscreenDocument().catch(console.error);
   return utils.send("offscreen getPlaylists");

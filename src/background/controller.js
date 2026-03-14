@@ -123,6 +123,16 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
   message.on("offscreen removeUserSavedTrack", ({ trackId }) => {
     return player?.removeUserSavedTrack(trackId);
   });
+  // Episode (podcast) handlers
+  message.on("offscreen checkUserSavedEpisode", ({ episodeId }) => {
+    return player?.checkUserSavedEpisode(episodeId);
+  });
+  message.on("offscreen saveUserEpisode", ({ episodeId }) => {
+    return player?.saveUserEpisode(episodeId);
+  });
+  message.on("offscreen removeUserSavedEpisode", ({ episodeId }) => {
+    return player?.removeUserSavedEpisode(episodeId);
+  });
   message.on("offscreen getPlaylists", () => {
     return player?.getPlaylists();
   });

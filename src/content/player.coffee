@@ -52,6 +52,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.currentPosition = 0
     $scope.duration = 0
     currentTrackId = null
+    currentItemType = 'track'  # 'track' or 'episode'
 
     formatTime = (ms) ->
         return '0:00' if !ms
@@ -239,9 +240,12 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
                 $scope.trackSaved = true
                 $scope.$apply()
 
-    checkTrackSaved = (trackId) ->
-        if trackId 
-            $scope.trackSaved = await utils.send 'checkUserSavedTrack', { trackId }
+    checkSaved = (itemId) ->
+        if itemId 
+            if currentItemType == 'episode'
+                $scope.trackSaved = await utils.send 'checkUserSavedEpisode', { episodeId: itemId }
+            else
+                $scope.trackSaved = await utils.send 'checkUserSavedTrack', { trackId: itemId }
             $scope.savingTrack = false
         else 
             $scope.trackSaved = false
@@ -287,12 +291,16 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         disallows = state.disallows or state.currentPlaying?.disallows
 
         if theTrack
+            # Detect if episode or track
+            currentItemType = state.currentPlaying?.currently_playing_type or theTrack.type or 
+                (if theTrack.uri?.startsWith('spotify:episode:') then 'episode' else 'track')
+
             $scope.trackName = theTrack.name
             $scope.trackHref = safeFormatOpenURL theTrack.uri
             $scope.artistName = theTrack.artists?.map((n) -> n.name).join(', ')
             $scope.albumHref = safeFormatOpenURL theTrack.album?.uri
 
-            checkTrackSaved(theTrack.id)
+            checkSaved(theTrack.id)
 
             if theTrack.album?.images?.length
                 $scope.albumImage = theTrack.album.images.find((n) -> n.width > 200) or \
@@ -376,13 +384,19 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             trackId = $scope.spotifyState.current_track?.id or $scope.spotifyState.currentPlaying?.track?.id
             trackName = $scope.spotifyState.current_track?.name or $scope.spotifyState.currentPlaying?.track?.name
 
-            if $scope.trackSaved 
-                res = await utils.send 'removeUserSavedTrack', { trackId }
-            else 
-                res = await utils.send 'saveUserTrack', { trackId }
-                utils.send "track saved", { trackId, trackName }
+            if currentItemType == 'episode'
+                if $scope.trackSaved 
+                    res = await utils.send 'removeUserSavedEpisode', { episodeId: trackId }
+                else 
+                    res = await utils.send 'saveUserEpisode', { episodeId: trackId }
+            else
+                if $scope.trackSaved 
+                    res = await utils.send 'removeUserSavedTrack', { trackId }
+                else 
+                    res = await utils.send 'saveUserTrack', { trackId }
+                    utils.send "track saved", { trackId, trackName }
 
-            checkTrackSaved(trackId)
+            checkSaved(trackId)
 
     $scope.$watch 'currentVolume', (newValue, oldValue) ->
         if newValue != oldValue and $scope.trackName

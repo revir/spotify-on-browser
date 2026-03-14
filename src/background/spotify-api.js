@@ -211,6 +211,54 @@ export default (player) => {
       });
     },
 
+    // Episode (podcast) save methods
+    checkUserSavedEpisode(episodeId) {
+      if (trackSavedCache[episodeId] !== undefined) {
+        return trackSavedCache[episodeId];
+      }
+
+      trackSavedCache[episodeId] = request(
+        "https://api.spotify.com/v1/me/episodes/contains?ids=" + episodeId,
+      ).then((res) => {
+        const r = res[0];
+        trackSavedCache[episodeId] = r;
+
+        setTimeout(
+          () => {
+            trackSavedCache[episodeId] = undefined;
+          },
+          10 * 60 * 1000,
+        );
+
+        return r;
+      });
+      return trackSavedCache[episodeId];
+    },
+
+    saveUserEpisode(episodeId) {
+      return request(
+        "https://api.spotify.com/v1/me/episodes?ids=" + episodeId,
+        null,
+        "PUT",
+      ).then((res) => {
+        if (trackSavedCache[episodeId] !== undefined)
+          trackSavedCache[episodeId] = true;
+        return res;
+      });
+    },
+
+    removeUserSavedEpisode(episodeId) {
+      return request(
+        "https://api.spotify.com/v1/me/episodes?ids=" + episodeId,
+        null,
+        "DELETE",
+      ).then((res) => {
+        if (trackSavedCache[episodeId] !== undefined)
+          trackSavedCache[episodeId] = false;
+        return res;
+      });
+    },
+
     getPlaylists(limit = 20) {
       const uri = `https://api.spotify.com/v1/me/playlists?limit=${limit}`;
       return request(uri).then((res) => {
