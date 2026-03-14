@@ -1,3 +1,5 @@
+import "./option.less";
+
 // Detect browser
 const isFirefox = navigator.userAgent.toLowerCase().includes("firefox");
 const isChrome =
