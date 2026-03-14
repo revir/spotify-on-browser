@@ -139,9 +139,9 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
     getPlaybackModeLabel = () ->
         switch $scope.playbackMode
-            when 'shuffle' then 'Shuffle'
-            when 'repeat' then 'Repeat One'
-            else 'Normal'
+            when 'shuffle' then 'Current mode: Shuffle'
+            when 'repeat' then 'Current mode: Repeat One'
+            else 'Current mode: Normal'
 
     $scope.togglePlaybackMode = () ->
         if $scope.playbackMode == 'off'
@@ -164,7 +164,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             label = getPlaybackModeLabel()
             $('.playback-mode-btn').attr('data-original-title', label)
             # Also update currently visible tooltip
-            $('.tooltip .tooltip-inner').text(label)
+            $('.playback-mode-btn + .tooltip .tooltip-inner').text(label)
         , 50)
 
     $scope.switchToLibrary = () ->
@@ -258,7 +258,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         setTimeout(() ->
             label = if $scope.trackSaved then 'Unlike' else 'Like'
             $('.saved-track').attr('data-original-title', label)
-            $('.tooltip .tooltip-inner').text(label)
+            $('.saved-track + .tooltip .tooltip-inner').text(label)
         , 50)
 
     safeFormatOpenURL = (uri) ->
