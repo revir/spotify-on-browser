@@ -173,3 +173,17 @@ global.getCurrentPlaying = () => {
 global.getCurrentState = () => {
   return utils.send("get spotify current state").then(console.log);
 };
+
+chrome.runtime.onInstalled.addListener(async function (details) {
+  if ([chrome.runtime.OnInstalledReason.INSTALL].includes(details.reason)) {
+    chrome.tabs.create({
+      url: chrome.runtime.getURL("option.html?welcome"),
+    });
+  } else if (
+    [chrome.runtime.OnInstalledReason.UPDATE].includes(details.reason)
+  ) {
+    chrome.tabs.create({
+      url: chrome.runtime.getURL("option.html?updated"),
+    });
+  }
+});

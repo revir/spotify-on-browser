@@ -1,7 +1,9 @@
 import "./option.less";
 
 // Detect browser
-const isFirefox = navigator.userAgent.toLowerCase().includes("firefox");
+const isFirefox =
+  navigator.userAgent.toLowerCase().includes("firefox") ||
+  location.href.includes("firefox=1");
 const isChrome =
   navigator.userAgent.toLowerCase().includes("chrome") &&
   !navigator.userAgent.toLowerCase().includes("edg");
@@ -13,10 +15,7 @@ if (isFirefox) {
   if (!dismissed) {
     banner.classList.add("show");
   }
-}
-
-// Show Chrome notice
-if (isChrome) {
+} else if (isChrome) {
   const chromeDismissed = localStorage.getItem("chrome-banner-dismissed");
   if (!chromeDismissed) {
     document.getElementById("chrome-action-banner").classList.add("show");
