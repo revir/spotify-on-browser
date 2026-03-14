@@ -354,6 +354,18 @@ export default (player) => {
         return res;
       });
     },
+
+    skipToNext() {
+      // Use Web API instead of SDK - works for podcasts
+      const url = "https://api.spotify.com/v1/me/player/next";
+      return request(url, null, "POST");
+    },
+
+    skipToPrevious() {
+      // Use Web API instead of SDK - works for podcasts
+      const url = "https://api.spotify.com/v1/me/player/previous";
+      return request(url, null, "POST");
+    },
   };
 
   for (const key in webApis) {

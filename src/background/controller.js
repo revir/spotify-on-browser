@@ -102,6 +102,13 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
       if (action === "playTrack") {
         return player.playTrack(value);
       }
+      // Use Web API for next/previous - works for podcasts
+      if (action === "nextTrack") {
+        return player.skipToNext();
+      }
+      if (action === "previousTrack") {
+        return player.skipToPrevious();
+      }
       return player[action](value);
     }
   });
@@ -157,7 +164,8 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
   message.on("offscreen toggle-feature-previous", async () => {
     try {
       await waitForPlayer(player);
-      player.previousTrack();
+      // Use Web API instead of SDK - works for podcasts
+      player.skipToPrevious();
     } catch (e) {
       console.error("Player not ready:", e);
     }
@@ -173,7 +181,8 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
   message.on("offscreen toggle-feature-next", async () => {
     try {
       await waitForPlayer(player);
-      player.nextTrack();
+      // Use Web API instead of SDK - works for podcasts
+      player.skipToNext();
     } catch (e) {
       console.error("Player not ready:", e);
     }
