@@ -252,6 +252,14 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.savingTrack = false
 
         $scope.$apply()
+        
+        refreshTooltips()
+        # Update tooltip after save state changes
+        setTimeout(() ->
+            label = if $scope.trackSaved then 'Unlike' else 'Like'
+            $('.saved-track').attr('data-original-title', label)
+            $('.tooltip .tooltip-inner').text(label)
+        , 50)
 
     safeFormatOpenURL = (uri) ->
         try
