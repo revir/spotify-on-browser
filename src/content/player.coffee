@@ -20,13 +20,16 @@ import { formatOpenURL } from 'spotify-uri'
 # Refresh tooltips for dynamically added elements
 refreshTooltips = (selector, label, showImmediately = false) ->
     setTimeout ->
-        $('[data-toggle="tooltip"]').tooltip()
+        # Only initialize tooltips that haven't been initialized yet
+        $('[data-toggle="tooltip"]:not([data-original-title])').tooltip()
         if selector
             $(selector).each (index, el) ->
-                updatedLabel = label or $(el).attr('title')
+                updatedLabel = label or $(el).attr('title') or $(el).attr('data-original-title')
                 if updatedLabel
-                    $(el).attr('data-original-title', updatedLabel).tooltip(if showImmediately then 'show' else 'hide')
+                    $(el).attr('data-original-title', updatedLabel)
                     $(el).attr('title', '')  # Clear original title to prevent default tooltip
+                    if showImmediately
+                        $(el).tooltip('show')
     , 100
 
 spotifyClientId = '71996e28dc6f40cc89f05bd0b030708e'
@@ -143,12 +146,6 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     # Playback Mode: off -> shuffle -> repeat
     $scope.playbackMode = 'off'
 
-    getPlaybackModeLabel = () ->
-        switch $scope.playbackMode
-            when 'shuffle' then 'Current mode: Shuffle'
-            when 'repeat' then 'Current mode: Repeat One'
-            else 'Current mode: Normal'
-
     $scope.togglePlaybackMode = () ->
         # Don't toggle if both shuffle and repeat are disallowed
         return if !$scope.canToggleShuffle and !$scope.canToggleRepeat
@@ -169,7 +166,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             utils.send 'setShuffle', { state: false }
             utils.send 'setRepeatMode', { state: 'off' }
 
-        refreshTooltips('.playback-mode-btn', getPlaybackModeLabel(), true)
+        refreshTooltips('.playback-mode-toggle', '', true)
         
 
     $scope.switchToLibrary = () ->
