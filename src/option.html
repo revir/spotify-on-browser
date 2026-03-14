@@ -1,64 +1,403 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Options - Spotify on Browser</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
 
     <style>
-      /* For the dark or light theme */
       :root {
-        color-scheme: light dark; /* both supported */
-      }
-      body {
+        color-scheme: light dark;
+        --spotify-green: #1db954;
+        --spotify-green-hover: #1ed760;
         --text-color: #222;
-        --bkg-color: #fbfbfb;
-        --lighten-bkg-color: #cccccc;
-      }
-      body.dark-theme {
-        --text-color: #c5c5c5;
-        --bkg-color: #333333;
-        --lighten-bkg-color: #4c4c4c;
+        --text-muted: #666;
+        --bkg-color: #f5f5f5;
+        --card-color: #ffffff;
+        --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        --border-color: #e0e0e0;
+        --kbd-bg: #f0f0f0;
+        --kbd-border: #ccc;
       }
 
       @media (prefers-color-scheme: dark) {
-        /* defaults to dark theme */
-        body {
-          --text-color: #c5c5c5;
-          --bkg-color: #333333;
-          --lighten-bkg-color: #4c4c4c;
+        :root {
+          --text-color: #e0e0e0;
+          --text-muted: #999;
+          --bkg-color: #121212;
+          --card-color: #1e1e1e;
+          --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+          --border-color: #333;
+          --kbd-bg: #2a2a2a;
+          --kbd-border: #444;
         }
-        body.light-theme {
-          --text-color: #222;
-          --bkg-color: #fbfbfb;
-          --lighten-bkg-color: #cccccc;
-        }
+      }
 
-        .need-share-button_dropdown {
-          background-color: #272727 !important;
-        }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
 
       body {
-        background-color: var(--bkg-color) !important;
-        color: var(--text-color) !important;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          sans-serif;
+        background-color: var(--bkg-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        padding: 20px;
       }
 
       .container {
-        text-align: center;
-        font-size: 16px;
+        max-width: 700px;
+        margin: 0 auto;
       }
-      .link-github {
-        vertical-align: middle;
+
+      /* Firefox Banner */
+      .firefox-banner {
+        display: none;
+        background: linear-gradient(135deg, #ff6b35, #f7931e);
+        color: white;
+        padding: 16px 20px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        position: relative;
+      }
+
+      .firefox-banner.show {
+        display: block;
+      }
+
+      .firefox-banner h3 {
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .firefox-banner p {
+        font-size: 14px;
+        opacity: 0.95;
+      }
+
+      .firefox-banner .dismiss-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .firefox-banner .dismiss-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      /* Header */
+      .header {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+
+      .ascii-art {
+        font-family: monospace;
+        font-size: 12px;
+        line-height: 1.2;
+        white-space: pre;
+        color: var(--spotify-green);
+        margin-bottom: 16px;
+        overflow-x: auto;
+      }
+
+      /* Cards */
+      .card {
+        background: var(--card-color);
+        border-radius: 16px;
+        box-shadow: var(--card-shadow);
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .card-header i {
+        font-size: 24px;
+        color: var(--spotify-green);
+      }
+
+      .card-header h2 {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      /* Keyboard Shortcuts */
+      .chrome-notice {
+        background: rgba(29, 185, 84, 0.1);
+        border: 1px solid var(--spotify-green);
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+      }
+
+      .chrome-notice strong {
+        color: var(--spotify-green);
+      }
+
+      .shortcut-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .shortcut-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .shortcut-item:last-child {
+        border-bottom: none;
+      }
+
+      .shortcut-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .shortcut-label i {
+        width: 20px;
+        color: var(--text-muted);
+      }
+
+      .shortcut-keys {
+        display: flex;
+        gap: 4px;
+      }
+
+      kbd {
+        background: var(--kbd-bg);
+        border: 1px solid var(--kbd-border);
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 500;
+        min-width: 32px;
+        text-align: center;
+        box-shadow: 0 2px 0 var(--kbd-border);
+      }
+
+      .btn-setup-shortcuts {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--spotify-green);
+        color: white;
+        border: none;
+        border-radius: 24px;
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        margin-top: 16px;
+        transition: background 0.2s;
+      }
+
+      .btn-setup-shortcuts:hover {
+        background: var(--spotify-green-hover);
+      }
+
+      /* Links & Resources */
+      .link-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .link-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: var(--bkg-color);
+        border-radius: 10px;
+        text-decoration: none;
+        color: var(--text-color);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .link-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .link-item i {
+        font-size: 20px;
+        color: var(--spotify-green);
+        width: 24px;
+        text-align: center;
+      }
+
+      .link-item .link-text {
+        flex: 1;
+      }
+
+      .link-item .link-title {
+        font-weight: 500;
+        margin-bottom: 2px;
+      }
+
+      .link-item .link-desc {
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      .link-item .fa-external-link {
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      .privacy-highlight {
+        background: rgba(29, 185, 84, 0.1);
+        border: 1px solid rgba(29, 185, 84, 0.3);
+      }
+
+      .privacy-highlight i {
+        color: var(--spotify-green);
+      }
+
+      /* Support Section */
+      .support-text {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 15px;
+      }
+
+      .support-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+      }
+
+      .btn-support {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border-radius: 24px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .btn-support:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-github {
+        background: #24292e;
+        color: white;
+      }
+
+      .btn-coffee {
+        background: #ffdd00;
+        color: #000;
+      }
+
+      .btn-share {
+        background: var(--spotify-green);
+        color: white;
+      }
+
+      .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .social-links a {
+        color: var(--text-muted);
+        font-size: 20px;
+        transition: color 0.2s;
+      }
+
+      .social-links a:hover {
+        color: var(--spotify-green);
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        margin-top: 32px;
+        padding-top: 20px;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+
+      .footer a {
+        color: var(--spotify-green);
+        text-decoration: none;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
       }
     </style>
   </head>
 
   <body>
     <div class="container">
-      <div class="row">
-        <div>
-          <!-- http://patorjk.com/software/taag/#p=display&h=1&v=1&f=Swan&t=Spotify%20on%20Browser -->
-          <pre class="ascii-title">
+      <!-- Firefox Autoplay Banner -->
+      <div id="firefox-banner" class="firefox-banner">
+        <button class="dismiss-btn" onclick="dismissBanner()">&times;</button>
+        <h3>
+          <i class="fa fa-exclamation-triangle"></i> Enable Autoplay First!
+        </h3>
+        <p>
+          Firefox requires autoplay permission for this extension to work. Click
+          the lock icon in your address bar → Permissions → Allow Audio and
+          Video.
+        </p>
+      </div>
+
+      <!-- Header -->
+      <header class="header">
+        <pre class="ascii-art">
                                                                               
                                                                               
  .-.           .       .-.                 .--.                               
@@ -69,138 +408,228 @@
      |                      ;                                                 
      '                   `-'                                                  
     </pre
+        >
+      </header>
+
+      <!-- Section 1: Keyboard Shortcuts -->
+      <section class="card">
+        <div class="card-header">
+          <i class="fa fa-keyboard-o"></i>
+          <h2>Keyboard Shortcuts</h2>
+        </div>
+
+        <div id="chrome-notice" class="chrome-notice" style="display: none">
+          <strong><i class="fa fa-info-circle"></i> Chrome Users:</strong>
+          Chrome doesn't set global shortcuts by default. These are suggested
+          keys — please set them up manually using the button below.
+        </div>
+
+        <div class="shortcut-list">
+          <div class="shortcut-item">
+            <div class="shortcut-label">
+              <i class="fa fa-step-backward"></i>
+              <span>Previous Track</span>
+            </div>
+            <div class="shortcut-keys">
+              <kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>7</kbd>
+            </div>
+          </div>
+          <div class="shortcut-item">
+            <div class="shortcut-label">
+              <i class="fa fa-play"></i>
+              <span>Play / Pause</span>
+            </div>
+            <div class="shortcut-keys">
+              <kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>8</kbd>
+            </div>
+          </div>
+          <div class="shortcut-item">
+            <div class="shortcut-label">
+              <i class="fa fa-step-forward"></i>
+              <span>Next Track</span>
+            </div>
+            <div class="shortcut-keys">
+              <kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>9</kbd>
+            </div>
+          </div>
+          <div class="shortcut-item">
+            <div class="shortcut-label">
+              <i class="fa fa-heart"></i>
+              <span>Like Track</span>
+            </div>
+            <div class="shortcut-keys">
+              <kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>0</kbd>
+            </div>
+          </div>
+        </div>
+
+        <a id="setup-shortcuts-btn" class="btn-setup-shortcuts" href="#">
+          <i class="fa fa-cog"></i>
+          Set Up Shortcuts
+        </a>
+      </section>
+
+      <!-- Section 2: Links & Resources -->
+      <section class="card">
+        <div class="card-header">
+          <i class="fa fa-link"></i>
+          <h2>Links & Resources</h2>
+        </div>
+
+        <div class="link-list">
+          <a
+            href="https://github.com/revir/spotify-on-browser/blob/main/privacy.md"
+            target="_blank"
+            class="link-item privacy-highlight"
           >
-          <div id="need-auto-play" style="display: none">
-            <h3><strong style="color: red">First, enable autoplay!</strong></h3>
-            <p>
-              In order to make it work, you need to grant permission for
-              autoplay on Firefox.
-            </p>
-            <iframe
-              width="560"
-              height="315"
-              src="https://www.youtube.com/embed/Ba46hoPn67E?autoplay=1"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          </div>
-
-          <p>If you like it, please share it. It really helps! Thank you.</p>
-
-          <div class="wrapper">
-            <div
-              id="i-share"
-              data-share-url="https://github.com/revir/spotify-on-browser"
-              data-share-title="A mini Spotify player on Browser makes life easier"
-              class="need-share-panel need-share-button"
-            ></div>
-          </div>
-          <h2 class="pull-left">Default keyboard shortcuts</h2>
-          <ul style="display: inline-block; margin: auto; text-align: left">
-            <li><strong>Play previous track:</strong> Ctrl+shift+7</li>
-            <li>
-              <strong
-                >Play or
-                pause:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong
-              >Ctrl+shift+8
-            </li>
-            <li>
-              <strong
-                >Play next track:
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong
-              >Ctrl+shift+9
-            </li>
-            <li>
-              <strong
-                >Like the track:
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong
-              >Ctrl+shift+0
-            </li>
-          </ul>
-          <br /><br />
-          <span
-            >These keys might be used by other programs. If they are not working
-            for you, set them by yourself.</span
-          ><br />
-
-          <a
-            id="open-shortcuts"
-            target="_blank"
-            href="chrome://extensions/shortcuts"
-            >Change the keyboard shortcuts
+            <i class="fa fa-shield"></i>
+            <div class="link-text">
+              <div class="link-title">Privacy Policy</div>
+              <div class="link-desc">
+                We don't collect any browser info or user data. Only your player
+                settings are stored locally in your browser.
+              </div>
+            </div>
+            <i class="fa fa-external-link"></i>
           </a>
           <a
-            id="how-to-open-shortcuts"
-            target="_blank"
-            href="https://bug1303384.bmoattachments.org/attachment.cgi?id=9051647"
-            >How to change the keyboard shortcuts?
-          </a>
-
-          <br /><br />
-          <a
-            id="open-changelog"
-            target="_blank"
             href="https://github.com/revir/spotify-on-browser/blob/main/CHANGELOG.md"
-            >Check out the changelog for the new update!
+            target="_blank"
+            class="link-item"
+          >
+            <i class="fa fa-list-alt"></i>
+            <div class="link-text">
+              <div class="link-title">Changelog</div>
+              <div class="link-desc">See what's new in the latest update</div>
+            </div>
+            <i class="fa fa-external-link"></i>
           </a>
-          <br />
-          <p>
-            Follow on:
-            <a
-              class="text-danger"
-              target="_blank"
-              href="https://pnl.dev/topic/2/"
-            >
-              Programming N' Language Community,</a
-            >
-            <a
-              class="text-muted"
-              target="_blank"
-              href="https://discord.gg/sazRac4kSa"
-            >
-              Discord,
-            </a>
-            <a
-              class="text-muted"
-              target="_blank"
-              href="https://bsky.app/profile/pnlpal.bsky.social"
-            >
-              BlueSky
-            </a>
-          </p>
+          <a
+            href="https://github.com/revir/spotify-on-browser"
+            target="_blank"
+            class="link-item"
+          >
+            <i class="fa fa-github"></i>
+            <div class="link-text">
+              <div class="link-title">GitHub Repository</div>
+              <div class="link-desc">
+                View source code, report issues, contribute
+              </div>
+            </div>
+            <i class="fa fa-external-link"></i>
+          </a>
+        </div>
+      </section>
 
-          <br /><br /><br /><br />
-          <p>
-            It's derived from
-            <a href="https://github.com/pnlpal/dictionaries" target="_blank"
-              >Dictionariez</a
-            >
-            , which is a universal dictionary app that helps you learn multiple
-            languages in the world.
-            <br />
-            And it's open-source, stars and issues would be appreciated:
-            <a
-              href="https://github.com/revir/spotify-on-browser"
-              target="_blank"
-              class="link-github"
-              ><i
-                class="fa fa-github"
-                title="Bla Bla, it's Open Source."
-              ></i></a
-            >.
-          </p>
+      <!-- Section 3: Support -->
+      <section class="card">
+        <div class="card-header">
+          <i class="fa fa-heart"></i>
+          <h2>Support</h2>
+        </div>
+
+        <p class="support-text">
+          If you enjoy this extension, consider giving it a ⭐ on GitHub or
+          buying me a coffee. It helps a lot!
+        </p>
+
+        <div class="support-buttons">
+          <a
+            href="https://github.com/revir/spotify-on-browser"
+            target="_blank"
+            class="btn-support btn-github"
+          >
+            <i class="fa fa-star"></i>
+            Star on GitHub
+          </a>
           <a
             href="https://www.buymeacoffee.com/riveryoung"
-            class="buymeacoffee"
             target="_blank"
-            ><img
-              src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
-              height="40"
-              alt="Buy Me A Coffee"
-          /></a>
+            class="btn-support btn-coffee"
+          >
+            <i class="fa fa-coffee"></i>
+            Buy Me a Coffee
+          </a>
         </div>
-      </div>
+
+        <div class="social-links">
+          <a
+            href="https://pnl.dev/topic/2/"
+            target="_blank"
+            title="PNL Community"
+          >
+            <i class="fa fa-comments"></i>
+          </a>
+          <a
+            href="https://discord.gg/sazRac4kSa"
+            target="_blank"
+            title="Discord"
+          >
+            <i class="fa fa-commenting"></i>
+          </a>
+          <a
+            href="https://bsky.app/profile/pnlpal.bsky.social"
+            target="_blank"
+            title="BlueSky"
+          >
+            <i class="fa fa-cloud"></i>
+          </a>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <p>
+          Built with ❤️ by
+          <a href="https://github.com/revir" target="_blank">revir</a> · Derived
+          from
+          <a href="https://github.com/pnlpal/dictionaries" target="_blank"
+            >Dictionariez</a
+          >
+        </p>
+      </footer>
     </div>
+
+    <script>
+      // Detect browser
+      const isFirefox = navigator.userAgent.toLowerCase().includes("firefox");
+      const isChrome =
+        navigator.userAgent.toLowerCase().includes("chrome") &&
+        !navigator.userAgent.toLowerCase().includes("edg");
+
+      // Show Firefox banner if needed
+      if (isFirefox) {
+        const banner = document.getElementById("firefox-banner");
+        const dismissed = localStorage.getItem("firefox-banner-dismissed");
+        if (!dismissed) {
+          banner.classList.add("show");
+        }
+      }
+
+      // Show Chrome notice
+      if (isChrome) {
+        document.getElementById("chrome-notice").style.display = "block";
+      }
+
+      // Setup shortcuts button
+      const setupBtn = document.getElementById("setup-shortcuts-btn");
+      if (isFirefox) {
+        setupBtn.href =
+          "https://support.mozilla.org/en-US/kb/manage-extension-shortcuts-firefox";
+        setupBtn.target = "_blank";
+      } else {
+        setupBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (chrome && chrome.runtime) {
+            chrome.runtime.sendMessage({ type: "open options shortcuts" });
+          }
+        });
+      }
+
+      function dismissBanner() {
+        document.getElementById("firefox-banner").classList.remove("show");
+        localStorage.setItem("firefox-banner-dismissed", "true");
+      }
+    </script>
   </body>
 </html>
