@@ -20,6 +20,48 @@ const waitForPlayer = (player, maxRetries = 20, interval = 100) => {
 };
 
 export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
+  const play = async () => {
+    const state = await player.getCurrentState();
+    player.currentState = state || null;
+    player.autoPlayError = null;
+
+    if (player.currentState?.track_window?.current_track) {
+      return player.togglePlay();
+    } else {
+      async function tryToPlay(retry = 0) {
+        await player.switchToThisPlayer().then(async (res) => {
+          if (res && res.error) {
+            console.error("Spotify switch to this player failed: ", res.error);
+            if (res.error.status > 400 && res.error.status < 500) {
+              if (res.error.status === 404 && retry < 1) {
+                await reconnectPlayer();
+                return tryToPlay(retry + 1);
+              } else if (res.error.status === 401 && retry < 1) {
+                localStorage.removeItem("spotify_access_token");
+                await reconnectPlayer();
+                return tryToPlay(retry + 1);
+              }
+            }
+            console.warn(
+              "Failed to switch playback to this player:",
+              res.error,
+            );
+            utils.send("spotify state changed", {
+              state: await getCurrentState(),
+            });
+          } else {
+            const savedVolume = localStorage.getItem("spotify_current_volume");
+            if (savedVolume) {
+              player.currentVolume = savedVolume;
+              player.setVolume(savedVolume);
+            }
+          }
+        });
+      }
+      return tryToPlay();
+    }
+  };
+
   message.on(
     "spotify authorized",
     ({ refresh_token, access_token, client_id }) => {
@@ -49,50 +91,7 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
     }
 
     if (action === "togglePlay") {
-      const state = await player.getCurrentState();
-      player.currentState = state || null;
-      player.autoPlayError = null;
-
-      if (player.currentState?.track_window?.current_track) {
-        return player.togglePlay();
-      } else {
-        async function tryToPlay(retry = 0) {
-          await player.switchToThisPlayer().then(async (res) => {
-            if (res && res.error) {
-              console.error(
-                "Spotify switch to this player failed: ",
-                res.error,
-              );
-              if (res.error.status > 400 && res.error.status < 500) {
-                if (res.error.status === 404 && retry < 1) {
-                  await reconnectPlayer();
-                  return tryToPlay(retry + 1);
-                } else if (res.error.status === 401 && retry < 1) {
-                  localStorage.removeItem("spotify_access_token");
-                  await reconnectPlayer();
-                  return tryToPlay(retry + 1);
-                }
-              }
-              console.warn(
-                "Failed to switch playback to this player:",
-                res.error,
-              );
-              utils.send("spotify state changed", {
-                state: await getCurrentState(),
-              });
-            } else {
-              const savedVolume = localStorage.getItem(
-                "spotify_current_volume",
-              );
-              if (savedVolume) {
-                player.currentVolume = savedVolume;
-                player.setVolume(savedVolume);
-              }
-            }
-          });
-        }
-        return tryToPlay();
-      }
+      return play();
     } else {
       if (action === "setVolume") {
         player.currentVolume = value;
@@ -178,7 +177,7 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
   message.on("offscreen toggle-feature-play", async () => {
     try {
       await waitForPlayer(player);
-      player.togglePlay();
+      play();
     } catch (e) {
       console.error("Player not ready:", e);
     }
