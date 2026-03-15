@@ -62,6 +62,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         currentVolume: player.currentVolume,
 
         autoPlayError: player.autoPlayError,
+        playError: player.playError,
       };
     } else {
       return { ready, autoPlayError: player.autoPlayError };

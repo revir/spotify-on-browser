@@ -24,6 +24,7 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
     const state = await player.getCurrentState();
     player.currentState = state || null;
     player.autoPlayError = null;
+    player.playError = null;
 
     if (player.currentState?.track_window?.current_track) {
       return player.togglePlay();
@@ -46,9 +47,19 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
               "Failed to switch playback to this player:",
               res.error,
             );
-            utils.send("spotify state changed", {
-              state: await getCurrentState(),
-            });
+            // Fallback: play user's liked songs
+            console.log("Fallback: playing user's liked songs");
+            await player
+              .playContext("spotify:user:me:collection")
+              .catch(async (e) => {
+                console.error("Fallback play also failed:", e);
+                player.playError =
+                  "Failed to play. Please try playing a track from Spotify app first.";
+
+                utils.send("spotify state changed", {
+                  state: await getCurrentState(),
+                });
+              });
           } else {
             const savedVolume = localStorage.getItem("spotify_current_volume");
             if (savedVolume) {

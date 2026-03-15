@@ -275,7 +275,10 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             else state.accountError
         else if state.autoPlayError
             $scope.errorMessage = state.autoPlayError
-            console.log "auto play error", state.autoPlayError
+            console.error "auto play error", state.autoPlayError
+        else if state.playError
+            $scope.errorMessage = state.playError
+            console.error "play error", state.playError
         else 
             # console.log "no error, state is ready."
             $scope.errorMessage = ''
