@@ -73,7 +73,7 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
     }
   };
   const handleAuthError = async (res) => {
-    if (res.status === 401 || res.error?.status === 401) {
+    if (res?.status === 401 || res?.error?.status === 401) {
       localStorage.removeItem("spotify_access_token");
       await reconnectPlayer();
     }

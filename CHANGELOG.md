@@ -1,3 +1,11 @@
+# v3.0.1 - 2026/03/15
+
+- Fixed AutoPlay warning on Firefox; users must enable AutoPlay for playback to start.
+- Playback now falls back to user's liked songs if switching to this player fails.
+- Added a link guiding users to resolve AutoPlay errors.
+- Introduced re-authentication flow when lacking permission to access the queue.
+- Improved handling of authentication errors for actions.
+
 # v3.0.0 - 2026/03/14
 
 A major milestone release with a completely redesigned player experience.
