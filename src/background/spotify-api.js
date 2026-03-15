@@ -330,6 +330,10 @@ export default (player) => {
       return request(uri).then((res) => {
         if (res?.error) {
           console.error("Spotify get queue failed: ", res.error);
+          // 401 means missing scope - user needs to re-authorize
+          if (res.status === 401 || res.error?.status === 401) {
+            return { currently_playing: null, queue: [], needsReauth: true };
+          }
           return { currently_playing: null, queue: [] };
         }
         return res;

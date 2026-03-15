@@ -189,7 +189,13 @@
                 <p class="queue-artist-name">{{track.artists[0].name}}</p>
               </div>
             </div>
-            <div class="queue-empty" ng-if="!queue.length">
+            <div class="queue-empty" ng-if="queueNeedsReauth">
+              <p>Permission needed</p>
+              <a href="#" ng-click="openReauth()" class="reauth-link"
+                >Re-authorize to view queue</a
+              >
+            </div>
+            <div class="queue-empty" ng-if="!queue.length && !queueNeedsReauth">
               <p>Queue is empty</p>
             </div>
           </div>

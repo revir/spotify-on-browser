@@ -80,6 +80,12 @@ message.on("open options", () => {
   chrome.runtime.openOptionsPage();
 });
 
+message.on("clear auth", async () => {
+  // Clear tokens in offscreen/controller where localStorage is accessible
+  await sendToOffscreen("offscreen clear auth");
+  chrome.runtime.openOptionsPage();
+});
+
 message.on("track saved", ({ trackId, trackName }) => {
   chrome.notifications.create(`notification-${trackId}`, {
     message: `Great, "${trackName}" has been saved in your liked songs.`,

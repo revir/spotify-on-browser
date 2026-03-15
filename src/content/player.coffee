@@ -113,6 +113,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     # Queue
     $scope.showQueue = false
     $scope.queue = []
+    $scope.queueNeedsReauth = false
 
     $scope.toggleQueue = () ->
         $scope.showQueue = !$scope.showQueue
@@ -138,8 +139,12 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
     loadQueue = () ->
         result = await utils.send 'getQueue'
-        if result?.queue
+        if result?.needsReauth
+            $scope.queueNeedsReauth = true
+            $scope.$apply() if !$scope.$$phase
+        else if result?.queue
             $scope.queue = result.queue
+            $scope.queueNeedsReauth = false
             $scope.$apply() if !$scope.$$phase
             refreshTooltips()
 
@@ -430,6 +435,15 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
     $scope.openOptions = () ->
         utils.send 'open options'
+
+    $scope.openReauth = () ->
+        # Clear tokens to force re-authorization
+        await utils.send 'clear auth'
+        $scope.showQueue = false
+        $scope.queueNeedsReauth = false
+        window.open('/authorized.html', '_blank')
+        $scope.$apply()
+        
 
     getState()
 ]

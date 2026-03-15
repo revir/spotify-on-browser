@@ -176,6 +176,11 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
   message.on("offscreen setRepeatMode", ({ state }) => {
     return player?.setRepeatMode(state);
   });
+  message.on("offscreen clear auth", () => {
+    // Clear tokens to force re-authorization for new scopes
+    localStorage.removeItem("spotify_access_token");
+    localStorage.removeItem("spotify_refresh_token");
+  });
   message.on("offscreen toggle-feature-previous", async () => {
     try {
       await waitForPlayer(player);
