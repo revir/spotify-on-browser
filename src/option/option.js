@@ -44,17 +44,17 @@ if (isFirefox && (!isUpdated || needAutoPlay)) {
   // Always show if needAutoPlay is set, even if previously dismissed
   if (!dismissed || needAutoPlay) {
     banner.classList.add("show");
-  }
 
-  // Create a Vimeo iframe to trigger autoplay permission in Firefox
-  // Hidden but unmuted - Firefox will block it and show permission icon in address bar
-  const iframe = document.createElement("iframe");
-  iframe.src =
-    "https://player.vimeo.com/video/76979871?autoplay=1&muted=0&background=1";
-  iframe.style.cssText =
-    "position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;";
-  iframe.allow = "autoplay; fullscreen";
-  document.body.appendChild(iframe);
+    // Create a Vimeo iframe to trigger autoplay permission in Firefox
+    // Hidden but unmuted - Firefox will block it and show permission icon in address bar
+    const iframe = document.createElement("iframe");
+    iframe.src =
+      "https://player.vimeo.com/video/218724174?autoplay=1&muted=0&background=1";
+    iframe.style.cssText =
+      "position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;";
+    iframe.allow = "autoplay; fullscreen";
+    document.body.appendChild(iframe);
+  }
 }
 
 if (isChrome) {
