@@ -1,23 +1,34 @@
-listeners = {}
+# Share listeners globally for Firefox direct calls (multiple background scripts)
+listeners = globalThis.__messageListeners or {}
+globalThis.__messageListeners = listeners
 openOptionsTo = ''
 
-chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
-    if request.type in Object.keys(listeners)
-        ret = listeners[request.type](request, sender)
-        if ret?.then
-            ret.catch (err) ->
-                console.error "[message] #{request.type} failed: ", err, request
-            .then sendResponse
+# Only register the message listener once
+unless globalThis.__messageListenerRegistered
+    globalThis.__messageListenerRegistered = true
+    chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
+        if request.type in Object.keys(listeners)
+            ret = listeners[request.type](request, sender)
+            if ret?.then
+                ret.catch (err) ->
+                    console.error "[message] #{request.type} failed: ", err, request
+                .then sendResponse
 
-        else
-            sendResponse ret
+            else
+                sendResponse ret
 
-    # sendResponse becomes invalid when the event listener returns,
-    # unless you return true from the event listener to indicate you wish to send a response asynchronously
-    return true
+        # sendResponse becomes invalid when the event listener returns,
+        # unless you return true from the event listener to indicate you wish to send a response asynchronously
+        return true
 
 
 export default {
     on: (type, callback) ->
         listeners[type] = callback
+    
+    # Direct call for Firefox background-to-background communication
+    call: (type, data = {}) ->
+        if listeners[type]
+            return Promise.resolve(listeners[type](data, null))
+        return Promise.reject(new Error("No handler for #{type}"))
 }

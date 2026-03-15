@@ -4,6 +4,15 @@ import message from "./message.coffee";
 let creating = null;
 let spotifyWebPlaybackSDKPromise = null;
 
+// Helper for sending messages to offscreen/controller
+// On Firefox, uses direct call since background can't message itself
+const sendToOffscreen = (type, data = {}) => {
+  if (utils.isFirefox()) {
+    return message.call(type, data);
+  }
+  return utils.send(type, data);
+};
+
 const setupOffscreenDocument = async () => {
   if (utils.isFirefox()) {
     // Firefox does not support offscreen document
@@ -59,7 +68,7 @@ setupOffscreenDocument().catch(console.error);
 
 chrome.commands.onCommand.addListener(async function (command) {
   await setupOffscreenDocument().catch(console.error);
-  utils.send("offscreen " + command);
+  sendToOffscreen("offscreen " + command);
 });
 
 message.on("open options shortcuts", () => {
@@ -82,83 +91,81 @@ message.on("track saved", ({ trackId, trackName }) => {
 
 message.on("spotify current state", async () => {
   await setupOffscreenDocument().catch(console.error);
-  if (!utils.isFirefox()) {
-    const state = await utils.send("get spotify current state");
-    // console.log("Spotify current state: ", state);
-    return state;
-  }
+  const state = await sendToOffscreen("get spotify current state");
+  // console.log("Spotify current state: ", state);
+  return state;
 });
 
 // Ensure offscreen document exists before forwarding player-related messages
 message.on("spotify action", async (data) => {
   await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen spotify action", data);
+  return sendToOffscreen("offscreen spotify action", data);
 });
 
 message.on("checkUserSavedTrack", async (data) => {
   await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen checkUserSavedTrack", data);
+  return sendToOffscreen("offscreen checkUserSavedTrack", data);
 });
 
 message.on("saveUserTrack", async (data) => {
   await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen saveUserTrack", data);
+  return sendToOffscreen("offscreen saveUserTrack", data);
 });
 
 message.on("removeUserSavedTrack", async (data) => {
   await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen removeUserSavedTrack", data);
+  return sendToOffscreen("offscreen removeUserSavedTrack", data);
 });
 
 // Episode (podcast) handlers
 message.on("checkUserSavedEpisode", async (data) => {
   await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen checkUserSavedEpisode", data);
+  return sendToOffscreen("offscreen checkUserSavedEpisode", data);
 });
 
 message.on("saveUserEpisode", async (data) => {
   await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen saveUserEpisode", data);
+  return sendToOffscreen("offscreen saveUserEpisode", data);
 });
 
 message.on("removeUserSavedEpisode", async (data) => {
   await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen removeUserSavedEpisode", data);
+  return sendToOffscreen("offscreen removeUserSavedEpisode", data);
 });
 
 message.on("getPlaylists", async () => {
   await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen getPlaylists");
+  return sendToOffscreen("offscreen getPlaylists");
 });
 
 message.on("getSavedShows", async () => {
   await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen getSavedShows");
+  return sendToOffscreen("offscreen getSavedShows");
 });
 
 message.on("getSavedAlbums", async () => {
   await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen getSavedAlbums");
+  return sendToOffscreen("offscreen getSavedAlbums");
 });
 
 message.on("getFeaturedPlaylists", async () => {
   await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen getFeaturedPlaylists");
+  return sendToOffscreen("offscreen getFeaturedPlaylists");
 });
 
 message.on("getQueue", async () => {
   await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen getQueue");
+  return sendToOffscreen("offscreen getQueue");
 });
 
 message.on("setShuffle", async (data) => {
   await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen setShuffle", data);
+  return sendToOffscreen("offscreen setShuffle", data);
 });
 
 message.on("setRepeatMode", async (data) => {
   await setupOffscreenDocument().catch(console.error);
-  return utils.send("offscreen setRepeatMode", data);
+  return sendToOffscreen("offscreen setRepeatMode", data);
 });
 
 message.on("spotify sdk player is ready", async () => {
@@ -167,11 +174,11 @@ message.on("spotify sdk player is ready", async () => {
 });
 
 global.getCurrentPlaying = () => {
-  return utils.send("get spotify current playing").then(console.log);
+  return sendToOffscreen("get spotify current playing").then(console.log);
 };
 
 global.getCurrentState = () => {
-  return utils.send("get spotify current state").then(console.log);
+  return sendToOffscreen("get spotify current state").then(console.log);
 };
 
 chrome.runtime.onInstalled.addListener(async function (details) {
