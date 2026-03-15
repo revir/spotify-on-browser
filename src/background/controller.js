@@ -72,6 +72,13 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
       return tryToPlay();
     }
   };
+  const handleAuthError = async (res) => {
+    if (res.status === 401 || res.error?.status === 401) {
+      localStorage.removeItem("spotify_access_token");
+      await reconnectPlayer();
+    }
+    return res;
+  };
 
   message.on(
     "spotify authorized",
@@ -112,17 +119,17 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
         return player.seek(value);
       }
       if (action === "playContext") {
-        return player.playContext(value);
+        return player.playContext(value).then(handleAuthError);
       }
       if (action === "playTrack") {
-        return player.playTrack(value);
+        return player.playTrack(value).then(handleAuthError);
       }
       // Use Web API for next/previous - works for podcasts
       if (action === "nextTrack") {
-        return player.skipToNext();
+        return player.skipToNext().then(handleAuthError);
       }
       if (action === "previousTrack") {
-        return player.skipToPrevious();
+        return player.skipToPrevious().then(handleAuthError);
       }
       return player[action](value);
     }
@@ -140,32 +147,32 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
     return player?.checkUserSavedTrack(trackId);
   });
   message.on("offscreen saveUserTrack", ({ trackId }) => {
-    return player?.saveUserTrack(trackId);
+    return player?.saveUserTrack(trackId).then(handleAuthError);
   });
   message.on("offscreen removeUserSavedTrack", ({ trackId }) => {
-    return player?.removeUserSavedTrack(trackId);
+    return player?.removeUserSavedTrack(trackId).then(handleAuthError);
   });
   // Episode (podcast) handlers
   message.on("offscreen checkUserSavedEpisode", ({ episodeId }) => {
     return player?.checkUserSavedEpisode(episodeId);
   });
   message.on("offscreen saveUserEpisode", ({ episodeId }) => {
-    return player?.saveUserEpisode(episodeId);
+    return player?.saveUserEpisode(episodeId).then(handleAuthError);
   });
   message.on("offscreen removeUserSavedEpisode", ({ episodeId }) => {
-    return player?.removeUserSavedEpisode(episodeId);
+    return player?.removeUserSavedEpisode(episodeId).then(handleAuthError);
   });
   message.on("offscreen getPlaylists", () => {
-    return player?.getPlaylists();
+    return player?.getPlaylists().then(handleAuthError);
   });
   message.on("offscreen getSavedShows", () => {
-    return player?.getSavedShows();
+    return player?.getSavedShows().then(handleAuthError);
   });
   message.on("offscreen getSavedAlbums", () => {
-    return player?.getSavedAlbums();
+    return player?.getSavedAlbums().then(handleAuthError);
   });
   message.on("offscreen getFeaturedPlaylists", () => {
-    return player?.getFeaturedPlaylists();
+    return player?.getFeaturedPlaylists().then(handleAuthError);
   });
   message.on("offscreen getQueue", () => {
     return player?.getQueue();
