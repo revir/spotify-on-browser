@@ -241,6 +241,20 @@ body {
         0 1px 3px rgba(0, 0, 0, 0.8),
         0 2px 8px rgba(0, 0, 0, 0.6),
         0 0 20px rgba(0, 0, 0, 0.4);
+
+      // Handle long names (especially podcasts)
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 360px;
+      line-height: 1.2;
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
     }
     .artist-name {
       font-size: 14px;
