@@ -8,6 +8,7 @@ const isChrome =
   navigator.userAgent.toLowerCase().includes("chrome") &&
   !navigator.userAgent.toLowerCase().includes("edg");
 const isUpdated = location.search.includes("updated");
+const needAutoPlay = location.search.includes("needAutoPlay");
 // Show update dialog if ?updated param is present
 if (isUpdated) {
   const dialog = document.createElement("div");
@@ -37,10 +38,11 @@ if (isUpdated) {
 }
 
 // Show Firefox banner if needed
-if (isFirefox && !isUpdated) {
+if (isFirefox && (!isUpdated || needAutoPlay)) {
   const banner = document.getElementById("firefox-banner");
   const dismissed = localStorage.getItem("firefox-banner-dismissed");
-  if (!dismissed) {
+  // Always show if needAutoPlay is set, even if previously dismissed
+  if (!dismissed || needAutoPlay) {
     banner.classList.add("show");
   }
 
@@ -53,7 +55,9 @@ if (isFirefox && !isUpdated) {
     "position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;";
   iframe.allow = "autoplay; fullscreen";
   document.body.appendChild(iframe);
-} else if (isChrome) {
+}
+
+if (isChrome) {
   const chromeDismissed = localStorage.getItem("chrome-banner-dismissed");
   if (!chromeDismissed) {
     document.getElementById("chrome-action-banner").classList.add("show");

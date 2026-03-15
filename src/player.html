@@ -83,6 +83,14 @@
           <div ng-if="spotifyState && errorMessage" class="error-message">
             <i class="fa fa-warning"></i>
             {{errorMessage}}
+            <a
+              ng-if="errorLink"
+              ng-href="{{errorLink}}"
+              target="_blank"
+              class="error-link"
+            >
+              <i class="fa fa-external-link"></i> How to fix
+            </a>
           </div>
           <a
             href=""

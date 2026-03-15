@@ -268,6 +268,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     updateState = (state) ->
         $scope.spotifyState = state 
         $scope.isSpotifyReady = state.ready
+        $scope.errorLink = null
 
         if !state.ready
             $scope.errorMessage =  if state.accountError?.includes("premium users only") 
@@ -275,6 +276,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             else state.accountError
         else if state.autoPlayError
             $scope.errorMessage = state.autoPlayError
+            $scope.errorLink = chrome.runtime.getURL('option.html?needAutoPlay=1')
             console.error "auto play error", state.autoPlayError
         else if state.playError
             $scope.errorMessage = state.playError
