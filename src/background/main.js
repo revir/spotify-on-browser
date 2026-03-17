@@ -192,12 +192,12 @@ chrome.runtime.onInstalled.addListener(async function (details) {
     chrome.tabs.create({
       url: chrome.runtime.getURL("option.html?welcome"),
     });
-  } else if (
-    [chrome.runtime.OnInstalledReason.UPDATE].includes(details.reason)
-  ) {
-    chrome.tabs.create({
-      url: chrome.runtime.getURL("option.html?updated"),
-    });
+    // } else if (
+    //   [chrome.runtime.OnInstalledReason.UPDATE].includes(details.reason)
+    // ) {
+    //   chrome.tabs.create({
+    //     url: chrome.runtime.getURL("option.html?updated"),
+    //   });
   }
 });
 
