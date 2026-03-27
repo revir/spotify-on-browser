@@ -107,6 +107,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.activeTab = 'playing'
     $scope.playlists = []
     $scope.savedShows = []
+    $scope.savedEpisodes = []
     $scope.savedAlbums = []
     $scope.featuredPlaylists = []
 
@@ -184,6 +185,8 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             loadPlaylists()
         if $scope.savedShows.length == 0
             loadSavedShows()
+        if $scope.savedEpisodes.length == 0
+            loadSavedEpisodes()
         if $scope.savedAlbums.length == 0
             loadSavedAlbums()
         if $scope.featuredPlaylists.length == 0
@@ -200,6 +203,13 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         shows = await utils.send 'getSavedShows'
         if shows?.items
             $scope.savedShows = shows.items.map((item) -> item.show)
+            $scope.$apply() if !$scope.$$phase
+            refreshTooltips()
+
+    loadSavedEpisodes = () ->
+        episodes = await utils.send 'getSavedEpisodes'
+        if episodes?.items
+            $scope.savedEpisodes = episodes.items.map((item) -> item.episode).filter((ep) -> ep.uri)
             $scope.$apply() if !$scope.$$phase
             refreshTooltips()
 
@@ -232,6 +242,13 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.playShow = (show) ->
         utils.send 'spotify action', { action: 'playContext', value: show.uri }
         $scope.activeTab = 'playing'
+
+    $scope.playSavedEpisodes = () ->
+        if $scope.savedEpisodes.length > 0
+            # Play all saved episodes using their URIs
+            uris = $scope.savedEpisodes.map((ep) -> ep.uri)
+            utils.send 'playUris', { uris }
+            $scope.activeTab = 'playing'
 
     getState = () ->
         res = await utils.send 'spotify current state'

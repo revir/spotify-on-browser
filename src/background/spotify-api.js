@@ -303,6 +303,28 @@ export default (player) => {
       });
     },
 
+    getSavedEpisodes(limit = 20) {
+      const uri = `https://api.spotify.com/v1/me/episodes?limit=${limit}`;
+      return request(uri).then((res) => {
+        if (res?.error) {
+          console.error("Spotify get saved episodes failed: ", res.error);
+          return { items: [] };
+        }
+        return res;
+      });
+    },
+
+    playUris(uris) {
+      const url = `https://api.spotify.com/v1/me/player/play?device_id=${player.deviceId}`;
+      return request(
+        url,
+        {
+          uris: uris,
+        },
+        "PUT",
+      );
+    },
+
     getSavedAlbums(limit = 20) {
       const uri = `https://api.spotify.com/v1/me/albums?limit=${limit}`;
       return request(uri).then((res) => {

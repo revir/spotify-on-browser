@@ -371,6 +371,19 @@
         <div class="library-section">
           <h3 class="section-title">Podcasts</h3>
           <div class="playlist-grid">
+            <!-- Saved Episodes (only show if user has saved episodes) -->
+            <div
+              class="playlist-card"
+              ng-if="savedEpisodes.length"
+              ng-click="playSavedEpisodes()"
+              data-toggle="tooltip"
+              title="Saved Episodes"
+            >
+              <div class="playlist-cover saved-episodes-cover">
+                <i class="fa fa-bookmark"></i>
+              </div>
+              <p class="playlist-name">Saved Episodes</p>
+            </div>
             <div
               class="playlist-card"
               ng-repeat="show in savedShows"
@@ -387,7 +400,10 @@
               </div>
               <p class="playlist-name">{{show.name}}</p>
             </div>
-            <div class="playlist-card empty-state" ng-if="!savedShows.length">
+            <div
+              class="playlist-card empty-state"
+              ng-if="!savedShows.length && !savedEpisodes.length"
+            >
               <p>No podcasts</p>
             </div>
           </div>

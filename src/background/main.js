@@ -149,6 +149,16 @@ message.on("getSavedShows", async () => {
   return sendToOffscreen("offscreen getSavedShows");
 });
 
+message.on("getSavedEpisodes", async () => {
+  await setupOffscreenDocument().catch(console.error);
+  return sendToOffscreen("offscreen getSavedEpisodes");
+});
+
+message.on("playUris", async (data) => {
+  await setupOffscreenDocument().catch(console.error);
+  return sendToOffscreen("offscreen playUris", data);
+});
+
 message.on("getSavedAlbums", async () => {
   await setupOffscreenDocument().catch(console.error);
   return sendToOffscreen("offscreen getSavedAlbums");

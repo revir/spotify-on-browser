@@ -168,6 +168,12 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
   message.on("offscreen getSavedShows", () => {
     return player?.getSavedShows().then(handleAuthError);
   });
+  message.on("offscreen getSavedEpisodes", () => {
+    return player?.getSavedEpisodes().then(handleAuthError);
+  });
+  message.on("offscreen playUris", ({ uris }) => {
+    return player?.playUris(uris).then(handleAuthError);
+  });
   message.on("offscreen getSavedAlbums", () => {
     return player?.getSavedAlbums().then(handleAuthError);
   });
