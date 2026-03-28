@@ -68,6 +68,18 @@
         </div>
       </div>
 
+      <!-- Feedback Prompt Banner -->
+      <div class="feedback-banner" ng-show="showFeedbackPrompt">
+        <span
+          >If you like this app, please
+          <a href="" ng-click="rateFeedback()">rate it</a>. It really
+          helps!</span
+        >
+        <button class="feedback-dismiss" ng-click="dismissFeedback()">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+
       <!-- Playing View -->
       <div class="player-context" ng-show="activeTab === 'playing'">
         <div class="text-center preliminary">

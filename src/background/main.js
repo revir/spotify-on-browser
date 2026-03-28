@@ -189,6 +189,24 @@ message.on("spotify sdk player is ready", async () => {
   global.spotifyWebPlaybackSDKResolver();
 });
 
+message.on("open feedback", () => {
+  const feedbackLink = (() => {
+    if (utils.isFirefox()) {
+      const appId = "spotify-on-browser";
+      return `https://addons.mozilla.org/firefox/addon/${appId}/reviews`;
+    } else if (navigator.userAgent.includes("Edg/")) {
+      const extId = chrome.runtime.id;
+      return `https://microsoftedge.microsoft.com/addons/detail/${extId}`;
+    } else {
+      const extId = chrome.runtime.id;
+      return `https://chrome.google.com/webstore/detail/${extId}/reviews`;
+    }
+  })();
+  chrome.tabs.create({
+    url: feedbackLink,
+  });
+});
+
 global.getCurrentPlaying = () => {
   return sendToOffscreen("get spotify current playing").then(console.log);
 };

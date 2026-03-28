@@ -152,6 +152,61 @@ body {
   }
 }
 
+// Feedback Prompt Banner
+.feedback-banner {
+  position: fixed;
+  top: 40px;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #1db954, #1ed760);
+  color: #fff;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  z-index: 99;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  animation: slideDown 0.3s ease-out;
+
+  a {
+    color: #fff;
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+
+  .feedback-dismiss {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    padding: 4px;
+    font-size: 14px;
+    line-height: 1;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 .player-context {
   height: 195px;
   margin-top: 40px;

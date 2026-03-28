@@ -64,6 +64,11 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.duration = 0
     currentTrackId = null
     currentItemType = 'track'  # 'track' or 'episode'
+    wasPlaying = false
+
+    # Feedback prompt
+    $scope.showFeedbackPrompt = false
+    feedbackTimeout = null
 
     formatTime = (ms) ->
         return '0:00' if !ms
@@ -360,6 +365,13 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         $scope.currentVolume = if state.currentVolume? then state.currentVolume * 100 else $scope.currentVolume
         $scope.playing = !state.paused and state.current_track
 
+        # Increment play_counter when playback starts
+        if $scope.playing and !wasPlaying
+            count = parseInt(localStorage.getItem('play_counter') or '0') + 1
+            localStorage.setItem('play_counter', count)
+            checkFeedbackPrompt(count)
+        wasPlaying = $scope.playing
+
         # Sync playback mode from state
         # repeat_mode: 0=off, 1=context, 2=track (repeat one)
         # shuffle: boolean
@@ -452,6 +464,27 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
     $scope.openOptions = () ->
         utils.send 'open options'
+
+    # Feedback prompt functions
+    checkFeedbackPrompt = (count) ->
+        return if count <= 30
+        return if localStorage.getItem('feedback_rated')
+        $scope.showFeedbackPrompt = true
+        $scope.$apply() if !$scope.$$phase
+        feedbackTimeout = setTimeout closeFeedbackPrompt, 5000
+
+    closeFeedbackPrompt = () ->
+        $scope.showFeedbackPrompt = false
+        clearTimeout(feedbackTimeout) if feedbackTimeout
+        $scope.$apply() if !$scope.$$phase
+
+    $scope.rateFeedback = () ->
+        localStorage.setItem('feedback_rated', 'true')
+        utils.send 'open feedback'
+        closeFeedbackPrompt()
+
+    $scope.dismissFeedback = () ->
+        closeFeedbackPrompt()
 
     $scope.openReauth = () ->
         # Clear tokens to force re-authorization
