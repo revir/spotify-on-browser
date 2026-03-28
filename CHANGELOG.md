@@ -1,3 +1,7 @@
+# v3.1.0 - 2026/03/28 
+- Added user saved podcast episodes in the library.
+- Added feedback prompt.
+
 # v3.0.1 - 2026/03/15
 
 - Fixed AutoPlay warning on Firefox; users must enable AutoPlay for playback to start.
