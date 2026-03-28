@@ -6,7 +6,8 @@
 
 # Spotify on Browser
 
-![screenshot](readme_images/s1.jpg)
+![screenshot](readme_images/s1.png)
+![screenshot](readme_images/s3.png)
 
 Spotify has a really cool feature called **Spotify Connect**. Basically it could turn anything into a Spotify player, and control it with your cellphone. I made this app trying to connect Spotify with your browsers. So why use this player instead of Spotify website?
 
