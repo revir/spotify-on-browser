@@ -1,3 +1,6 @@
+# v3.1.1 - 2026/05/01
+- Fixed playing user liked songs. 
+
 # v3.1.0 - 2026/03/28 
 - Added user saved podcast episodes in the library.
 - Added feedback prompt.
