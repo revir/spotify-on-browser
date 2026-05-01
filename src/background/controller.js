@@ -49,17 +49,19 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
             );
             // Fallback: play user's liked songs
             console.log("Fallback: playing user's liked songs");
-            await player
-              .playContext("spotify:user:me:collection")
-              .catch(async (e) => {
-                console.error("Fallback play also failed:", e);
-                player.playError =
-                  "Failed to play. Please try playing a track from Spotify app first.";
+            const userProfile = await player.getUserProfile();
+            const likedSongsUri = userProfile?.id
+              ? `spotify:user:${userProfile.id}:collection`
+              : "spotify:user:me:collection";
+            await player.playContext(likedSongsUri).catch(async (e) => {
+              console.error("Fallback play also failed:", e);
+              player.playError =
+                "Failed to play. Please try playing a track from Spotify app first.";
 
-                utils.send("spotify state changed", {
-                  state: await getCurrentState(),
-                });
+              utils.send("spotify state changed", {
+                state: await getCurrentState(),
               });
+            });
           } else {
             const savedVolume = localStorage.getItem("spotify_current_volume");
             if (savedVolume) {
@@ -90,6 +92,8 @@ export default (player, initPlayer, getCurrentState, reconnectPlayer) => {
         "spotify_access_token_start_at",
         new Date().toISOString(),
       );
+      localStorage.removeItem("spotify_current_state"); // Clear cached state to avoid stale data after re-auth
+      localStorage.removeItem("spotify_user_profile"); // Clear cached profile to avoid stale data after re-auth
 
       return initPlayer().finally(async () => {
         utils.send("spotify state changed", {

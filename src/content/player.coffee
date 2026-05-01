@@ -233,7 +233,8 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
             refreshTooltips()
 
     $scope.playLikedSongs = () ->
-        utils.send 'spotify action', { action: 'playContext', value: 'spotify:user:me:collection' }
+        uri = if $scope.userId then "spotify:user:#{$scope.userId}:collection" else "spotify:user:me:collection"
+        utils.send 'spotify action', { action: 'playContext', value: uri }
         $scope.activeTab = 'playing'
 
     $scope.playPlaylist = (playlist) ->
@@ -295,6 +296,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
     updateState = (state) ->
         $scope.spotifyState = state 
         $scope.isSpotifyReady = state.ready
+        $scope.userId = state.userId
         $scope.errorLink = null
 
         if !state.ready

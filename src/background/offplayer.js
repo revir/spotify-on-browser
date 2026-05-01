@@ -12,6 +12,10 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     let ready = player.isReady;
     if (!ready) return { ready, accountError: player.accountError };
 
+    // Get user ID for liked songs URI
+    const userProfile = await player.getUserProfile();
+    const userId = userProfile?.id;
+
     // Always fetch fresh state from SDK
     let state = await player.getCurrentState();
 
@@ -25,7 +29,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       // SDK returned nothing, try Web API
       const currentPlaying = await player.getCurrentPlaying();
       if (currentPlaying) {
-        return { ready, currentPlaying };
+        return { ready, userId, currentPlaying };
       }
       // Last resort: use cached state from localStorage (for persistence)
       state = JSON.parse(localStorage.getItem("spotify_current_state"));
@@ -49,6 +53,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
       return {
         ready,
+        userId,
 
         disallows,
         paused,
@@ -65,7 +70,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         playError: player.playError,
       };
     } else {
-      return { ready, autoPlayError: player.autoPlayError };
+      return { ready, userId, autoPlayError: player.autoPlayError };
     }
   }
 

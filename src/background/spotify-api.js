@@ -99,6 +99,21 @@ export default (player) => {
       );
     },
 
+    getUserProfile() {
+      const cached = localStorage.getItem("spotify_user_profile");
+      if (cached) {
+        return Promise.resolve(JSON.parse(cached));
+      }
+      const uri = "https://api.spotify.com/v1/me";
+      return request(uri).then((res) => {
+        if (res && !res.error) {
+          localStorage.setItem("spotify_user_profile", JSON.stringify(res));
+          return res;
+        }
+        return null;
+      });
+    },
+
     getCurrentPlaying() {
       const uri = "https://api.spotify.com/v1/me/player/currently-playing";
       return request(uri).then((res) => {
