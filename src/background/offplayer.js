@@ -143,7 +143,13 @@ window.onSpotifyWebPlaybackSDKReady = () => {
           if (isTokenWithinOneHour) {
             cb(localStorage.getItem("spotify_access_token"));
           } else if (localStorage.getItem("spotify_refresh_token")) {
-            player.refreshToken().then(cb).catch(cb);
+            player
+              .refreshToken()
+              .then(cb)
+              .catch((err) => {
+                console.error("Spotify refresh token failed: ", err);
+                cb();
+              });
           } else cb();
         },
       });

@@ -69,9 +69,20 @@ export default (player) => {
           client_id: localStorage.getItem("spotify_client_id"),
         }),
       })
-        .then((response) => response.json())
+        .then(async (response) => {
+          const body = await response.json();
+          if (!response.ok || !body.access_token) {
+            throw new Error(
+              body.error_description || body.error || "Failed to refresh token",
+            );
+          }
+          return body;
+        })
         .then(({ refresh_token, access_token }) => {
-          localStorage.setItem("spotify_refresh_token", refresh_token);
+          // Spotify doesn't always rotate the refresh token; keep the old one if absent
+          if (refresh_token) {
+            localStorage.setItem("spotify_refresh_token", refresh_token);
+          }
           localStorage.setItem("spotify_access_token", access_token);
           localStorage.setItem(
             "spotify_access_token_start_at",
