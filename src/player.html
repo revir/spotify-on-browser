@@ -144,7 +144,12 @@
         <!-- Seekbar -->
         <div class="seekbar-container" ng-show="trackName && !errorMessage">
           <span class="time-current">{{currentTimeFormatted || '0:00'}}</span>
-          <div class="seekbar-track" ng-click="seekTo($event)">
+          <div
+            class="seekbar-track"
+            ng-click="seekTo($event)"
+            ng-mousemove="onSeekHover($event)"
+            ng-mouseleave="onSeekLeave()"
+          >
             <div
               class="seekbar-progress"
               ng-style="{'width': progressPercent + '%'}"
@@ -153,6 +158,13 @@
               class="seekbar-thumb"
               ng-style="{'left': progressPercent + '%'}"
             ></div>
+            <div
+              class="seekbar-hover-time"
+              ng-if="hoverTimeFormatted"
+              ng-style="{'left': hoverBubbleLeft + '%'}"
+            >
+              {{hoverTimeFormatted}}
+            </div>
           </div>
           <span class="time-duration">{{durationFormatted || '0:00'}}</span>
         </div>

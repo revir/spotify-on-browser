@@ -108,6 +108,22 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         updateProgress()
         utils.send 'spotify action', { action: 'seek', value: seekPosition }
 
+    $scope.hoverTimeFormatted = null
+    $scope.hoverBubbleLeft = 0
+
+    $scope.onSeekHover = ($event) ->
+        return unless $scope.duration > 0
+        track = $event.currentTarget
+        rect = track.getBoundingClientRect()
+        percent = ($event.clientX - rect.left) / rect.width
+        percent = Math.max(0, Math.min(1, percent))
+        $scope.hoverTimeFormatted = formatTime(percent * $scope.duration)
+        # Clamp the bubble position (not the reported time) so it doesn't clip past the track edges
+        $scope.hoverBubbleLeft = Math.max(3, Math.min(97, percent * 100))
+
+    $scope.onSeekLeave = () ->
+        $scope.hoverTimeFormatted = null
+
     # Tab navigation
     $scope.activeTab = 'playing'
     $scope.playlists = []

@@ -420,6 +420,32 @@ body {
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
       pointer-events: none;
     }
+
+    .seekbar-hover-time {
+      position: absolute;
+      bottom: 100%;
+      margin-bottom: 8px;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.85);
+      color: #fff;
+      font-size: 10px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 3px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 2;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 4px solid transparent;
+        border-top-color: rgba(0, 0, 0, 0.85);
+      }
+    }
   }
 }
 
