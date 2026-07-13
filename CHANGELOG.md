@@ -1,3 +1,10 @@
+# v3.2.0 - 2026/07/13
+- Show timestamp when hovering on the seekbar. 
+- Keyboard shortcut (Arrow right/left) to skip forward/backward on the player.
+- Keyboard shortcut (Arrow up/down) to turn up/down volume on the player. 
+- Better error handling on re-authentication failed. 
+- Better error handling on SDK initialization. 
+
 # v3.1.1 - 2026/05/01
 - Fixed playing user liked songs. 
 
