@@ -3,6 +3,11 @@ import message from "./message.coffee";
 
 let creating = null;
 let spotifyWebPlaybackSDKPromise = null;
+let spotifyWebPlaybackSDKReady = false; // Firefox: survives the wait promise being discarded on timeout
+
+// initPlayer() may need to refresh the OAuth token (network round trip) before
+// the SDK's playback connection can even start negotiating, so give it real headroom.
+const SDK_READY_TIMEOUT_MS = 10000;
 
 // Helper for sending messages to offscreen/controller
 // On Firefox, uses direct call since background can't message itself
@@ -16,14 +21,29 @@ const sendToOffscreen = (type, data = {}) => {
 const setupOffscreenDocument = async () => {
   if (utils.isFirefox()) {
     // Firefox does not support offscreen document
-    if (global.spotifyWebPlaybackSDKResolver) {
+    if (spotifyWebPlaybackSDKReady) {
+      return;
+    }
+    if (spotifyWebPlaybackSDKPromise) {
+      // Already waiting on a previous call - share that wait instead of racing a new one
       return await spotifyWebPlaybackSDKPromise;
     }
     spotifyWebPlaybackSDKPromise = new Promise((resolve, reject) => {
-      global.spotifyWebPlaybackSDKResolver = resolve;
+      // Note: initPlayer() only ever runs once, so this resolver may still fire
+      // (marking the sdk ready) even after the timeout below has moved on -
+      // it is intentionally never nulled out, only the promise/timer are reset.
+      global.spotifyWebPlaybackSDKResolver = (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          spotifyWebPlaybackSDKReady = true;
+          resolve();
+        }
+      };
       setTimeout(() => {
+        spotifyWebPlaybackSDKPromise = null;
         reject(new Error("Spotify web playback sdk is not ready"));
-      }, 3000);
+      }, SDK_READY_TIMEOUT_MS);
     });
     await spotifyWebPlaybackSDKPromise;
     return;
@@ -50,7 +70,7 @@ const setupOffscreenDocument = async () => {
         creating = null;
         spotifyWebPlaybackSDKPromise = null;
         reject(new Error("Spotify web playback sdk is not ready"));
-      }, 3000);
+      }, SDK_READY_TIMEOUT_MS);
     });
     creating = chrome.offscreen.createDocument({
       url: path,
