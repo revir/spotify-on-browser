@@ -102,7 +102,7 @@ export default {
     isLinux: () -> 
         return window.navigator.platform.includes('Linux')
     isFirefox: () -> 
-        return navigator.userAgent.toLowerCase().indexOf('firefox') > -1
+        return process.env.BROWSER == 'Firefox'
     
     isEdge: () -> 
         return navigator.userAgent.toLowerCase().indexOf('edge') > -1

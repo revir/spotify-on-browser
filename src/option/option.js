@@ -2,8 +2,7 @@ import "./option.less";
 
 // Detect browser
 const isFirefox =
-  navigator.userAgent.toLowerCase().includes("firefox") ||
-  location.href.includes("firefox=1");
+  process.env.BROWSER === "Firefox" || location.href.includes("firefox=1");
 const isChrome =
   navigator.userAgent.toLowerCase().includes("chrome") &&
   !navigator.userAgent.toLowerCase().includes("edg");
