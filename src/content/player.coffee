@@ -563,7 +563,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
     # Feedback prompt functions
     checkFeedbackPrompt = (count) ->
-        return if count <= 30
+        return if count <= 15
         return if localStorage.getItem('feedback_rated')
         $scope.showFeedbackPrompt = true
         $scope.$apply() if !$scope.$$phase
