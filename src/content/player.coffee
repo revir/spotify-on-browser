@@ -454,6 +454,84 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', '$sce', ($scope, $sce) ->
         if newValue != oldValue and $scope.trackName
             utils.send 'spotify action', { action: 'setVolume', value: (newValue / 100) }
 
+    # Keyboard shortcuts: Up/Down = volume, Left/Right = seek 2s. Holding a key repeats
+    # continuously; the visible value updates every tick but network sends are throttled
+    # (each setVolume/seek call is a real API request, not a local preview) with a final
+    # sync on key-up so the last value is never lost.
+    VOLUME_STEP = 2           # percent per step
+    SEEK_STEP = 2000          # ms per step
+    HOLD_REPEAT_DELAY = 350   # ms before continuous repeat kicks in
+    HOLD_REPEAT_INTERVAL = 100 # ms between repeated steps while held
+    SEND_THROTTLE = 200       # min ms between network sends while holding
+
+    heldKey = null
+    holdTimeout = null
+    holdInterval = null
+    lastSendAt = 0
+
+    isEditableTarget = (target) ->
+        tag = target.tagName?.toLowerCase()
+        (tag == 'input' and target.type != 'range') or tag == 'textarea' or target.isContentEditable
+
+    sendVolume = () -> utils.send 'spotify action', { action: 'setVolume', value: ($scope.currentVolume / 100) }
+    sendSeek = () -> utils.send 'spotify action', { action: 'seek', value: $scope.currentPosition }
+
+    adjustVolume = (delta, sendNow) ->
+        return unless $scope.currentVolume? and $scope.trackName
+        $scope.currentVolume = Math.max(0, Math.min(100, $scope.currentVolume + delta))
+        now = Date.now()
+        if sendNow or now - lastSendAt >= SEND_THROTTLE
+            lastSendAt = now
+            sendVolume()
+        $scope.$apply() if !$scope.$$phase
+
+    adjustSeek = (delta, sendNow) ->
+        return unless $scope.duration > 0
+        $scope.currentPosition = Math.max(0, Math.min($scope.duration, $scope.currentPosition + delta))
+        updateProgress()
+        now = Date.now()
+        if sendNow or now - lastSendAt >= SEND_THROTTLE
+            lastSendAt = now
+            sendSeek()
+        $scope.$apply() if !$scope.$$phase
+
+    performStep = (key, sendNow = false) ->
+        switch key
+            when 'ArrowUp' then adjustVolume(VOLUME_STEP, sendNow)
+            when 'ArrowDown' then adjustVolume(-VOLUME_STEP, sendNow)
+            when 'ArrowRight' then adjustSeek(SEEK_STEP, sendNow)
+            when 'ArrowLeft' then adjustSeek(-SEEK_STEP, sendNow)
+
+    stopHold = () ->
+        clearTimeout(holdTimeout) if holdTimeout
+        clearInterval(holdInterval) if holdInterval
+        holdTimeout = null
+        holdInterval = null
+        if heldKey in ['ArrowUp', 'ArrowDown']
+            sendVolume()
+        else if heldKey in ['ArrowLeft', 'ArrowRight']
+            sendSeek()
+        heldKey = null
+
+    $(document).on 'keydown', (event) ->
+        return unless event.key in ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
+        return if isEditableTarget(event.target)
+        return unless $scope.activeTab == 'playing'
+        event.preventDefault()
+        return if event.repeat or heldKey == event.key
+        heldKey = event.key
+        performStep(heldKey, true)
+        holdTimeout = setTimeout ->
+            holdInterval = setInterval ->
+                performStep(heldKey)
+            , HOLD_REPEAT_INTERVAL
+        , HOLD_REPEAT_DELAY
+
+    $(document).on 'keyup', (event) ->
+        stopHold() if heldKey == event.key
+
+    $(window).on 'blur', stopHold
+
     $scope.openTrackLink = () ->
         if $scope.isSpotifyReady
             window.open('https://open.spotify.com/', '_blank')
